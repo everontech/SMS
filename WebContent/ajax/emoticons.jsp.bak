@@ -1,0 +1,262 @@
+<%@ page contentType="text/html; charset=euc-kr" %>
+<% request.setCharacterEncoding("euc-kr"); %>
+   <!-- root element for the items -->
+   <div class="items">
+   
+      <!-- 1-5 -->
+      <div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"> ◆□/ (_ ＿ *)
+□◇■ 졸지말고
+│커│션한냉커피
+│피│원샷하삼-
+└─┘＼(^O^)/</textarea>
+					<p class="title">커피</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"> // ../.// / /
+// ㆀ●  // 
+// ┏■┛ /
+비와도┛┓힘차게
+기운잃지말아요^^</textarea>
+					<p class="title">장마비</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">  >┓ **** ┏<
+ ┏┛ ♡♡ ┗┓
+ ┃피로회복제┃
+ ┗ ━ ━ ━ ┛
+목요일도홧팅!</textarea>
+					<p class="title">목요일 
+</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">행복을쫓으면벽으로보이던문제가문으로변할것이다.
+  -조셉캠벨-
+행복을쫓는하루^^</textarea>
+					<p class="title">명언</p>
+				</div>
+			</div>									
+      <!-- 5-10 -->
+      <div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">♠ㅡ♠행운의마크ㅣ♧ㅣ행복한하루♠ㅡ♠하루종일행복한일만가득하길바래봅니다^-^☆</textarea>
+					<p class="title">행운</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">-=☆★  .'.'.'.
+( ^-^)/ 쨘~!!
+ / ♡| 행복이
+＃＃＃# 가득한
+화요일 되세요~</textarea>
+					<p class="title">즐거운화요일</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">  ⊙X○  ○S○  ♣(^@^)☆(~.^)♂
+ .*"♡"*.*"♡"*.새로운마음가짐으로이번주도홧팅!</textarea>
+					<p class="title">월요일</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">  ／＼ ／＼ ~☆
+ ☞"  ▽  "☜
+요렇게방긋방긋
+웃을수있는금요일
+되세요~♥"</textarea>
+					<p class="title">즐거운금요일</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">*││ *│비오는
+.♡││♡하루♬
+│ ♡♡*.행복하
+♡││.*'세요!!
+  ♡♡ │</textarea>
+					<p class="title">비오는 하루</p>
+				</div>
+			</div>		
+      <!-- 10-15 -->
+      <div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">。 *    ☆ *
+ "⊂┞ㅅ┃의─★
+☆ *● ┖".. *..
+생일을축하합니다
+ ☆★☆★☆★☆</textarea>
+					<p class="title">w</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">*     ㆀㆀ   * 
+   *  ∥∥ *
+ *  ┏━━┓  *
+   ┏━━━┓ 
+ Happy Birthday!</textarea>
+					<p class="title">해피버쓰데이</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">★┏┓생일축하해
+┏┻┫오늘하루
+┃━┫생애최고로
+┃━┫행복한하루
+┗━┛되길~</textarea>
+					<p class="title">생일축하</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">바쁘신중에도저희가족위로해주심을진심으로감사드립니다고마움오래오래간직하겠습니다</textarea>
+					<p class="title">답례인사</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">사정상 직접 조문을 가진 못했으나 삼가 위로의 말씀을 전해 드립니다.</textarea>
+					<p class="title">조의문</p>
+				</div>
+			</div>		
+      <!-- 15-20 -->
+      <div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">.. :☆: :☆: ..
+ 저희 결혼해요
+바쁘시더라도꼭오셔서축하해주세요
+'' :☆: :☆: ''</textarea>
+					<p class="title">결혼</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">여보사랑합니다.결혼00주년을축하하며,항상곁에서큰힘이되어준당신고마워요사랑해요</textarea>
+					<p class="title">결혼기념일</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5">우리마음에용기를북돋아주는말...
+☆희망☆은당신의특권입니다~~다가지세요s(*^.^)／</textarea>
+					<p class="title">명언</p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+			</div>		
+      <!-- 20-25 -->
+      <div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+			</div>		
+      
+      <!-- 25-30 -->
+      <div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+			</div>		
+            
+      <!--30-35 -->
+      <div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+			</div>		
+      <!-- 35-40 -->
+      <div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+			</div>		
+      
+      <!-- 40-45 -->
+      <div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+				<div class="bx">
+					<textarea readonly='true' class="phon" rows="5"></textarea>
+					<p class="title"></p>
+				</div>
+			</div>		          
+      
+      
+   </div>

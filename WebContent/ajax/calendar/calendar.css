@@ -1,0 +1,30 @@
+img{border:none;}
+p{margin:0;padding:0;}
+
+.calendar{position:absolute;width:181px;background: url(../images/sms/calendar_bg_bottom.gif) no-repeat left bottom;}
+.calendar div.date div.caltit_bg {width:155px;height:24px;background:url(http://i.kthimg.com/TOP/svc/sms/v1/img/common/caltit_bg.gif) no-repeat;margin:0 auto;}
+.calendar div.date div.caltit_bg p.caltit {padding:5px 0 0 12px;color:#5a5a5a;font-size:12px;font-weight:bold;}
+.calendar div.date div.caltit_bg p.caltit span {margin:0 20px 0 20px;font-family:dotum;}
+.calendar div.date {position:relative;padding-top:13px;background: url(../images/sms/calendar_bg_top.gif.gif) no-repeat left top;text-align:center;margin-top:-4px;height:316px;}
+.calendar div.date a {margin-right:3px;border:0;}
+.calendar div.date img {vertical-align: middle;margin-bottom: 3px;}
+.calendar table {border-collapse: collapse;margin: 0 18px 3px 23px;}
+.calendar table thead th {padding-top:5px;}
+.calendar table tbody td {font-size:11px;text-align:center;width:22px;height:22px;font-family:dotum;}
+.calendar table tbody td a {text-decoration:none;color:#202020;}
+.calendar table tbody td.today {width:18px;height:18px;background: url(http://i.kthimg.com/TOP/svc/sms/v1/img/common/calendar_img_today.gif) no-repeat;}
+.calendar table tbody td.today a {color: #fff;}
+.calendar table tbody td.use {}
+.calendar table tbody td.unuse {color:#CCCCCC;}
+.calendar table tbody td a {border:0;}
+.calendar table .sun {color:#f53930;}
+.calendar table .sun a {color:#f53930;}
+.calendar table .sat {color:#186baf;}
+.calendar table .sat a {color:#186baf;}
+.calendar div.date div.bot_date{border-top:1px solid #eaeaea;border-bottom:1px dashed #d9d9d9;margin:-3px 14px 0 15px;}
+.calendar div.date div.bot_date p {text-align:center;font-size:12px;padding-top:5px;color:#666;line-height:20px;font-family:dotum;height:53px;}
+.calendar div.date div.bot_date p span {font-weight:bold;}
+.calendar div.date div.bot_date p select {border:1px solid #cecece;height:20px;vertical-align:middle;font-size:12px;color:#5a5a5a;}
+.calendar div.date div.bot_btn {margin:9px 14px 16px 15px;}
+#YearMonth{margin-left:-13px;}
+

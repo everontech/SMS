@@ -1,0 +1,380 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr" />
+<title>Paran ∽ 메일</title>
+<style type="text/css">
+@import url("/css/calendar.css");
+</style>
+<script type="text/javascript" src="/js/mail.js"></script>
+<script type="text/javascript" src="/js/mail_gnb.js"></script>
+<script type="text/javascript" src="/js/sms.js"></script>
+<script language="JavaScript">
+document.domain = "paran.com";
+
+var Selected_Year;
+var Selected_Month;
+var Selected_Day;
+var Selected_Date;
+var Selected_Id;
+var Selected_Class;
+var Days_in_Month = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+var Month_Label = new Array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12');
+var Current_Date = new Date();
+var Current_Year = Current_Date.getFullYear();
+var Current_Month = Current_Date.getMonth();
+var Today = Current_Date.getDate();
+
+function Header(Year, Month) {
+	if (Month == 1) {
+		if ((Year % 400 == 0) || ((Year % 4 == 0) && (Year % 100 != 0))) {
+		 Days_in_Month[1] = 29;
+		}
+	}
+	var Header_String = Year + "년" + ' ' + Month_Label[Month]+"월";
+	document.getElementById("YearMonth").innerHTML = Header_String;
+	return Header_String;
+}
+
+function Make_Calendar(Year, Month) {
+   var First_Date = new Date(Year, Month, 1);
+   var Heading = Header(Year, Month);
+   var First_Day = First_Date.getDay() + 1;
+
+   if (((Days_in_Month[Month] == 31) && (First_Day >= 6)) ||
+       ((Days_in_Month[Month] == 30) && (First_Day == 7))) {
+      var Rows = 6;
+   }
+   else if ((Days_in_Month[Month] == 28) && (First_Day == 1)) {
+      var Rows = 4;
+   }
+   else {
+      var Rows = 5;
+   }
+
+   Rows = 6;
+
+   document.getElementById("sYear").innerHTML = Year;
+   document.getElementById("sMonth").innerHTML = Month+1;
+   document.getElementById("sDay").innerHTML = Today;
+
+   Selected_Id = "";
+
+   var HTML_String = '<table> \
+   <thead> \
+   <tr>\
+       <th class="sun"><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/cal_sun.gif"></th>\
+	   <th><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/cal_mon.gif"></th>\
+	   <th><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/cal_tue.gif"></th>\
+	   <th><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/cal_web.gif"></th>\
+	   <th><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/cal_thu.gif"></th>\
+	   <th><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/cal_fri.gif"></th>\
+	   <th class="sat"><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/cal_sat.gif"></th>\
+   </tr>\
+   </thead>\
+   <tbody>';
+
+   var Day_Counter = 1;
+   var Loop_Counter = 1;
+   var idMonth = Month+1;
+   var idDay = '';
+
+   if (idMonth< 10) idMonth = '0' + idMonth;
+
+   for (var j = 1; j <= Rows; j++) {
+      HTML_String += '<tr>';
+      for (var i = 1; i < 8; i++) {
+	  	if (Day_Counter < 10)
+			idDay = '0' + Day_Counter;
+		else
+			idDay = Day_Counter;
+         if ((Loop_Counter >= First_Day) && (Day_Counter <= Days_in_Month[Month])) {
+            if ((Day_Counter == Today) && (Year == Current_Year) && (Month == Current_Month)) {
+				HTML_String += '<td id="'+Year+'-'+idMonth+'-'+idDay+'" class="today">';
+				Selected_Id = Year+'-'+idMonth+'-'+idDay;
+				if (i == 1)
+					Selected_Class = "sun";
+				else if (i == 7)
+					Selected_Class = "sat";
+				else
+					Selected_Class = "use";
+            }
+			// 오늘 이전 날짜
+            else if (((Day_Counter < Today) && (Year == Current_Year) && (Month == Current_Month))
+				|| (Year < Current_Year)
+				|| (Year == Current_Year && Month < Current_Month)) {
+				HTML_String += '<td id="'+Year+'-'+idMonth+'-'+idDay+'" class="unuse">';
+			}
+			// 1년 후 날짜
+			else if ((Year > (Current_Year+1))
+				|| ((Year > Current_Year) && (Month > Current_Month))
+				|| ((Year > Current_Year) && (Month == Current_Month) && (Day_Counter > Today))) {
+				HTML_String += '<td id="'+Year+'-'+idMonth+'-'+idDay+'" class="unuse">';
+			}
+            else {
+				if (i == 1)
+					HTML_String += '<td id="'+Year+'-'+idMonth+'-'+idDay+'" class="sun">';
+				else if (i == 7)
+					HTML_String += '<td id="'+Year+'-'+idMonth+'-'+idDay+'" class="sat">';
+				else
+					HTML_String += '<td id="'+Year+'-'+idMonth+'-'+idDay+'" class="use">';
+            }
+			if (Year > Current_Year+1)
+				HTML_String += Day_Counter+'</td>';
+			else if ((Year > Current_Year) && (Month > Current_Month))
+				HTML_String += Day_Counter+'</td>';
+			else if ((Year > Current_Year) && (Month == Current_Month) && (Day_Counter > Today))
+				HTML_String += Day_Counter+'</td>';
+			else if (Year > Current_Year)
+				HTML_String += '<a href="javascript:selectDate('+ Day_Counter + ');">'+ Day_Counter+'</a></td>';
+			else if ((Year == Current_Year) && (Month > Current_Month))
+				HTML_String += '<a href="javascript:selectDate('+ Day_Counter + ');">'+ Day_Counter+'</a></td>';
+			else if ((Year == Current_Year) && (Month == Current_Month) && (Day_Counter >= Today))
+				HTML_String += '<a href="javascript:selectDate('+ Day_Counter + ');">'+ Day_Counter+'</a></td>';
+			else
+				HTML_String += Day_Counter+'</td>';
+            Day_Counter++;
+         }
+         else {
+            HTML_String += "<td></td>";
+         }
+         Loop_Counter++;
+      }
+      HTML_String += '</tr>';
+   }
+   HTML_String += '</tbody></table>';
+
+//alert(HTML_String);
+   document.getElementById("CALENDAR").innerHTML = HTML_String;
+}
+
+function Check_Nums() {
+   if ((event.keyCode < 48) || (event.keyCode > 57)) {
+      return false;
+   }
+}
+
+function Defaults()
+{
+   Selected_Year = Current_Year;
+   Selected_Month = Current_Month;
+   Selected_Day = Today;
+
+   Make_Calendar(Current_Year, Current_Month);
+}
+
+function Skip(Direction)
+{
+   if (Direction == '+') {
+      if (Selected_Month == 11) {
+         Selected_Month = 0;
+         Selected_Year++;
+      }
+      else {
+         Selected_Month++;
+      }
+   }
+   else {
+      if (Selected_Month == 0) {
+         Selected_Month = 11;
+         Selected_Year--;
+      }
+      else {
+         Selected_Month--;
+      }
+   }
+   Make_Calendar(Selected_Year, Selected_Month);
+}
+
+function selectDate(day)
+{
+
+	var selectMonth = Selected_Month +1;
+
+	Selected_Day = day;
+	if (selectMonth < 10) selectMonth = '0' + selectMonth;
+	if (day < 10) day = '0' + day;
+
+	Selected_Date = Selected_Year + '-' + selectMonth + '-' + day;
+
+	document.getElementById("sDay").innerHTML = day;
+
+	if (Selected_Class == "") {
+		Selected_Class = "use";
+	}
+
+	if (Selected_Id != "")  {
+		document.getElementById(Selected_Id).className = Selected_Class;
+	}
+
+	Selected_Class = document.getElementById(Selected_Date).className;
+	Selected_Id = Selected_Date;
+	document.getElementById(Selected_Date).className = "today";
+
+}
+
+function reserve()
+{
+	var sHour = document.getElementById("sHour");
+	var sMin = document.getElementById("sMin");
+
+	var selectMonth = Selected_Month +1;
+	var reservedTime = "";
+
+	reservedTime = Selected_Year;
+	if (selectMonth < 10)
+		reservedTime += '0' + selectMonth;
+	else
+		reservedTime += '' + selectMonth;
+	if (Selected_Day < 10)
+		reservedTime += '0' + Selected_Day;
+	else
+		reservedTime += '' + Selected_Day;
+	reservedTime += sHour.value;
+	reservedTime += sMin.value;
+
+
+	var time = new Date();
+	var year = time.getFullYear();
+	var month = time.getMonth();
+	var day = time.getDate();
+	var hour = time.getHours();
+	var mins = time.getMinutes();
+
+	var curTime = (day*24*60*60) + (hour*3600)+(mins*60);
+	var sendTime = (Selected_Day * 24*60*60) +(sHour.value*3600) + (sMin.value*60);
+
+
+	var curDate = new Date(year,month,day);
+	var sendDate = new Date(Selected_Year,selectMonth-1,Selected_Day);
+	if(sendDate-curDate > 0)
+	{
+		var passDay = (sendDate-curDate) / (1000 * 3600 * 24);
+		if(passDay > 365)
+		{
+			alert("해당 기간에는 예약 발송이 불가합니다.");
+			return;
+		}
+	}
+	else if (sendDate-curDate < 0) {
+			alert("과거날짜로는 예약 발송이 불가합니다.");
+			return;
+	}
+	else
+	{
+		var diff = sendTime - curTime;
+		if(diff < 600)
+		{
+			alert("최소 10분 후 예약 발송만 가능합니다.");
+			return;
+		}
+	}
+
+	if(confirm(Selected_Year+"년 "+selectMonth+"월 "+Selected_Day+"일 "+sHour.value+"시 "+sMin.value+"분\n이 시간으로  발송 예약을 하시겠습니까?"))
+	{
+		parent.document.smsForm.reserve.value = reservedTime;
+	}
+	else
+	{
+		alert("예약발송 설정을 취소합니다.");
+		parent.document.smsForm.reserve.value = "";
+	}
+
+	parent.layerAction('sms_cal');
+}
+
+function cancel()
+{
+	alert("예약발송 설정을 취소합니다.");
+	parent.document.smsForm.reserve.value = "";
+
+	parent.layerAction('sms_cal');
+}
+
+</script>
+</head>
+
+<body onLoad="Defaults()" style="margin:0;padding:0;text-align:left;">
+<!-- 캘린더 Layer -->
+<div class="calendar" style="margin:4px 0 0 0;">
+<div class="date">
+<div class="caltit_bg"><p class="caltit"><a href="javascript:Skip('-');"><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/btn_before.gif" alt="이전으로" /></a><span id="YearMonth"></span><a href="javascript:Skip('+');"><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/btn_next.gif" alt="다음으로" /></a></p></div>
+
+<span id="CALENDAR"></span>
+
+<div class="bot_date">
+	<p><span id="sYear"></span>년 <span id="sMonth"></span>월 <span id="sDay"></span>일<br />
+	<select id="sHour" name="sHour" style="width:65px;">
+		<option value="00">오전 0</option>
+		<option value="01">오전 1</option>
+		<option value="02">오전 2</option>
+		<option value="03">오전 3</option>
+		<option value="04">오전 4</option>
+		<option value="05">오전 5</option>
+		<option value="06">오전 6</option>
+		<option value="07">오전 7</option>
+		<option value="08">오전 8</option>
+		<option value="09">오전 9</option>
+		<option value="10">오전 10</option>
+		<option value="11">오전 11</option>
+		<option value="12">오후 12</option>
+		<option value="13">오후 1</option>
+		<option value="14">오후 2</option>
+		<option value="15">오후 3</option>
+		<option value="16">오후 4</option>
+		<option value="17">오후 5</option>
+		<option value="18">오후 6</option>
+		<option value="19">오후 7</option>
+		<option value="20">오후 8</option>
+		<option value="21">오후 9</option>
+		<option value="22">오후 10</option>
+		<option value="23">오후 11</option>
+	</select> 시&nbsp;&nbsp;
+	<select id="sMin" name="sMin" style="width:40px;">
+		<option value="00">00</option>
+		<option value="05">05</option>
+		<option value="10">10</option>
+		<option value="15">15</option>
+		<option value="20">20</option>
+		<option value="25">25</option>
+		<option value="30">30</option>
+		<option value="35">35</option>
+		<option value="40">40</option>
+		<option value="45">45</option>
+		<option value="50">50</option>
+		<option value="55">55</option>
+	</select> 분</p>
+</div>
+<div class="bot_btn"><a href="javascript:reserve();"><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/btn_ok.gif" width="50" height="25" alt="확인"></a><a href="javascript:cancel();"><img src="http://i.kthimg.com/TOP/svc/sms/v1/img/common/btn_cancel.gif" width="44" height="25" alt="취소"></a></div>
+
+</div>
+</div>
+<!-- //캘린더 Layer -->
+<script language="javascript">
+
+	var today = new Date();
+	var hours = today.getHours();
+	var mins = today.getMinutes();
+
+	var hObj = document.getElementById("sHour");
+
+	mins =  Math.round(mins / 5) + 2;
+	if(mins > 10)
+	{
+		mins = "0";
+		hours += 1;
+		if(hours > 23)
+		{
+			hours = "0";
+		}
+	}
+
+	var  mObj = document.getElementById("sMin");
+	mObj.options.selectedIndex = eval(mins);
+
+	hObj.options.selectedIndex = eval(hours);
+</script>
+
+</body>
+</html>
+
