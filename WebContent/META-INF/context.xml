@@ -18,6 +18,6 @@
 	          username="root"
 	          password="admin"
 	          driverClassName="com.mysql.jdbc.Driver"
-	          url="jdbc:mysql://192.168.0.55:3306/sms"/>
+	          url="jdbc:mysql://192.168.0.55:3306/sms2"/>
           
  </Context>

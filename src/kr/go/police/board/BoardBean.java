@@ -4,18 +4,19 @@ package kr.go.police.board;
  *	게시판 bean
  */
 public class BoardBean {
-	private int num;					//	번호
+	private int num;						//	번호
 	private String registerName;		//	등록자
 	private String title;					//	제목
 	private String content;				//	내용
 	private String filename;			//	첨부파일
 	private int viewCount;				//	뷰 카운트
 	private boolean isNotice;			//	공지여부
-	private int index;					//  게시판 인덱스번호
+	private int index;						//  게시판 인덱스번호
 	private int parentIndex;			// 댓글일경우 부모 인덱스
 	private String regDate;				// 등록 날짜
 	private String modiDate;			// 수정 날짜
 	private int regUserIndex;			// 등록자 인덱스	
+	private String pwd;					// 비밀번호
 	
 	public int getNum() {
 		return num;
@@ -112,7 +113,13 @@ public class BoardBean {
 	public void setRegUserIndex(int regUserIndex) {
 		this.regUserIndex = regUserIndex;
 	}
-	
-	
-	
+
+	public String getPwd() {
+		return pwd;
+	}
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+
 }

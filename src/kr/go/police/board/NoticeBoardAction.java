@@ -17,7 +17,8 @@ public class NoticeBoardAction implements Action {
 		ActionForward forward = new ActionForward();
 		BoardDAO dao = new BoardDAO();
 		dao.getNoticeListCount();
-		
+		dao. getBoardList(1, 10);
+		dao. getBoardList(1, 10);		
 		forward.setPath("./board/notice.jsp"); 
 		return forward;
 	}
