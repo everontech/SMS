@@ -6,16 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.sql.DataSource;
+
+import kr.co.police.CommonCon;
 
 
 /**
  * 공지사항, 게시판 관련
  */
-public class BoardDAO {
+public class BoardDAO extends CommonCon {
 	
 	DataSource dataSource;
 	Connection conn;
@@ -23,12 +22,8 @@ public class BoardDAO {
 	ResultSet rs, rs1;
 	
 	public BoardDAO(){
-		try{
-			Context initCtx = new InitialContext();
-			Context envCtx=(Context)initCtx.lookup("java:comp/env");
-			dataSource = (DataSource)envCtx.lookup("jdbc/smsConn");
-		}catch(Exception ex){
-			System.out.println("DB 연결 실패 : " + ex);
+		dataSource = getDataSource();
+		if(dataSource == null){
 			return;
 		}
 	}
@@ -52,8 +47,7 @@ public class BoardDAO {
 			e.printStackTrace();
 			System.out.println("getNoticeListCount 에러 : " +  e.getMessage());
 		}finally{
-			connClose();
-			
+			connClose(rs, pstmt, conn);
 		}
 		return count;
 	}
@@ -91,7 +85,7 @@ public class BoardDAO {
 			e.printStackTrace();
 			System.out.println("getNoticeList 에러 : " + e.getMessage());
 		}finally{
-			connClose();
+			connClose(rs, pstmt, conn);
 		}
 		return data;
 	}
@@ -134,7 +128,7 @@ public class BoardDAO {
 			System.out.println("getBoardList 에러 : " + e.getMessage());
 			return null;
 		}finally{
-			connClose();
+			connClose(rs, pstmt, conn);
 		}
 
 	}	
@@ -173,7 +167,7 @@ public class BoardDAO {
 			System.out.println("getNoticeList 에러 : " + e.getMessage());
 			return null;
 		}finally{
-			connClose();
+			connClose(rs, pstmt, conn);
 		}
 
 	}		
@@ -212,7 +206,7 @@ public class BoardDAO {
 			System.out.println("getNoticeList 에러 : " + e.getMessage());
 			return null;
 		}finally{
-			connClose();
+			connClose(rs, pstmt, conn);
 		}
 
 	}		
@@ -246,7 +240,7 @@ public class BoardDAO {
 			System.out.println("insertBoard 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose();
+			connClose(rs, pstmt, conn);
 		}
 	}
 	
@@ -282,7 +276,7 @@ public class BoardDAO {
 			System.out.println("insertBoard 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose();
+			connClose(rs, pstmt, conn);
 		}
 	}	
 
@@ -301,7 +295,7 @@ public class BoardDAO {
 			e.printStackTrace();
 			System.out.println("updateReadCount 에러 : " + e.getMessage());			
 		}finally{
-			connClose();
+			connClose(rs, pstmt, conn);
 		}
 	}
 	
@@ -325,7 +319,7 @@ public class BoardDAO {
 			e.printStackTrace();
 			System.out.println("updateReadCount 에러 : " + e.getMessage());		
 		}finally{
-			connClose();
+			connClose(rs, pstmt, conn);
 		}
 		
 		return false;
@@ -364,33 +358,10 @@ public class BoardDAO {
 			System.out.println("insertBoard 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose();
+			connClose(rs, pstmt, conn);
 		}
 	}
 
-	/**
-	 * 리소스 반환
-	 * 반환 순서대로 닫아준다.
-	 */
-	private void connClose() {
-		if(rs != null){
-			try{
-				rs.close();
-			}catch(SQLException e){}
-		}
-		
-		if(pstmt != null){
-			try{
-				pstmt.close();
-			}catch(SQLException e){}
-		}
-		
-		if(conn != null){
-			try {
-				conn.close();
-			} catch (SQLException e) {}
-		}
-		
-	} 
+
 	
 }

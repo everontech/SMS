@@ -32,25 +32,22 @@ public class AccountFrontController extends javax.servlet.http.HttpServlet
 				e.printStackTrace();
 				System.out.println("로그인 처리 에러");
 			}
-		}
-		/*	
-		} else if (command.equals("/BasketAdd.ba")) {
-			action = new BasketAddAction();
+		} else if (command.equals("/Join.ac")) {
+			action = new JoinAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else if (command.equals("/BasketDelete.ba")) {
-			action = new BasketDeleteAction();
+		} else if (command.equals("/Approve.ac")) {
+			action = new LoginAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		*/
-		
+
 		if (forward != null) {
 			if (forward.isRedirect()) {
 				response.sendRedirect(forward.getPath());

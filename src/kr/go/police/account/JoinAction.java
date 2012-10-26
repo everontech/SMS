@@ -1,4 +1,4 @@
-package kr.go.police.sms;
+package kr.go.police.account;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -6,16 +6,16 @@ import javax.servlet.http.HttpServletResponse;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
-public class SmsAction implements Action {
+public class JoinAction implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		ActionForward forward = new ActionForward();
-		SmsDAO dao = new SmsDAO();
-		dao.getPslist();
+		AccountDAO dao = new AccountDAO();
+		dao.joinUser(null);
 		
-		forward.setPath("./sms/index.jsp"); 
+		forward.setPath("./account/joined.jsp"); 
 		return forward;
 	}
 
