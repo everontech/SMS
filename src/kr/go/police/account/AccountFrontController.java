@@ -24,7 +24,8 @@ public class AccountFrontController extends javax.servlet.http.HttpServlet
 		ActionForward forward = null;
 		Action action = null;
 
-		if (command.equals("/Login.ac")) {
+		// 로그인 액션
+		if (command.equals("/LoginAction.ac")) {
 			action = new LoginAction();
 			try {
 				forward = action.execute(request, response);
@@ -32,14 +33,40 @@ public class AccountFrontController extends javax.servlet.http.HttpServlet
 				e.printStackTrace();
 				System.out.println("로그인 처리 에러");
 			}
-		} else if (command.equals("/Join.ac")) {
+		// 회원 가입 액션	
+		} else if (command.equals("/JoinAction.ac")) {
 			action = new JoinAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else if (command.equals("/Approve.ac")) {
+		// 사용자 승인 액션	
+		} else if (command.equals("/ApproveAction.ac")) {
+			action = new LoginAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		// 사용자 정보 수정 액션	
+		} else if (command.equals("/UserModifyAction.ac")) {
+			action = new LoginAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		// 사용자 삭제 액션	
+		} else if (command.equals("/UserDelAction.ac")) {
+			action = new LoginAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		// 사용자 조회 액션	
+		} else if (command.equals("/UserDelAction.ac")) {
 			action = new LoginAction();
 			try {
 				forward = action.execute(request, response);

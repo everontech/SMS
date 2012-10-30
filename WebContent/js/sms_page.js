@@ -7,6 +7,7 @@
 var phoneReg =  /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;	// 핸드폰 정규식
 // 폼 정규식 및 메세지 관련
 jQuery.phone = {
+	smsMode : true,	// sms 모드인지		
 	/*
  	 *	엔터값 체크
 	 */
@@ -34,25 +35,52 @@ jQuery.phone = {
 	checkLength : function(event){	// 문자 메시지 80자 제한
 		var that = $("#f_message");
 		var textThat = $("#textByte");
-		var buf = that.text();
+		var buf = that.val();
 		var encodedStr = $.phone.checkEnter(buf);
 		var l = 0;
 
-		if ( encodedStr > 80) {
-			if(event.keyCode == 8 || event.keyCode ==46){
-			return false;
+		// sms 모드이면
+		if($.phone.smsMode){
+			if ( encodedStr > 80) {
+				if(event.keyCode == 8 || event.keyCode ==46){
+					return false;
+				}
+				
+		        for (var i=0; i< buf.length; i++) { 
+	                l += (buf.charCodeAt(i) > 128) ? 2 : 1; //  한글 처리 
+	                if (l > 80){
+	                	$.phone.smsMode = false;
+		                alert( "80자 이상 입력시 MMS로 변환 됩니다..");
+		                 that.val( buf.substring(0,80) );
+		                 $(".choice li input").first().attr('checked', '');		                 
+		                 $(".choice li input").last().attr('checked', 'chekced');
+	                }
+		        }
+			}else{
+				textThat.text( encodedStr + "/80Bytes" );
 			}
-	        for (var i=0; i< buf.length; i++) { 
-                l += (buf.charCodeAt(i) > 128) ? 2 : 1; //  한글 처리 
-                if (l > 80){
-	                alert( "80자 이상 입력할수 없습니다.");
-	                 that.text( buf.substring(0,80) );
-	                // return false;
-                }
-	        }
+		// mms 모드이면	
 		}else{
-			textThat.val( encodedStr ); 
+			if ( encodedStr > 2000) {
+				if(event.keyCode == 8 || event.keyCode ==46){
+					return false;
+				}
+				
+		        for (var i=0; i< buf.length; i++) { 
+	                l += (buf.charCodeAt(i) > 128) ? 2 : 1; //  한글 처리 
+	                if (l > 80){
+	                	$.phone.smsMode = false;
+		                alert( "더이상 입력할수 없습니다.");
+		                that.val( buf.substring(0,80) );
+		                // return false;
+	                }
+		        }
+			}else{
+				textThat.text( encodedStr + "/2000Bytes" );
+			}
 		}
+		
+		
 	},
 	/*
 	 * split 와 같은 , 를 붙여준후 입력값 체크후 시간을 넣어준후 전송
@@ -93,7 +121,7 @@ jQuery.phone = {
 		}
 		
 		// 입력된 내용이 없을때 false 처리
-		if( isDefault == true || $("#f_message").text().length == 0 ){
+		if( isDefault == true || $("#f_message").val().length == 0 ){
 			alert("입력된내용이 없습니다.");
 			return false;
 		}
@@ -431,8 +459,8 @@ $(document).ready(function(){
 	});
 	
 	$("#resetTextBtn").click(function(){ // 다시 쓰기 버튼
-		$("#f_message").empty();
-		$("#textByte").val("0");
+		$("#f_message").val("");
+		$("#textByte").val("0/0Bytes");
 		return false;
 	});
 
@@ -465,7 +493,7 @@ $(document).ready(function(){
 		var html = "<li><div class='lt'><input name='recvName"+ index + "' id='recvName"+ index + "' type='Text' class='inp'>"
 					+ "<div class='nt'>" + index + "</div></div><div class='rt'>"
 					+ "<input name='recvPhone" + index + "' id='recvPhone" + index + "' type='text' class='inp'>"
-					+ "<div class='bt'><img src='./images/btn_close2.gif' alt='닫기'></div></div></li>";
+					+ "<div class='bt'><img src='../images/sms/btn_close2.gif' alt='닫기'></div></div></li>";
 			 
 		$("#pone_list li:last").after(html);
 		var lastInput = $("#pone_list li:last input:last");
@@ -610,7 +638,42 @@ $(document).ready(function(){
 		excelWindow = window.open(url, title, status);
 		excelWindow.focus();	
 	});
-
+	
+	
+	/**
+	 * sms or mms 체크박스 처리
+	 */
+    $(".choice li input").click(function(){
+    	var $this = $(this);
+    	$this.siblings();
+    	// 첫번째 클릭 즉 sms 선택이면
+    	// 메시지가 있으면 지워준다.
+    	if($this.index() == 0){
+        	$.phone.smsMode = true;
+        	$("#f_message").val("");	
+        	$("#textByte").text("0/80Bytes" );        	
+    	}else{	// mms 이면
+        	$.phone.smsMode = false;
+        	$("#f_message").val("");	
+        	$("#textByte").text("0/2000Bytes" );
+    	}
+    });
+    
+    /**
+     * 내 문자 혹은 특수 문자 영역 선택처리
+     */
+    $("#myMessage").click(function(){
+    	$(".my02").hide();    	
+    	$(".my01").show();
+    });
+    
+    $("#specailChar").click(function(){
+    	$(".my01").hide();    	
+    	$(".my02").show();
+    });
+    
+    
+    
 	/*
 	 * 특수문자 tab
 	 * 우측 특수문자들 모음 기본 인덱스는 첫번째로 함
@@ -626,5 +689,8 @@ $(document).ready(function(){
 			});
 		},50);
 	},50);
+	
+	
+	
 
 });

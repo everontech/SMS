@@ -22,6 +22,11 @@ import kr.go.police.board.BoardBean;
  */
 public class AccountDAO extends CommonCon {
 	
+	// 로그인 여부 상태값
+	public final static int CHECK_OK = 1;
+	public final static int ERROR_ID = -1;
+	public final static int CHECK_PWD = -2;
+	
 	DataSource dataSource;
 	Connection conn;
 	PreparedStatement pstmt;
@@ -56,6 +61,31 @@ CREATE TABLE  `sms2`.`user_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='유저정보테이블';
  * 
  */
+	
+	/**	 
+	 * 로그인 처리
+	 * @return
+	 */
+	protected boolean loginUser(String id, String pwd) {
+		try{
+			conn = dataSource.getConnection();
+			String sql = "SELECT * FROM user_info WHERE f_id = ? AND f_password =password(?) ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.setString(2, pwd);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				return true;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println("loginUser 에러 : " + e.getMessage());
+		}finally{
+			connClose(rs, pstmt, conn);
+		}
+		
+		return false;
+	}
 	
 	/**
 	 * 회원가입 
