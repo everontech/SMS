@@ -27,10 +27,16 @@ public class JoinAction implements Action {
 		String pwd = request.getParameter("pwd");
 		String grade = request.getParameter("grade");
 		String name = request.getParameter("name");
-		String deptName = request.getParameter("deptname");
-		String psName = request.getParameter("police_name");
-		String phone = request.getParameter("phone");
+		String deptName = request.getParameter("deptName");
+		String psName = request.getParameter("psname");
+		String phone1 = request.getParameter("phone1");
+		String phone2 = request.getParameter("phone2");
+		String phone3 = request.getParameter("phone3");
+		String phone = phone1 + phone2 + phone3; 
 		String email = request.getParameter("email");
+
+		//---- 추후 서블릿에서도 입력 검증 처리를 해야한다.
+		
 		
 		// 사용자 정보를 담는다.
 		UserBean data = new UserBean();
@@ -46,7 +52,7 @@ public class JoinAction implements Action {
 		// 회원 가입처리
 		if(dao.joinUser(data)){
 			forward.setRedirect(true);
-			forward.setPath("./account/joined.jsp"); 
+			forward.setPath("./sms/index.jsp"); 
 			return forward;
 		}else{
 			// 가입 실패

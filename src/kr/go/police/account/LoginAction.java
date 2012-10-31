@@ -23,6 +23,19 @@ public class LoginAction implements Action {
 		//  로그인 처리 확인
 		boolean result = dao.loginUser(id, pwd);
 		if(result){	// 정상 로그인 처리면
+			
+			// 사용자 승인여부 확인
+			if(dao.checkApprove(id) == false){
+				response.setContentType("text/html;charset=euc-kr");
+				PrintWriter out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('관리자 승인후 이용 가능합니다.');");
+				out.println("history.go(-1);");
+				out.println("</script>");	
+				out.close();
+				return null;
+			}
+			
 			forward.setRedirect(true);
 			forward.setPath("./sms/index.jsp"); 
 			return forward;	

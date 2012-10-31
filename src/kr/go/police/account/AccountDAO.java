@@ -199,17 +199,21 @@ CREATE TABLE  `sms2`.`user_info` (
 			pstmt.setString(1, userId);
 			rs = pstmt.executeQuery();
 			if(rs.next()){
-				return false;
+				if(rs.getInt(1) > 0){
+					return false;
+				}else{
+					return true;
+				}
 			}
-			
-			return true;
+
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("approveUser 에러 : " + e.getMessage());
+			System.out.println("checkDupleUserId 에러 : " + e.getMessage());
 			return false;
 		}finally{
 			connClose(rs, pstmt, conn);
 		}
+		return false;
 	}
 	
 
@@ -314,6 +318,32 @@ CREATE TABLE  `sms2`.`user_info` (
 		}finally{
 			connClose(rs, pstmt, conn);
 		}
+	}
+
+	/**
+	 *	사용자 계정 승인 여부 확인
+	 * @param id
+	 * @return
+	 */
+	public boolean checkApprove(String id) {
+		try{
+			conn = dataSource.getConnection();
+			String sql = "SELECT f_approve FROM user_info WHERE f_id = ? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,  id);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				if(rs.getString(1).equalsIgnoreCase("y"))
+					return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("checkDupleUserId 에러 : " + e.getMessage());
+			return false;
+		}finally{
+			connClose(rs, pstmt, conn);
+		}
+		return false;
 	}
 
 }

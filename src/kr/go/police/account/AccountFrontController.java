@@ -74,6 +74,17 @@ public class AccountFrontController extends javax.servlet.http.HttpServlet
 				e.printStackTrace();
 			}
 		}
+		
+		// 아이디 중복 체크
+		if (command.equals("/IdCheckAction.ac")) {
+			action = new  IdCheckAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}	
+		
 
 		if (forward != null) {
 			if (forward.isRedirect()) {

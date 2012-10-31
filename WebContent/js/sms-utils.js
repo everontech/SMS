@@ -1,3 +1,5 @@
+var ENTER_KEY = 13;   // Enter  keycode 값
+
 // 주완 유틸리티 함수
 jQuery.myUtil = {
 		
@@ -157,6 +159,14 @@ jQuery.fn.toCenter = function(){
 	return this.attr("align", "center");
 };
 
+// 비밀번호 체크
+function checkPassword(pwd){
+    reg1 = /^[a-z\d]{6,12}$/i;  //a-z와 0-9이외의 문자가 있는지 확인
+    reg2 = /[a-z]/i;  //적어도 한개의 a-z 확인
+    reg3 = /\d/;  //적어도 한개의 0-9 확인
+    return reg1.test(pwd) && reg2.test(pwd) && reg3.test(pwd);
+} 
+
 
 $(document).ready(function(){
 	var logoutCount = 0;	//  로그아웃 카운트
@@ -176,3 +186,4 @@ $(document).ready(function(){
 	// 예약 메세지 전송 결과 함수 -- 추후 구현 예정 스크립트 처리로 인해 속도 저하시 폐기
 	//setTimeout("$.myUtil.smsResult(" + 10000 + ")", 5000); // 5초 후에
 });
+
