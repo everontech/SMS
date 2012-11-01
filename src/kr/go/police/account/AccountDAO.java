@@ -289,12 +289,11 @@ CREATE TABLE  `sms2`.`user_info` (
 		int endRow = startRow + limit -1;		// 끝 번호
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE (f_id like ? OR f_name =?) LIMIT ?, ? ORDER BY f_notice, f_index DESC");
+			pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE (f_id like ? OR f_name like ?) ORDER BY f_index DESC LIMIT ?, ? ");
 			pstmt.setString(1, "%" + search + "%");	
 			pstmt.setString(2, "%" + search + "%");
 			pstmt.setInt(3, startRow);
 			pstmt.setInt(4, endRow);			
-			pstmt.setString(5, search);				
 			rs = pstmt.executeQuery();
 			
 			while(rs.next())	{
@@ -319,6 +318,49 @@ CREATE TABLE  `sms2`.`user_info` (
 			connClose(rs, pstmt, conn);
 		}
 	}
+	
+	/**
+	 * 	유저세부 정보 가져오기
+	 * @param index
+	 * @return
+	 */
+	protected UserBean getUserDetail(int index){
+	UserBean data = null;		
+	try {
+		conn = dataSource.getConnection();
+		pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE f_index = ? ");
+		pstmt.setInt(1, index);
+		rs = pstmt.executeQuery();
+		
+		if(rs.next())	{
+			// 사용자정보의 모든 세부 정보를 가져온다.
+		    data = new UserBean();	
+		    data.setIndex(rs.getInt("f_index"));
+		    data.setId(rs.getString("f_id"));	  	
+		    //data.setDeptCode(deptCode);
+		    data.setEmail(rs.getString("f_email"));
+		    data.setMonthSend(rs.getInt("f_month_send"));
+		    data.setPhone1(rs.getString("f_phone1"));
+		    data.setRegDate(rs.getString("f_reg_date"));
+		    data.setApprove(rs.getString("f_approve").equalsIgnoreCase("y"));
+		    data.setTotalSendCount(rs.getInt("f_total_send"));
+		    data.setMonthSendLimit(rs.getInt("f_send_limit"));
+		    data.setName(rs.getString("f_name"));
+		    data.setPsName(rs.getString("f_psname"));
+		    data.setGrade(rs.getString("f_grade"));
+		    data.setDeptName(rs.getString("f_deptname"));
+		    data.setUserClass(rs.getInt("f_class"));
+		}		
+		
+		return data;
+	} catch (SQLException e) {
+		e.printStackTrace();
+		System.out.println("getUserDetail 에러 : " + e.getMessage());
+		return null;
+	}finally{
+		connClose(rs, pstmt, conn);
+	}
+}	
 
 	/**
 	 *	사용자 계정 승인 여부 확인

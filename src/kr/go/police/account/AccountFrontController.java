@@ -66,13 +66,21 @@ public class AccountFrontController extends javax.servlet.http.HttpServlet
 				e.printStackTrace();
 			}
 		// 사용자 조회 액션	
-		} else if (command.equals("/UserDelAction.ac")) {
-			action = new LoginAction();
+		} else if (command.equals("/UserListAction.ac")) {
+			action = new UserListAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if(command.equals("/UserDetailAction.ac")){
+			action = new UserDetailAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
+			
 		}
 		
 		// 아이디 중복 체크
