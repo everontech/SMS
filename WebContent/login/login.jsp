@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
 <%-- Çì´õ  --%>
-<jsp:include page="../modules/header.jsp" />
+<jsp:include page="../include/header.jsp" />
 <script type="text/javascript">
 <!--
 $(function(){

@@ -22,7 +22,7 @@ public class UserBean {
 	private int monthSendLimit; // 월 발송 제한 수
 	private int monthSend; // 월 발송 횟수
 	private int userClass;	// 사용자 등급
-
+	
 	public int getIndex() {
 		return index;
 	}
@@ -74,6 +74,31 @@ public class UserBean {
 	public String getPhone1() {
 		return phone1;
 	}
+	
+	/**	 
+	 * 전화번호 첫번째
+	 * @return
+	 */
+	public String getPhoneTop1() {
+		return phone1.substring(0, 3);
+	}	
+	
+	/**
+	 * 전화번호 중간
+	 * @return
+	 */
+	public String getPhoneMiddle1() {
+		return phone1.substring(3, 7);
+	}	
+	
+	/**
+	 * 전화번호 마지막
+	 * @return
+	 */
+	public String getPhoneBottom1() {
+		return phone1.substring(7);
+	}		
+	
 
 	public void setPhone1(String phone1) {
 		this.phone1 = phone1;

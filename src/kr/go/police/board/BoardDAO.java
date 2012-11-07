@@ -15,11 +15,7 @@ import kr.co.police.CommonCon;
  * 공지사항, 게시판 관련
  */
 public class BoardDAO extends CommonCon {
-	
 	DataSource dataSource;
-	Connection conn;
-	PreparedStatement pstmt;
-	ResultSet rs, rs1;
 	
 	public BoardDAO(){
 		dataSource = getDataSource();
@@ -47,7 +43,7 @@ public class BoardDAO extends CommonCon {
 			e.printStackTrace();
 			System.out.println("getNoticeListCount 에러 : " +  e.getMessage());
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 		return count;
 	}
@@ -77,15 +73,14 @@ public class BoardDAO extends CommonCon {
 				data.setRegDate(rs.getString("f_reg_date"));
 				data.setModiDate(rs.getString("f_modi_date"));
 				data.setRegUserIndex(rs.getInt("f_reg_user_index"));
-				
 				System.out.println(data.getRegisterName());
   			}		
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("getNoticeList 에러 : " + e.getMessage());
+			System.out.println("getDetail 에러 : " + e.getMessage());
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 		return data;
 	}
@@ -101,7 +96,7 @@ public class BoardDAO extends CommonCon {
 		int endRow = startRow + limit -1;		// 끝 번호
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM board LIMIT ?, ? ORDER BY f_notice, f_index DESC");
+			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_parent_index = 0 ORDER BY f_notice DESC , f_index ASC LIMIT ?, ?");
 			pstmt.setInt(1, startRow);
 			pstmt.setInt(2, endRow);			
 			rs = pstmt.executeQuery();
@@ -118,8 +113,6 @@ public class BoardDAO extends CommonCon {
 				data.setRegDate(rs.getString("f_reg_date"));
 				data.setModiDate(rs.getString("f_modi_date"));
 				data.setRegUserIndex(rs.getInt("f_reg_user_index"));
-				
-				System.out.println(data.getRegisterName());
 				list.add(data);
   			}		
 			return list;
@@ -128,7 +121,7 @@ public class BoardDAO extends CommonCon {
 			System.out.println("getBoardList 에러 : " + e.getMessage());
 			return null;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 
 	}	
@@ -137,13 +130,17 @@ public class BoardDAO extends CommonCon {
 	 * 공지사항 목록 보기
 	 * @return
 	 */
-	public List<BoardBean> getNoticeList(){
+	public List<BoardBean> getNoticeList(int page, int limit){
 		List<BoardBean> list = new ArrayList<BoardBean>();
 		BoardBean data = null;		
+		int startRow = (page -1 ) * 10 +1;		// 시작 번호
+		int endRow = startRow + limit -1;		// 끝 번호			
 
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_notice = 'y' ORDER BY f_index DESC");
+			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_notice = 'y' ORDER BY f_index DESC LIMIT ?, ? ");
+			pstmt.setInt(1, startRow);
+			pstmt.setInt(2, endRow);						
 			rs = pstmt.executeQuery();
 			
 			while(rs.next())	{
@@ -152,13 +149,12 @@ public class BoardDAO extends CommonCon {
 				data.setTitle(rs.getString("f_title"));
 			    data.setViewCount(rs.getInt("f_view_count"));
 			    data.setParentIndex(rs.getInt("f_parent_index"));
+				data.setNotice(rs.getBoolean("f_notice"));			    
 				data.setFilename(rs.getString("f_filename"));
 				data. setRegisterName(rs.getString("f_reg_user"));
 				data.setRegDate(rs.getString("f_reg_date"));
 				data.setModiDate(rs.getString("f_modi_date"));
 				data.setRegUserIndex(rs.getInt("f_reg_user_index"));
-				
-				System.out.println(data.getRegisterName());
 				list.add(data);
   			}		
 			return list;
@@ -167,11 +163,45 @@ public class BoardDAO extends CommonCon {
 			System.out.println("getNoticeList 에러 : " + e.getMessage());
 			return null;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
-
-	}		
+	}	
 	
+	/**
+	 * 최근 공지사항 목록 보기
+	 * @return
+	 */
+	public List<BoardBean> getRecentNoticeList(int limit){
+		List<BoardBean> list = new ArrayList<BoardBean>();
+		BoardBean data = null;		
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_notice = 'y' ORDER BY f_index DESC LIMIT ? ");
+			pstmt.setInt(1, limit);
+			rs = pstmt.executeQuery();
+			while(rs.next())	{
+			    data = new BoardBean();	
+			    data.setIndex(rs.getInt("f_index"));
+				data.setTitle(rs.getString("f_title"));
+			    data.setViewCount(rs.getInt("f_view_count"));
+			    data.setParentIndex(rs.getInt("f_parent_index"));
+				data.setNotice(rs.getBoolean("f_notice"));			    
+				data.setFilename(rs.getString("f_filename"));
+				data. setRegisterName(rs.getString("f_reg_user"));
+				data.setRegDate(rs.getString("f_reg_date"));
+				data.setModiDate(rs.getString("f_modi_date"));
+				data.setRegUserIndex(rs.getInt("f_reg_user_index"));
+				list.add(data);
+  			}		
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getRecentNoticeList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}		
 
 	/**
 	 *	게시물 댓글 목록 보기
@@ -206,7 +236,7 @@ public class BoardDAO extends CommonCon {
 			System.out.println("getNoticeList 에러 : " + e.getMessage());
 			return null;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 
 	}		
@@ -240,7 +270,7 @@ public class BoardDAO extends CommonCon {
 			System.out.println("insertBoard 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 	}
 	
@@ -276,7 +306,7 @@ public class BoardDAO extends CommonCon {
 			System.out.println("insertBoard 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 	}	
 
@@ -295,7 +325,7 @@ public class BoardDAO extends CommonCon {
 			e.printStackTrace();
 			System.out.println("updateReadCount 에러 : " + e.getMessage());			
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 	}
 	
@@ -319,7 +349,7 @@ public class BoardDAO extends CommonCon {
 			e.printStackTrace();
 			System.out.println("updateReadCount 에러 : " + e.getMessage());		
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 		
 		return false;
@@ -341,15 +371,15 @@ public class BoardDAO extends CommonCon {
 			String sql = "INSERT INTO board ( f_title, f_content, f_notice, f_reg_user, f_filename, f_parent_index, " +
 					"f_reg_date, f_reg_user_index, f_password) VALUES (?, ?, ?, ?, ?, ?, now(), ?, password(?) )";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(2, "");								// 댓글에 제목은 사용안함
-			pstmt.setString(3, data.getContent());	
-			pstmt.setBoolean(4, false);	
-			pstmt.setString(5, data.getRegisterName());	
-			pstmt.setString(6, "");								// 댓글이므로 파일은 사용안함	
-			pstmt.setInt(7, data.getParentIndex());	
+			pstmt.setString(1, "");								// 댓글에 제목은 사용안함
+			pstmt.setString(2, data.getContent());	
+			pstmt.setBoolean(3, false);	
+			pstmt.setString(4, data.getRegisterName());	
+			pstmt.setString(5, "");								// 댓글이므로 파일은 사용안함	
+			pstmt.setInt(6, data.getParentIndex());	
 			pstmt.setString(8, data.getRegDate());	
 			pstmt.setInt(9, data.getRegUserIndex());	
-			pstmt.setString(10, data.getPwd());	
+			pstmt.setString(10, "");	
 			// update
 			result = pstmt.executeUpdate();
 			return result > 0;
@@ -358,7 +388,7 @@ public class BoardDAO extends CommonCon {
 			System.out.println("insertBoard 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 	}
 

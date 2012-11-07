@@ -1,5 +1,7 @@
 package kr.go.police.board;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,8 +19,8 @@ public class NoticeBoardAction implements Action {
 		ActionForward forward = new ActionForward();
 		BoardDAO dao = new BoardDAO();
 		dao.getNoticeListCount();
-		dao. getBoardList(1, 10);
-		dao. getBoardList(1, 10);		
+		List<BoardBean> list = (List<BoardBean>)dao. getNoticeList(1, 10);		
+		request.setAttribute("list", list);
 		forward.setPath("./board/notice.jsp"); 
 		return forward;
 	}

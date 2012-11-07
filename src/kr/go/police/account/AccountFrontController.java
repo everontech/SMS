@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+import kr.co.police.LoginCheck;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
@@ -43,27 +45,24 @@ public class AccountFrontController extends javax.servlet.http.HttpServlet
 			}
 		// 사용자 승인 액션	
 		} else if (command.equals("/ApproveAction.ac")) {
-			action = new LoginAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
+			if(LoginCheck.checkLogin(request, response)){
+				action = new LoginAction();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-		// 사용자 정보 수정 액션	
-		} else if (command.equals("/UserModifyAction.ac")) {
-			action = new LoginAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+
 		// 사용자 삭제 액션	
 		} else if (command.equals("/UserDelAction.ac")) {
-			action = new LoginAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
+			if(LoginCheck.checkLogin(request, response)){			
+				action = new LoginAction();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		// 사용자 조회 액션	
 		} else if (command.equals("/UserListAction.ac")) {
@@ -73,15 +72,35 @@ public class AccountFrontController extends javax.servlet.http.HttpServlet
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else if(command.equals("/UserDetailAction.ac")){
-			action = new UserDetailAction();
+		// 사용자 세부 보기	
+		} else if(command.equals("/MyInfoAction.ac")){
+			if(LoginCheck.checkLogin(request, response)){					
+				action = new MyInfoAction();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}	
+			}
+		//  관리자 사용자 정보 수정	
+		}else if(command.equals("/AdminModifyUserAction.ac")){
+			action = new AdminModifyUserAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}			
-			
+		//  로그 아웃
+		}else if(command.equals("/LogoutAction.ac")){
+			action = new LogoutAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
 		}
+		
+		
 		
 		// 아이디 중복 체크
 		if (command.equals("/IdCheckAction.ac")) {

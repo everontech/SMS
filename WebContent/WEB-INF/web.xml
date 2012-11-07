@@ -1,64 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
-  <display-name>강원청 SMS</display-name>
-  
- 
-  	
- 	<context-param>
-        <param-name>title</param-name>
-        <param-value>강원청SMS</param-value>
-    </context-param>
-  
-  	<servlet>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<display-name>강원청 SMS</display-name>
+
+	<context-param>
+		<param-name>title</param-name>
+		<param-value>강원청SMS</param-value>
+	</context-param>
+
+	<servlet>
 		<description>계정, 로그인처리</description>
-		<display-name>
-			AccountFrontController
-		</display-name>
-		<servlet-name>
-			AccountFrontController
-		</servlet-name>
-		<servlet-class>
-			kr.go.police.account.AccountFrontController
-		</servlet-class>
+		<display-name>AccountFrontController</display-name>
+		<servlet-name>AccountFrontController</servlet-name>
+		<servlet-class>kr.go.police.account.AccountFrontController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AccountFrontController</servlet-name>
 		<url-pattern>*.ac</url-pattern>
 	</servlet-mapping>
-	
-  	<servlet>
+
+	<servlet>
 		<description>SMS 문자 수신 처리</description>
-		<display-name>
-			SmsFrontController
-		</display-name>
-		<servlet-name>
-			SmsFrontController
-		</servlet-name>
-		<servlet-class>
-			kr.go.police.sms.SmsFrontController
-		</servlet-class>
+		<display-name>SmsFrontController</display-name>
+		<servlet-name>SmsFrontController</servlet-name>
+		<servlet-class>kr.go.police.sms.SmsFrontController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>SmsFrontController</servlet-name>
 		<url-pattern>*.sm</url-pattern>
-	</servlet-mapping>	
-	
-  	<servlet>
+	</servlet-mapping>
+
+	<servlet>
 		<description>게시판 처리</description>
-		<display-name>
-			BoardFrontController
-		</display-name>
-		<servlet-name>
-			BoardFrontController
-		</servlet-name>
-		<servlet-class>
-			kr.go.police.board.BoardFrontController
-		</servlet-class>
+		<display-name>BoardFrontController</display-name>
+		<servlet-name>BoardFrontController</servlet-name>
+		<servlet-class>kr.go.police.board.BoardFrontController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>BoardFrontController</servlet-name>
 		<url-pattern>*.bo</url-pattern>
-	</servlet-mapping>		
+	</servlet-mapping>
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
@@ -68,4 +51,14 @@
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error/error_404.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error/error_500.jsp</location>
+	</error-page>
+
 </web-app>

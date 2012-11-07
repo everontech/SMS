@@ -61,7 +61,7 @@ jQuery.myUtil = {
 		t =setTimeout("$.myUtil.autoLogout()",10000);	// 10초마다 체크
 		$.myUtil.logoutCount++;
 		if($.myUtil.logoutCount == $.myUtil.logoutTime){
-			window.location.href="../autologoutInfo.jsp"
+			window.location.href="./login/autologoutInfo.jsp"
 		}
 	},
 	logoutCountReset : function(){	// 마우스,키 이벤트 감지후 카운터 리셋

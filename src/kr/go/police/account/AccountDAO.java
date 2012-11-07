@@ -1,20 +1,12 @@
 package kr.go.police.account;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import kr.co.police.CommonCon;
-import kr.go.police.board.BoardBean;
 
 
 /**
@@ -26,11 +18,7 @@ public class AccountDAO extends CommonCon {
 	public final static int CHECK_OK = 1;
 	public final static int ERROR_ID = -1;
 	public final static int CHECK_PWD = -2;
-	
 	DataSource dataSource;
-	Connection conn;
-	PreparedStatement pstmt;
-	ResultSet rs, rs1;
 	
 	public AccountDAO(){
 		dataSource = getDataSource();
@@ -38,29 +26,6 @@ public class AccountDAO extends CommonCon {
 			return;
 		}
 	}
-/**
- * DROP TABLE IF EXISTS `sms2`.`user_info`;
-CREATE TABLE  `sms2`.`user_info` (
-  `f_index` int(10) unsigned NOT NULL auto_increment COMMENT '인덱스',
-  `f_id` varchar(45) NOT NULL COMMENT '유저아이디',
-  `f_password` varchar(255) NOT NULL COMMENT '유저비밀번호',
-  `f_grade` varchar(30) NOT NULL COMMENT '등급',
-  `f_name` varchar(20) NOT NULL COMMENT '이름',
-  `f_phone1` varchar(20) NOT NULL COMMENT '전화번호1',
-  `f_phone2` varchar(20) default NULL COMMENT '전화번호2',
-  `f_deptname` varchar(30) NOT NULL COMMENT '부서명',
-  `f_email` varchar(100) NOT NULL COMMENT '이메일',
-  `f_class` tinyint(3) unsigned NOT NULL default '1' COMMENT '등급',
-  `f_approve` char(1) NOT NULL default 'n' COMMENT '승인여부',
-  `f_reg_date` datetime NOT NULL COMMENT '등록날짜',
-  `f_approve_date` datetime default NULL COMMENT '승인날짜',
-  `f_send_limit` int(10) unsigned NOT NULL default '0' COMMENT '월별전송제한수',
-  `f_total_send` int(10) unsigned NOT NULL default '0' COMMENT '총전송수',
-  `f_month_send` int(10) unsigned default '0' COMMENT '이달의전송수',
-  PRIMARY KEY  (`f_index`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='유저정보테이블';
- * 
- */
 	
 	/**	 
 	 * 로그인 처리
@@ -81,7 +46,7 @@ CREATE TABLE  `sms2`.`user_info` (
 			e.printStackTrace();
 			System.out.println("loginUser 에러 : " + e.getMessage());
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 		
 		return false;
@@ -115,7 +80,7 @@ CREATE TABLE  `sms2`.`user_info` (
 			System.out.println("joinUser 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 	}
 
@@ -147,9 +112,49 @@ CREATE TABLE  `sms2`.`user_info` (
 			System.out.println("modifyUserInfo 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 	}	
+	
+	/**
+	 * 관리자모드에서 사용자 정보 변경
+	 * @param data
+	 * @return
+	 *	수정처리 여부
+	 */
+	protected boolean modifyUserInfoFromAdmin(UserBean data){
+		try {
+			conn = dataSource.getConnection();
+			String sql = "UPDATE user_info SET" +
+								" f_name = ?," +
+								" f_deptname = ?," +
+								" f_grade = ?," +								
+								" f_phone1 = ?," +
+								" f_email = ?, " +
+								" f_class = ?, " +
+								" f_approve = ?" +								
+								" WHERE f_index = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, data.getName());
+			pstmt.setString(2, data.getDeptName());		
+			pstmt.setString(3, data.getGrade());			
+			pstmt.setString(4, data.getPhone1());			
+			pstmt.setString(5, data.getEmail());	
+			pstmt.setInt(6, data.getUserClass());
+			pstmt.setString(7, data.isApprove()?"y":"n");
+			pstmt.setInt(8, data.getIndex());
+			
+			// update
+			return pstmt.executeUpdate() > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("modifyUserInfoFromAdmin 에러 : " + e.getMessage());
+			return false;
+		}finally{
+			connClose();
+		}
+	}		
 	
 	/**
 	 * 사용자 승인 처리
@@ -183,7 +188,7 @@ CREATE TABLE  `sms2`.`user_info` (
 			System.out.println("approveUser 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 	}	
 	
@@ -211,7 +216,7 @@ CREATE TABLE  `sms2`.`user_info` (
 			System.out.println("checkDupleUserId 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 		return false;
 	}
@@ -239,7 +244,7 @@ CREATE TABLE  `sms2`.`user_info` (
 			System.out.println("deleteUser 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 	}	
 	
@@ -262,7 +267,7 @@ CREATE TABLE  `sms2`.`user_info` (
 			e.printStackTrace();
 			System.out.println("getUserListCount 에러 : " +  e.getMessage());
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 		return count;
 	}
@@ -306,7 +311,7 @@ CREATE TABLE  `sms2`.`user_info` (
 			    data.setGrade(rs.getString("f_grade"));
 			    data.setDeptName(rs.getString("f_deptname"));
 			    data.setUserClass(rs.getInt("f_class"));
-
+			    data.setPhone1(rs.getString("f_phone1"));
 				list.add(data);
   			}		
 			return list;
@@ -315,7 +320,7 @@ CREATE TABLE  `sms2`.`user_info` (
 			System.out.println("getUserList 에러 : " + e.getMessage());
 			return null;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 	}
 	
@@ -325,41 +330,41 @@ CREATE TABLE  `sms2`.`user_info` (
 	 * @return
 	 */
 	protected UserBean getUserDetail(int index){
-	UserBean data = null;		
-	try {
-		conn = dataSource.getConnection();
-		pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE f_index = ? ");
-		pstmt.setInt(1, index);
-		rs = pstmt.executeQuery();
-		
-		if(rs.next())	{
-			// 사용자정보의 모든 세부 정보를 가져온다.
-		    data = new UserBean();	
-		    data.setIndex(rs.getInt("f_index"));
-		    data.setId(rs.getString("f_id"));	  	
-		    //data.setDeptCode(deptCode);
-		    data.setEmail(rs.getString("f_email"));
-		    data.setMonthSend(rs.getInt("f_month_send"));
-		    data.setPhone1(rs.getString("f_phone1"));
-		    data.setRegDate(rs.getString("f_reg_date"));
-		    data.setApprove(rs.getString("f_approve").equalsIgnoreCase("y"));
-		    data.setTotalSendCount(rs.getInt("f_total_send"));
-		    data.setMonthSendLimit(rs.getInt("f_send_limit"));
-		    data.setName(rs.getString("f_name"));
-		    data.setPsName(rs.getString("f_psname"));
-		    data.setGrade(rs.getString("f_grade"));
-		    data.setDeptName(rs.getString("f_deptname"));
-		    data.setUserClass(rs.getInt("f_class"));
-		}		
-		
-		return data;
-	} catch (SQLException e) {
-		e.printStackTrace();
-		System.out.println("getUserDetail 에러 : " + e.getMessage());
-		return null;
-	}finally{
-		connClose(rs, pstmt, conn);
-	}
+		UserBean data = null;		
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE f_index = ? ");
+			pstmt.setInt(1, index);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next())	{
+				// 사용자정보의 모든 세부 정보를 가져온다.
+			    data = new UserBean();	
+			    data.setIndex(rs.getInt("f_index"));
+			    data.setId(rs.getString("f_id"));	  	
+			    //data.setDeptCode(deptCode);
+			    data.setEmail(rs.getString("f_email"));
+			    data.setMonthSend(rs.getInt("f_month_send"));
+			    data.setPhone1(rs.getString("f_phone1"));
+			    data.setRegDate(rs.getString("f_reg_date"));
+			    data.setApprove(rs.getString("f_approve").equalsIgnoreCase("y"));
+			    data.setTotalSendCount(rs.getInt("f_total_send"));
+			    data.setMonthSendLimit(rs.getInt("f_send_limit"));
+			    data.setName(rs.getString("f_name"));
+			    data.setPsName(rs.getString("f_psname"));
+			    data.setGrade(rs.getString("f_grade"));
+			    data.setDeptName(rs.getString("f_deptname"));
+			    data.setUserClass(rs.getInt("f_class"));
+			}		
+			
+			return data;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getUserDetail 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
 }	
 
 	/**
@@ -383,9 +388,52 @@ CREATE TABLE  `sms2`.`user_info` (
 			System.out.println("checkDupleUserId 에러 : " + e.getMessage());
 			return false;
 		}finally{
-			connClose(rs, pstmt, conn);
+			connClose();
 		}
 		return false;
+	}
+
+	/**
+	 * 	아이디로 사용자 정보 가져오기
+	 * @param id
+	 * @return
+	 */
+	public UserBean getUserInfo(String id) {
+		UserBean data = null;		
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE f_id = ? ");
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next())	{
+				// 사용자정보의 모든 세부 정보를 가져온다.
+			    data = new UserBean();	
+			    data.setIndex(rs.getInt("f_index"));
+			    data.setId(rs.getString("f_id"));	  	
+			    //data.setDeptCode(deptCode);
+			    data.setEmail(rs.getString("f_email"));
+			    data.setMonthSend(rs.getInt("f_month_send"));
+			    data.setPhone1(rs.getString("f_phone1"));
+			    data.setRegDate(rs.getString("f_reg_date"));
+			    data.setApprove(rs.getString("f_approve").equalsIgnoreCase("y"));
+			    data.setTotalSendCount(rs.getInt("f_total_send"));
+			    data.setMonthSendLimit(rs.getInt("f_send_limit"));
+			    data.setName(rs.getString("f_name"));
+			    data.setPsName(rs.getString("f_psname"));
+			    data.setGrade(rs.getString("f_grade"));
+			    data.setDeptName(rs.getString("f_deptname"));
+			    data.setUserClass(rs.getInt("f_class"));
+			}		
+			
+			return data;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getUserInfo 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
 	}
 
 }

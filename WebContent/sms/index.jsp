@@ -1,19 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
 <%-- 헤더  --%>
-<jsp:include page="../modules/header.jsp" />
+<jsp:include page="../include/header.jsp" />
 <link rel="stylesheet" type="text/css" href="../css/sms.css"/>
 <script type="text/javascript" src="../js/sms_page.js"></script>
 <body>
 	<div id="wrapper">
 		<%-- 상단메뉴  --%>
-		<jsp:include page="../modules/topmenu.jsp" />
+		<jsp:include page="../include/topmenu.jsp" />
 
 		<div id="contents">
 			<%-- 사이드 메뉴  --%>
-			<jsp:include page="../modules/sidebox.jsp" />
-
-
+			<jsp:include page="../include/sidebox.jsp" />
 			<div id="contentsWrap">
 				<h3>
 					<img src="../images/lettersend/title.gif" alt="문자보내기" />
@@ -251,8 +249,6 @@
 		</div>
 		<div id="footer">푸터영역</div>
 	</div>
-
-
 	<!-- Numeric Key Pad -->
 	<ol id="controls">
 		<li id="keyPadClose"><a href="#">Close</a></li>
@@ -269,8 +265,13 @@
 		<li><a href="#" id="backSpace">BackSpace</a></li>
 	</ol>
 	<!-- //Numeric Key Pad -->
-
 </body>
-
-
+<script type="text/javascript">
+<!--
+	$("#top_menu1").attr("data-on", "on");
+	$("#top_menu1 > img").attr("src", "../images/top/menu01_on.gif");
+	$("#send_top_menu > img").attr("src", "../images/top/menu_sub01_on.gif");
+	$("#send_top_menu").attr("data-on", "on");
+//-->
+</script>
 </html>

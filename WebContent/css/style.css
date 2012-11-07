@@ -57,7 +57,7 @@ body{background:url(../images/top/top_bg.gif) repeat-x 0 0;}
 	.gnb .gnb_sub {float:left; height:41px;}
 	.gnb .gnb_sub ul{position:absolute; top:78px;} 
 	.gnb .gnb_sub ul li {margin-right:18px; float:left; height:11px;}
-	.gnb .gnb_sub .gnb_sub1{left:34px;}
+	.gnb .gnb_sub .gnb_sub1{left:34px; display:none;}
 	.gnb .gnb_sub .gnb_sub2{left:248px; display:none;}
 	.gnb .gnb_sub .gnb_sub3{left:395px; display:none;}
 	.gnb .gnb_sub .gnb_sub4{left:590px; display:none;}
@@ -85,19 +85,21 @@ body{background:url(../images/top/top_bg.gif) repeat-x 0 0;}
 	#subWrap .notice_box { border-top: 1px solid #c8c8c8;  border-bottom: 1px solid #c8c8c8; height:150px; margin-top:28px;} 
 	#subWrap .notice_box .notice_box_title { background:#f5f5f5; height:26px; border-bottom:dotted 1px #c8c8c8; padding:14px 14px 0 14px;} 
 	#subWrap .notice_box .notice_box_title h2{float:left;}
-	#subWrap .notice_box .notice_box_title p {float:right;}
+	#subWrap .notice_box .notice_box_title a {float:right;}
 	#subWrap .notice_box ul { padding:10px 0 0 14px;}
-	#subWrap .notice_box ul li img{ padding-bottom:5px;}
+	/* add juwan */
+	#subWrap .notice_box ul li img{ padding-bottom:5px; margin-right: 3px;}
+	/* add juwan */	
+	#subWrap .notice_box ul li{ width: 180px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
 	/* subWrap end */
-	
-	
+
 	/* contentsWrap */
 	#contentsWrap {float:left; width:728px; margin-left:32px; background:url(../images/lettersend/bg.gif) no-repeat 0 40px; height:690px;}
 	#contentsWrap h3 { margin-bottom:18px;}
 	
 	#contentsWrap .phone { background:url(../images/lettersend/phone_bg.gif) no-repeat 23px 23px; width:270px; height:400px; padding:14px 0 0 41px;}
 	#contentsWrap .phone .choice {margin-top:17px; width:235px;}	
-	#contentsWrap .phone .choice li { display:inline;}
+	#contentsWrap .phone .choice li http://localhost:8080/BoardDetailAction.bo?3{ display:inline;}
 	#contentsWrap .phone .choice li span { font-weight:bold; color:#e8b313; margin-right:10px; }
 	#contentsWrap .phone .choice li input{margin-right:3px;  vertical-align:middle; }
 	#contentsWrap .phone .disk_icon {width:235px; margin-top:3px;}
@@ -118,6 +120,10 @@ body{background:url(../images/top/top_bg.gif) repeat-x 0 0;}
 	/* contentsWrap end */
 /* contents end */
 
+/* add juwan */
+.hover{background-color: #EBFEFC !important;}
+
+/* add juwan end */
 /*---------------------------------------------------------------login------------------------------------------------------------------------*/
 
 #login_wrapper {width:653px; margin:0 auto; margin-top:30px; background:url(../images/login/login_bg.gif) no-repeat 0 110px; height:420px}
@@ -150,6 +156,50 @@ body{background:url(../images/top/top_bg.gif) repeat-x 0 0;}
 	.join_box .join_info img { margin-right:4px;}
 /*---------------------------------------------------------------join end--------------------------------------------------------------------*/
 
+/*---------------------------------------------------------------boder------------------------------------------------------------------------*/
+.boderWrap {float:left; width:728px; margin-left:32px;}
+.boderWrap  h3 { margin-bottom:18px;}
+.boderWrap thead {background:#f4f4f4; border-top:#258abf 2px solid; border-bottom:#d0d0d0 1px solid; color:#258abf;}
+.boderWrap tr {text-align:center; height:34px; border-bottom:#d0d0d0 1px solid;}
+.boderWrap tr .tite {text-align:left;}
+.boderWrap tr .tite a{display:inline-block; width:300px; text-overflow: ellipsis;  overflow: hidden; white-space: nowrap;}
+.boderWrap tr .tite img {vertical-align:middle;}
+.boderWrap .none { height:13px; border:1px solid #b5b5b5; padding:4px 0 0 4px; vertical-align:middle; margin:5px 0 5px 10px; }
+.boderWrap .end {text-align:center; height:34px; border-bottom:#258abf 1px solid;}
+.boderWrap .page { text-align:center; padding-top:13px;}
+.boderWrap .page a{ font-size:11px; color:#828282; text-decoration:none;  margin-left:10px;}
+.boderWrap .page img { vertical-align:middle;}
+.boderWrap .page span { font-weight:bold; color:#258abf;}
+.boderWrap tbody textarea { width:600px; height:300px;  margin:10px 0 10px 0; }
+.boderWrap .btn { text-align:right; }
+.boderWrap .btn img {margin:15px 0 0 5px;}
+.boderWrap .re {background:#d7e4ea; height:70px;}
+.boderWrap .view {padding:20px 20px; text-align:left; vertical-align:top;}
+/*---------------------------------------------------------------boder end------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------member------------------------------------------------------------------------*/
+.memberWrap {float:left; width:728px; margin-left:32px;}
+.memberWrap  h3 { margin-bottom:18px;}
+.memberWrap table tr { border-TOP:1px solid #c5d1d8; border-bottom:1px solid #c5d1d8; height:33px;}	
+.memberWrap table tr th { background:#e7eff3;}
+.memberWrap table tr .check_yes {padding-left:10px;}
+.memberWrap table tr .check_no {padding-left:10px;}
+.memberWrap #text{ width:191px; height:13px; border:1px solid #b5b5b5; padding:4px 0 0 4px; vertical-align:middle;}	
+.memberWrap #phone{ width:50px; height:13px; border:1px solid #b5b5b5; padding:4px 0 0 4px; vertical-align:middle;}	
+.memberWrap #email{ width:295px; height:13px; border:1px solid #b5b5b5; padding:4px 0 0 4px; vertical-align:middle;}	
+.memberWrap .join_info { width:653px; margin:17px 0 0 181px;}
+.memberWrap .join_info img { margin-right:4px;}
+
+/*---------------------------------------------------------------member end------------------------------------------------------------------------*/
+
+
+/*---------------------------------------------------------------manager------------------------------------------------------------------------*/
+	#subWrap .manager_box { border: 1px solid #c8c8c8; height:134px;} 
+	#subWrap .manager_box ul { background:#f5f5f5; height:51px; border-bottom:dotted 1px #c8c8c8; padding:19px 0 0 19px;}		
+    #subWrap .manager_box ul span { color:#e3940c; font-weight:bold;}
+	#subWrap .manager_box ul strong {color:#636363;}
+	#subWrap .manager_box .btn { text-align:center; margin-top:17px;}	
+/*---------------------------------------------------------------manager end------------------------------------------------------------------------*/
 
 
 /* footer */

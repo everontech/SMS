@@ -11,8 +11,9 @@ import javax.sql.DataSource;
 
 
 public class CommonCon {
-	
-	
+	public ResultSet rs;
+	public PreparedStatement pstmt;
+	public Connection conn;
 	
 	public DataSource getDataSource(){
 		try{
@@ -29,7 +30,7 @@ public class CommonCon {
 	 * 리소스 반환
 	 * 반환 순서대로 닫아준다.
 	 */
-	public void connClose(ResultSet rs, PreparedStatement pstmt, Connection conn) {
+	public void connClose() {
 		if(rs != null){
 			try{
 				rs.close();

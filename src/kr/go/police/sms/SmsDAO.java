@@ -13,28 +13,107 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import kr.co.police.CommonCon;
+import kr.go.police.account.UserBean;
+import kr.go.police.board.BoardBean;
+
 
 /**
- * 계정 (login, regsiter etc)관련 Dao
+ * 문자 관리 Dao
  */
-public class SmsDAO {
-	
+public class SmsDAO extends CommonCon {
 	DataSource dataSource;
-	Connection conn;
-	PreparedStatement pstmt;
-	ResultSet rs, rs1;
 	
 	public SmsDAO(){
-		try{
-			
-			Context initCtx = new InitialContext();
-			Context envCtx=(Context)initCtx.lookup("java:comp/env");
-			dataSource = (DataSource)envCtx.lookup("jdbc/smsConn");
-		}catch(Exception ex){
-			System.out.println("DB 연결 실패 : " + ex);
+		dataSource = getDataSource();
+		if(dataSource == null){
 			return;
 		}
 	}
+	
+	
+	protected List<Message> getMyMessage(int userIndex, int groupIndex){
+		List<Message> list = new ArrayList<Message>();
+		Message data = null;		
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM message WHERE f_user_index =?  ");
+			pstmt.setInt(1, userIndex);
+			//pstmt.setInt(2, groupIndex);			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next())	{
+				// 인덱스, 등록아이디, 제목, 내용, 그룹인덱스, 그룹명
+			    data = new Message();	
+			    data.setIndex(rs.getInt("f_index"));
+			    data.setId(rs.getString("f_id"));	  		
+			    data.setTitle(rs.getString("f_message_title"));			    
+			    data.setMessage(rs.getString("f_message_text"));
+			    data.setGroupIndex(rs.getString("f_group_index"));
+			    data.setGroup(rs.getString("f_message_group"));
+	
+				list.add(data);
+			}		
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getMyMessage 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}
+	
+
+	/**
+	 * 예약 내역 리스트 가져오기
+	 * @param userIndex
+	 * 	유저 인덱스
+	 * @param pae
+	 * 	페이지
+	 * @param limit
+	 *  한페이지수
+	 * @return
+	 */
+	protected List<SMS> getReservedList(int userIndex, int page, int limit){
+		List<SMS> list = new ArrayList<SMS>();
+		SMS data = null;		
+		int startRow = (page -1 ) * 10 +1;		// 시작 번호
+		int endRow = startRow + limit -1;		// 끝 번호
+		try {
+			conn = dataSource.getConnection();
+			// 해당 유저의 예약된 문자내역만 가져온다.
+			pstmt = conn.prepareStatement("SELECT * FROM send_sms_info " +
+					"WHERE f_reserve_date != null " +
+					"AND f_user_index = ? " +
+					"ORDER BY f_index DESC " +
+					"LIMIT ?, ?");
+			pstmt.setInt(1, userIndex);			
+			pstmt.setInt(2, startRow);
+			pstmt.setInt(3, endRow);			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next())	{
+			    data = new SMS();	
+			    data.setId(rs.getString("f_id"));
+			    data.setMessage(rs.getString("f_message"));
+			    data.setToPhone(rs.getString("f_to_phone"));
+			    data.setFromPhone(rs.getString("f_from_phone"));			    
+			    data.setReserveDate(rs.getString("f_reserve_date"));	
+			    data.setUserIndex(rs.getInt("f_user_index"));	
+			    
+				list.add(data);
+  			}		
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getReservedList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+
+	}		
 		
 	public List getPslist() throws SQLException {
 
