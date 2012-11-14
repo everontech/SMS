@@ -202,7 +202,8 @@ body{background:url(../images/top/top_bg.gif) repeat-x 0 0;}
 /*---------------------------------------------------------------manager end------------------------------------------------------------------------*/
 
 
+
 /* footer */
-#footer_wrap { position:relative; clear:both; background:#eeeeee; height:70px; width:100%; }
-	.footer { margin:0 auto; width:966px; margin-top:73px; padding:20px 0; }
+#footer_wrap { position:relative; clear:both; background:#eeeeee; height:70px; width:100%; border-top: solid 1px #dcdcdc;  border-bottom: solid 1px #dcdcdc; margin-top:60px;}
+	.footer { margin:0 auto; padding:15px 0; text-align: center;}
 /* footer end */

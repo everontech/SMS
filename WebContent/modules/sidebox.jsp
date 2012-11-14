@@ -17,7 +17,7 @@
                 <div class="btn">
             		<a href="./LogoutAction.ac"><img src="./images/boder/btn_logout.gif" alt="로그아웃" border="0"/></a>
                     <a href="./MyInfoAction.ac"><img src="./images/boder/btn_myinfo.gif" alt="나의정보" border="0"/></a>
-                    <a href=""><img src="./images/boder/btn_myletter.gif" alt="내문자함" border="0"/></a>                
+                    <a href="./MyMessageAction.sm"><img src="./images/boder/btn_myletter.gif" alt="내문자함" border="0"/></a>                
                 </div>
             </div>
             <div class="notice_box">

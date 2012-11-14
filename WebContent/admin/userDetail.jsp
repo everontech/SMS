@@ -18,7 +18,7 @@
 <script>
 	$(function() {
 		// 승인 미승인 ui 설정후 승인이나 미승인을 누르면 확인 다이얼로그를 띄워준다.
-		$("#radio").buttonset().children("[type=radio]").click(function(event) {
+		$("#radio").children("[type=radio]").click(function(event) {
 			//  승인 버튼을 눌렀을경우
 			if ($(this).attr("id") == "approve") {
 				$("#approveConfirm").dialog("open");
@@ -37,15 +37,10 @@
 			buttons : {
 				"확인" : function() {
 					$("#refuse").removeAttr('checked');
-					//.andSelf().attr('checked', 'checked');
-					// 라디오 버튼 갱신
-					$("#radio").buttonset("refresh");
 					$(this).dialog("close");
 				},
 				"취소" : function() {
 					$("#approve").siblings().removeAttr('checked');
-					// 라디오 버튼 갱신
-					$("#radio").buttonset("refresh");
 					$(this).dialog("close");
 				}
 			}
@@ -59,14 +54,10 @@
 			buttons : {
 				"확인" : function() {
 					$("#approve").removeAttr('checked');
-					// 라디오 버튼 갱신
-					$("#radio").buttonset("refresh");
 					$(this).dialog("close");
 				},
 				"취소" : function() {
 					$("#refuse").siblings().removeAttr('checked');
-					// 라디오 버튼 갱신
-					$("#radio").buttonset("refresh");
 					$(this).dialog("close");
 				}
 			}
@@ -84,11 +75,11 @@
 <body>
 	<div id="wrapper">
 		<%-- 상단메뉴  --%>
-		<jsp:include page="../modules/topmenu.jsp" />
+		<jsp:include page="../modules/admin_topmenu.jsp" />
 
 		<div id="contents">
 			<%-- 사이드 메뉴  --%>
-			<jsp:include page="../modules/sidebox.jsp" />
+			<jsp:include page="../modules/admin_sidebox.jsp" />
 			<div class="boderWrap">
 				<h3>
 					<img src="./images/boder/tit_member.gif" alt="회원정보변경" />
@@ -132,7 +123,7 @@
 							</tr>
 							<tr>
 								<td style="background: #f4f4f4;"><strong>계급</strong></td>
-								<td class="tite"><input id="grade" name="grade"
+								<td class="tite"><input id="grade" name="grade" value="${user.grade}"
 									title="계급을 입력하세요" type="text" class="none" /></td>
 							</tr>
 							<tr>
@@ -172,8 +163,8 @@
 				</form>
 				<div class="btn">
 					<a href="#" id="modifyBtn"><img
-						src="./images/notice/register_btn.gif" alt="등록" /></a><a href="#"><img
-						src="./images/notice/cancel_btn.gif" alt="취소" /></a>
+						src="./images/notice/register_btn.gif" alt="등록" /></a>
+						<a href="javascript:history.go(-1);"><img src="./images/notice/cancel_btn.gif" alt="취소" /></a>
 				</div>
 			</div>
 		</div>

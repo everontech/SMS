@@ -13,10 +13,10 @@
 <body>
 	<div id="wrapper">
 		<%-- 상단메뉴  --%>
-		<jsp:include page="../modules/topmenu.jsp" />
+		<jsp:include page="../modules/admin_topmenu.jsp" />
 		<div id="contents">
 			<%-- 사이드 메뉴  --%>
-			<jsp:include page="../modules/sidebox.jsp" />
+			<jsp:include page="../modules/admin_sidebox.jsp" />
      	   <div class="boderWrap">
 				<h3>
 					<img src="images/notice/title_notice.gif" alt="공지사항" />
@@ -39,7 +39,8 @@
 							<th>경찰서</th>
 							<th>부서</th>
 							<th>전화번호</th>
-							<th>계급</th>							
+							<th>계급</th>
+							<th>승인</th>														
 						</tr>
 					</thead>
 					<tbody>
@@ -56,14 +57,17 @@
 					   		   <a href="./UserDetailAction.ac?index=${user.index}" >${user.psName}</a>
 					       </td>					
 							<td>					
-					   		   <a href="./UserDetailActionac?index=${user.index}" >${user.deptName}</a>
+					   		   <a href="./UserDetailAction.ac?index=${user.index}" >${user.deptName}</a>
 					       </td>	
 							<td>					
-					   		   <a href="./UserDetailActionac?index=${user.index}" >${user.phone1}</a>
+					   		   <a href="./UserDetailAction.ac?index=${user.index}" >${user.phone1}</a>
 					       </td>	
 							<td>					
-					   		   <a href="./UserDetailActionac?index=${user.index}" >${user.grade}</a>
-					       </td>						       					       
+					   		   <a href="./UserDetailAction.ac?index=${user.index}" >${user.grade}</a>
+					       </td>			
+							<td>					
+					   		   <a href="./UserDetailAction.ac?index=${user.index}" >${user.approve?"승인":"미승인"}</a>
+					       </td>						       			       					       
 					     </tr> 
 					</c:forEach>
 					</tbody>

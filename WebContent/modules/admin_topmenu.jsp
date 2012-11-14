@@ -46,8 +46,8 @@
 			}
 		});			
 		
-		// 하위 메뉴
-		$("#send_top_menu").mouseover(function(){
+		// 회원관리
+		$("#user_list_menu").mouseover(function(){
 			$(this).children("img").attr("src", "./images/top/menu_sub01_on.gif");
 		}).mouseout(function(){
 			if($(this).attr("data-on") != "on"){					
@@ -75,12 +75,6 @@
 		}).mouseout(function(){
 			$(this).children("img").attr("src", "./images/top/menu_sub04_off.gif");
 		});		
-		
-		$("#my_group_menu").mouseover(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub04_on.gif");
-		}).mouseout(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub04_off.gif");
-		});			
 		
 		// 주소록 하위메뉴
 		$("#my_address_book_top_menu").mouseover(function(){
@@ -117,11 +111,11 @@
 	<div id="header">
     	<h1 class="logo"><a href=""><img src="./images/top/logo.gif"  alt="강원청SMS" border="0" /></a></h1>
         <ul class="gnb">
-        	<li class="admin_btn"><a href="./UserListAction.ac"><img src="./images/top/btn_manager.gif" alt="관리자 모드"  border="0" /></a></li>
+        	<li style="visibility: hidden;" class="admin_btn"><a href=""><img src="./images/top/btn_manager.gif" alt="관리자 모드"  border="0" /></a></li>
         	<li class="gnb_sub">
             	<a href="#" id="top_menu1"><img src="./images/top/menu01_off.gif" alt="문자발송"  border="0" /></a>
                 <ul class="gnb_sub1">
-                	<li><a href="./sms/index.jsp"  id="send_top_menu"><img src="./images/top/menu_sub01_off.gif"  alt="문자보내기"  border="0" /></a></li>
+                	<li><a href="./UserListAction.ac"  id="user_list_menu"><img src="./images/top/menu_sub01_off.gif"  alt="회원관리"  border="0" /></a></li>
                     <li><a href="./ReservedListAction.sm" id="reservered_send_top_menu"><img src="./images/top/menu_sub02_off.gif"  alt="예약내역"  border="0" /></a></li>
                     <li><a href="./ReservedListAction.sm" id="result_top_menu"><img src="./images/top/menu_sub03_off.gif"  alt="전송결과"  border="0" /></a></li>
             	</ul>
@@ -129,9 +123,7 @@
             <li class="gnb_sub">
             	<a href="#" id="top_menu2"><img src="./images/top/menu02_off.gif" alt="문자관리" border="0"/></a>
                 <ul class="gnb_sub2">
-                    <li><a href="./MyMessageAction.sm"  id="sms_manage_menu"><img src="./images/top/menu_sub04_off.gif"  alt="내 문자함" border="0"/></a></li>
-                    <li><a href="./sms/add_message.jsp"  id="sms_manage_menu"><img src="./images/top/menu_sub04_off.gif"  alt="문자함 추가" border="0"/></a></li>
-					<li><a href="./MyGroupListAction.sm"  id="my_group_menu"><img src="./images/top/menu_sub06_off.gif"  alt="내 그룹명" border="0"/></a></li>                                            
+                    <li><a href="./MyMessageAction.sm"  id="sms_manage_menu"><img src="./images/top/menu_sub04_off.gif"  alt="문자함 추가" border="0"/></a></li>
                 </ul>
             </li>
             <li class="gnb_sub">

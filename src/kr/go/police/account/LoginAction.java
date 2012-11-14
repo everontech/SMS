@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import kr.co.police.aria.Aria;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
@@ -62,14 +63,14 @@ public class LoginAction implements Action {
 	private void initUserInfoSession(HttpServletRequest request, String id) {
 		// 아이디를값을 이용하여 사용자정보를 가져온다.
 		UserBean data = dao.getUserInfo(id);
-		
+		Aria aria = Aria.getInstance();	
 		// 세션에 사용자 정보를 담는다.
 		HttpSession session = request.getSession();
-		session.setAttribute("name", data.getName());
+		session.setAttribute("name",  data.getName());
 		session.setAttribute("id", data.getId());
 		session.setAttribute("class", data.getUserClass());
 		session.setAttribute("index", data.getIndex());
-		session.setAttribute("phone", data.getPhone1());		
+		session.setAttribute("phone",  data.getPhone1());		
 		session.setAttribute("sendLimit", data.getMonthSendLimit() - data.getMonthSend());
 		session.setAttribute("logined", true);		
 	}

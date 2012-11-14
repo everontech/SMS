@@ -4,21 +4,14 @@
 <%@ page import="kr.go.police.sms.*" %>		
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-	// 선택한 그룹 인덱스
-	String groupIndex = "0";	// 없으면 기본 그룹 인덱스로
- 	if(request.getParameter("groupIndex") != null){
-		groupIndex = (String)request.getParameter("groupIndex");
- 	}
-	// requset 로 부터 내 문자 내역을 가져온다.
-	List<Message> list = (List<Message>)request.getAttribute("messages");
-	// 그룹 목록 
-	List<Message> groupList = (List<Message>)request.getAttribute("groups");
+	int userIndex = Integer.valueOf(session.getAttribute("index").toString());
+	// 내 그룹 목록 가져오기
+	SmsDAO dao = new SmsDAO();	
+	List<Group> groupList = dao.getMyGroupList(userIndex);		
 %>	
-<c:set var="messages"  value ="<%=list %>" />
 <c:set var="groups"  value ="<%=groupList %>" />
-<c:set var="groupIndex"  value ="<%=groupIndex%>" />
 <%-- 헤더  --%>
-<jsp:include page="../modules/header.jsp" />
+<jsp:include page="../include/header.jsp" />
   <style>
     .column { width: 170px; float: left; padding-bottom: 100px; }
     .portlet { margin: 0 1em 1em 0; cursor: pointer; }
@@ -48,21 +41,37 @@ $(function() {
 
     $( ".column" ).disableSelection();
     
-    $("#group_select").change(function () {
-    	var groupIndex = $(this).children("option:selected").val();
-    	window.location.href= "./MyMessageAction.sm?groupIndex=" +  groupIndex;
+    // 문자함 추가
+    $("#add_btn").click(function(){
+    	// 그룹 인덱스값 
+    	$("#groupIndex").val($("#group_select option:selected").val());
+    	// 그룹명
+    	$("#groupName").val($("#group_select option:selected").text());    	
+    	alert($("#groupName").val());
+    	var title = $("#title").val();
+    	var message = $("#message").val();    	
+    	if(title.length <= 0){
+    		alert("제목을 입력하세요");
+    		return;
+    	}
+    	
+    	if(message.length <= 0){
+    		alert("내용을 입력하세요");
+    		return;
+    	}    	
+    	
+    	$("#add_message_form").submit();
     });
 });
 </script>
 <body>
 	<div id="wrapper">
 		<%-- 상단메뉴  --%>
-		<jsp:include page="../modules/topmenu.jsp" />
+		<jsp:include page="../include/topmenu.jsp" />
 
 		<div id="contents">
 			<%-- 사이드 메뉴  --%>
-			<jsp:include page="../modules/sidebox.jsp" />
-
+			<jsp:include page="../include/sidebox.jsp" />
 			<div id="contentsWrap">
 				<h3>
 					<img src="../images/lettersend/title.gif" alt="내문자함" />
@@ -71,22 +80,23 @@ $(function() {
 					<select id="group_select">
 						<option value="0">기본그룹</option>
 						<c:forEach var="group"  items="${groups}" >
-							<option ${groupIndex ==group.index?'selected':''} value="${group.index}">${group.group}</option>
+							<option value="${group.index}">${group.group}</option>
 						</c:forEach>							
 					</select>
 				</form>
-				<c:forEach var="msg"  items="${messages}" >
-								<div class="column">
-							    <div class="portlet">
-							        <div class="portlet-header">${msg.title}</div>
-							        <div class="portlet-content">${msg.message}</div>
-							    </div>					
-					 </div>
-				</c:forEach>				
+				<div>
+					<!--  문자함 추가 폼 -->
+					<form id="add_message_form" method="post" action="../MyMessageAddAction.sm">
+							<input value=""	type="hidden" id="groupIndex" name="groupIndex" />	
+							<input value=""	type="hidden" id="groupName" name="groupName" />							
+							<input value="" title="제목을 입력하세요"	type="text"	 id="title" name="title" /><br/>
+							<textarea rows="5" cols="50" id="message" name="message"></textarea>
+							<a href="#" id="add_btn">추가</a>
+					</form>
+				</div>
 			</div>
+		<div id="footer">푸터영역</div>
 	</div>
-</div>
-<jsp:include page="../modules/footer.jspf" />	
 </body>
 
 </html>

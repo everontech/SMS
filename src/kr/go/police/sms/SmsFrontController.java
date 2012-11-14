@@ -36,15 +36,68 @@ public class SmsFrontController extends javax.servlet.http.HttpServlet
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		// 내 문자함
 		} else if (command.equals("/MyMessageAction.sm")) {
 			if(LoginCheck.checkLogin(request, response)){			
 				action = new MyMessageAction();
 				try {
 					forward = action.execute(request, response);
+					response.setContentType("text/html;charset=euc-kr");	
+					//response.setHeader(arg0, arg1);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
+		// 문자함 추가
+		} else if (command.equals("/MyMessageAddAction.sm")) {
+			if(LoginCheck.checkLogin(request, response)){			
+				action = new MyMessageAddAction();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}	
+		// 내 문자함 그룹
+		} else if (command.equals("/MyGroupListAction.sm")) {
+			if(LoginCheck.checkLogin(request, response)){			
+				action = new MyGroupListAction();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}		
+		// 내 문자함 그룹
+		} else if (command.equals("/GroupAddAction.sm")) {
+			if(LoginCheck.checkLogin(request, response)){			
+				action = new GroupAddAction();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}			
+		// 그룹 삭제
+		} else if (command.equals("/GroupDelAction.sm")) {
+			if(LoginCheck.checkLogin(request, response)){			
+				action = new GroupDelAction();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}		
+		// 그룹 수정처리
+		} else if (command.equals("/GroupModifyAction.sm")) {
+			if(LoginCheck.checkLogin(request, response)){			
+				action = new GroupModifyAction();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}					
 		// 예약 내역	
 		} else if (command.equals("/ReservedListAction.sm")) {
 			action = new ReservedListAction();
@@ -53,7 +106,15 @@ public class SmsFrontController extends javax.servlet.http.HttpServlet
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
+		// 전체문자 전송 내역	
+		} else if (command.equals("/AllSmsAction.sm")) {
+			action = new AllSmsAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}		
 		
 		if (forward != null) {
 			if (forward.isRedirect()) {

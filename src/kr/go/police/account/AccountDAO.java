@@ -1,5 +1,9 @@
 package kr.go.police.account;
 
+import java.nio.ByteBuffer;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,18 +11,22 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import kr.co.police.CommonCon;
-
+import kr.co.police.SMSUtil;
+import kr.co.police.aria.Aria;
 
 /**
  * 계정 (login, regsiter etc)관련 Dao
  */
 public class AccountDAO extends CommonCon {
+	DataSource dataSource;
+	public ResultSet rs;
+	public PreparedStatement pstmt;
+	public Connection conn;
 	
 	// 로그인 여부 상태값
 	public final static int CHECK_OK = 1;
 	public final static int ERROR_ID = -1;
 	public final static int CHECK_PWD = -2;
-	DataSource dataSource;
 	
 	public AccountDAO(){
 		dataSource = getDataSource();
@@ -36,6 +44,7 @@ public class AccountDAO extends CommonCon {
 			conn = dataSource.getConnection();
 			String sql = "SELECT * FROM user_info WHERE f_id = ? AND f_password =password(?) ";
 			pstmt = conn.prepareStatement(sql);
+			Aria aria = Aria.getInstance();	
 			pstmt.setString(1, id);
 			pstmt.setString(2, pwd);
 			rs = pstmt.executeQuery();
@@ -48,7 +57,6 @@ public class AccountDAO extends CommonCon {
 		}finally{
 			connClose();
 		}
-		
 		return false;
 	}
 	
@@ -63,14 +71,17 @@ public class AccountDAO extends CommonCon {
 			conn = dataSource.getConnection();
 			String sql = "INSERT INTO user_info ( f_id, f_password, f_grade, f_name, f_phone1, f_deptname, f_email, " + 
 								" f_approve, f_reg_date, f_psname) VALUES (?, password(?), ?, ?, ?, ?, ?, 'n', now(), ? )";
+			
+			Aria aria = Aria.getInstance();	
+			// 이름 ,전화번호, 이메일
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, data.getId());	
 			pstmt.setString(2, data.getPwd());	
 			pstmt.setString(3, data.getGrade());					
-			pstmt.setString(4, data.getName());			
-			pstmt.setString(5, data.getPhone1());
+			pstmt.setString(4, aria.encryptByte2HexStr(data.getName()));			
+			pstmt.setString(5, aria.encryptByte2HexStr(data.getPhone1()));
 			pstmt.setString(6, data.getDeptName());	
-			pstmt.setString(7, data.getEmail());	
+			pstmt.setString(7,  aria.encryptByte2HexStr(data.getEmail()));	
 			pstmt.setString(8, data.getPsName());				
 			// update
 			result = pstmt.executeUpdate();
@@ -90,20 +101,25 @@ public class AccountDAO extends CommonCon {
 	 * @return
 	 *	수정처리 여부
 	 */
-	protected boolean modifyUserInfo(UserBean data){
+	protected boolean modifyMyInfo(UserBean data){
 		int result = 0;
 		
 		try {
 			conn = dataSource.getConnection();
 			String sql = "UPDATE user_info SET f_name = ?, f_password = password(?), f_phone1 = ?," +
-								" f_email = ?, f_grade = ? WHERE f_index = ?";
+								" f_email = ?, f_grade = ?,  f_psname = ?, f_approve = 'n',  f_deptname = ?, f_class = ? WHERE f_index = ?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, data.getName());
+			Aria aria = Aria.getInstance();			// 암호화 처리
+			pstmt.setString(1, aria.encryptByte2HexStr(data.getName()));
 			pstmt.setString(2, data.getPwd());				
-			pstmt.setString(3, data.getPhone1());
-			pstmt.setString(4, data.getEmail());	
+			pstmt.setString(3, aria.encryptByte2HexStr(data.getPhone1()));
+			pstmt.setString(4, aria.encryptByte2HexStr(data.getEmail()));	
 			pstmt.setString(5, data.getGrade());		
-			pstmt.setInt(5, data.getIndex());					
+			pstmt.setString(6, data.getPsName());		
+			pstmt.setString(7, data.getDeptName());					
+			pstmt.setInt(8, data.getUserClass());
+			pstmt.setInt(9, data.getIndex());	
+			
 			// update
 			result = pstmt.executeUpdate();
 			return result > 0;
@@ -123,6 +139,7 @@ public class AccountDAO extends CommonCon {
 	 *	수정처리 여부
 	 */
 	protected boolean modifyUserInfoFromAdmin(UserBean data){
+		Aria aria = Aria.getInstance();	
 		try {
 			conn = dataSource.getConnection();
 			String sql = "UPDATE user_info SET" +
@@ -136,11 +153,11 @@ public class AccountDAO extends CommonCon {
 								" WHERE f_index = ?";
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, data.getName());
+			pstmt.setString(1, aria.encryptByte2HexStr(data.getName()));
 			pstmt.setString(2, data.getDeptName());		
 			pstmt.setString(3, data.getGrade());			
-			pstmt.setString(4, data.getPhone1());			
-			pstmt.setString(5, data.getEmail());	
+			pstmt.setString(4, aria.encryptByte2HexStr(data.getPhone1()));			
+			pstmt.setString(5, aria.encryptByte2HexStr(data.getEmail()));	
 			pstmt.setInt(6, data.getUserClass());
 			pstmt.setString(7, data.isApprove()?"y":"n");
 			pstmt.setInt(8, data.getIndex());
@@ -255,7 +272,6 @@ public class AccountDAO extends CommonCon {
 	 */
 	protected int getUserListCount(){
 		int count = 0;
-		
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement("SELECT count(*) FROM user_info ");
@@ -300,18 +316,19 @@ public class AccountDAO extends CommonCon {
 			pstmt.setInt(3, startRow);
 			pstmt.setInt(4, endRow);			
 			rs = pstmt.executeQuery();
-			
+			Aria aria = Aria.getInstance();	
 			while(rs.next())	{
 				// 인덱스, 아이디, 이름, 경찰서명, 계급, 부서명, 등급
 			    data = new UserBean();	
 			    data.setIndex(rs.getInt("f_index"));
 			    data.setId(rs.getString("f_id"));	  			    
-			    data.setName(rs.getString("f_name"));
+			    data.setName(aria.encryptHexStr2DecryptStr(rs.getString("f_name")));
 			    data.setPsName(rs.getString("f_psname"));
 			    data.setGrade(rs.getString("f_grade"));
 			    data.setDeptName(rs.getString("f_deptname"));
 			    data.setUserClass(rs.getInt("f_class"));
-			    data.setPhone1(rs.getString("f_phone1"));
+			    data.setApprove(rs.getString("f_approve").equalsIgnoreCase("y"));			    
+			    data.setPhone1(aria.encryptHexStr2DecryptStr(rs.getString("f_phone1")));
 				list.add(data);
   			}		
 			return list;
@@ -325,7 +342,28 @@ public class AccountDAO extends CommonCon {
 	}
 	
 	/**
-	 * 	유저세부 정보 가져오기
+	 * 	신규 가입 유저 목록수
+	 */
+	public int getRecentJoinUserSize(){
+		int size = 0;
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT count(*) as cnt FROM user_info WHERE f_reg_date > SUBDATE(now(), 7) ");
+			rs = pstmt.executeQuery();
+			if(rs.next())	{
+				size =  rs.getInt("cnt");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getRecentJoinUserSize 에러 : " + e.getMessage());
+		}finally{
+			connClose();
+		}
+		return size;
+	}	
+	
+	/**
+	 * 	인덱스로 유저세부 정보 가져오기
 	 * @param index
 	 * @return
 	 */
@@ -338,23 +376,25 @@ public class AccountDAO extends CommonCon {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next())	{
+				Aria aria = Aria.getInstance();					
 				// 사용자정보의 모든 세부 정보를 가져온다.
 			    data = new UserBean();	
 			    data.setIndex(rs.getInt("f_index"));
 			    data.setId(rs.getString("f_id"));	  	
 			    //data.setDeptCode(deptCode);
-			    data.setEmail(rs.getString("f_email"));
+			    data.setEmail(aria.encryptHexStr2DecryptStr(rs.getString("f_email")));
 			    data.setMonthSend(rs.getInt("f_month_send"));
-			    data.setPhone1(rs.getString("f_phone1"));
+			    data.setPhone1(aria.encryptHexStr2DecryptStr(rs.getString("f_phone1")));			    
 			    data.setRegDate(rs.getString("f_reg_date"));
 			    data.setApprove(rs.getString("f_approve").equalsIgnoreCase("y"));
 			    data.setTotalSendCount(rs.getInt("f_total_send"));
 			    data.setMonthSendLimit(rs.getInt("f_send_limit"));
-			    data.setName(rs.getString("f_name"));
+			    data.setName(aria.encryptHexStr2DecryptStr(rs.getString("f_name")));
 			    data.setPsName(rs.getString("f_psname"));
 			    data.setGrade(rs.getString("f_grade"));
 			    data.setDeptName(rs.getString("f_deptname"));
 			    data.setUserClass(rs.getInt("f_class"));
+			    System.out.println(data.getName());
 			}		
 			
 			return data;
@@ -407,25 +447,25 @@ public class AccountDAO extends CommonCon {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next())	{
+				Aria aria = Aria.getInstance();	
 				// 사용자정보의 모든 세부 정보를 가져온다.
 			    data = new UserBean();	
 			    data.setIndex(rs.getInt("f_index"));
 			    data.setId(rs.getString("f_id"));	  	
 			    //data.setDeptCode(deptCode);
-			    data.setEmail(rs.getString("f_email"));
+			    data.setEmail(aria.encryptHexStr2DecryptStr(rs.getString("f_email")));
 			    data.setMonthSend(rs.getInt("f_month_send"));
-			    data.setPhone1(rs.getString("f_phone1"));
+			    data.setPhone1(aria.encryptHexStr2DecryptStr(rs.getString("f_phone1")));
 			    data.setRegDate(rs.getString("f_reg_date"));
 			    data.setApprove(rs.getString("f_approve").equalsIgnoreCase("y"));
 			    data.setTotalSendCount(rs.getInt("f_total_send"));
 			    data.setMonthSendLimit(rs.getInt("f_send_limit"));
-			    data.setName(rs.getString("f_name"));
+			    data.setName(aria.encryptHexStr2DecryptStr(rs.getString("f_name")));
 			    data.setPsName(rs.getString("f_psname"));
 			    data.setGrade(rs.getString("f_grade"));
 			    data.setDeptName(rs.getString("f_deptname"));
 			    data.setUserClass(rs.getInt("f_class"));
 			}		
-			
 			return data;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -435,5 +475,31 @@ public class AccountDAO extends CommonCon {
 			connClose();
 		}
 	}
+	
+	/**
+	 * 리소스 반환 반환 순서대로 닫아준다.
+	 */
+	public void connClose() {
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+			}
+		}
+
+		if (pstmt != null) {
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+			}
+		}
+
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+			}
+		}
+	}		
 
 }

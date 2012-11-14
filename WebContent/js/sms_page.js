@@ -662,12 +662,16 @@ $(document).ready(function(){
     /**
      * 내 문자 혹은 특수 문자 영역 선택처리
      */
-    $("#myMessage").click(function(){
+    $("#myMessageBox").click(function(){
+    	$(this).attr("src", "../images/lettersend/tab01_on.gif");
+    	$("#specailCharBox").attr("src", "../images/lettersend/tab02_off.gif");    	
     	$(".my02").hide();    	
     	$(".my01").show();
     });
     
-    $("#specailChar").click(function(){
+    $("#specailCharBox").click(function(){
+    	$(this).attr("src", "../images/lettersend/tab02_on.gif");
+    	$("#myMessageBox").attr("src", "../images/lettersend/tab01_off.gif");    	    	
     	$(".my01").hide();    	
     	$(".my02").show();
     });

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
@@ -20,6 +21,12 @@ public class BoardDetailViewAction implements Action {
 		BoardDAO dao = new BoardDAO();
 		//  인덱스로 해당 게시물을 뽑아온다.
 		int index = Integer.valueOf((String)request.getParameter("index"));
+		
+		HttpSession session = request.getSession();
+		int userIndex = Integer.valueOf(session.getAttribute("index").toString());
+		// 조회수 증가
+		dao.updateReadCount(index, userIndex);
+		// 게시물내용 가져오기
 		BoardBean data = dao. getDetail(index);
 		// 해당 게시물의 댓글 목록
 		List<BoardBean>replyList =(List<BoardBean>)dao.getReplyList(index);

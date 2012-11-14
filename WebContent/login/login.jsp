@@ -50,11 +50,11 @@ $(function(){
 					<legend>로그인정보입력</legend>
 					<p class="id">
 						<label for="id"><img src="../images/login/txt_id.gif"
-							alt="아이디" /></label> <input type="text" id="id" name="id" value="" />
+							alt="아이디" /></label> <input type="text" id="id" name="id" value="ddononi" />
 					</p>
 					<p class="pw">
 						<label for="pwd"><img src="../images/login/txt_ow.gif"
-							alt="비밀번호" /></label> <input type="password" id="pwd" name="pwd" value="" />
+							alt="비밀번호" /></label> <input type="password" id="pwd" name="pwd" value="zhtmahtm01" />
 					</p>
 					<p class="btnLogin">
 						<input type="image" src="../images/login/btn_login.gif" alt="로그인" />
@@ -71,8 +71,6 @@ $(function(){
 			</p>
 		</div>
 	</div>
-	<div id="footer_wrap">
-		<div class="footer">푸터영역</div>
-	</div>
+	<jsp:include page="../include/footer.jspf" />	
 </body>
 </html>

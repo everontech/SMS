@@ -1,8 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
+<%@ page import="java.util.*" %>	
+<%@ page import="kr.go.police.*"  %>			
+<%
+Boolean result = (Boolean)session.getAttribute("logined");
+if(  result == null || result == false ){
+	response.setContentType("text/html;charset=euc-kr");
+	out.println("<script>");
+	out.println("alert('로그인후 이용가능합니다.')");
+	out.println("window.location.href='../login/login.jsp'; ");
+	out.println("</script>");	
+}
+
+%>
 <%-- 헤더  --%>
 <jsp:include page="../include/header.jsp" />
 <link rel="stylesheet" type="text/css" href="../css/sms.css"/>
+<style>
+#myMessageBox, #specailCharBox{cursor: pointer;}
+</style>
 <script type="text/javascript" src="../js/sms_page.js"></script>
 <body>
 	<div id="wrapper">
@@ -234,11 +250,11 @@
 
 				<div class="tab_box">
 					<h4 class="tab01">
-						<img src="../images/lettersend/tab01_off.gif" id="myMessage" alt="내문자" border="0" /></a>
+						<img src="../images/lettersend/tab01_off.gif" id="myMessageBox" alt="내문자" border="0" /></a>
 						<div class="my01">내문자 영역</div>
 					</h4>
 					<h4 class="tab02">
-						<img src="../images/lettersend/tab02_on.gif"  id="specailChar" alt="특수문자" border="0" /></a>
+						<img src="../images/lettersend/tab02_on.gif"  id="specailCharBox" alt="특수문자" border="0" /></a>
 						<div class="my02">특수문자 영역</div>
 					</h4>
 					<h4 class="tab03">
@@ -273,5 +289,7 @@
 	$("#send_top_menu > img").attr("src", "../images/top/menu_sub01_on.gif");
 	$("#send_top_menu").attr("data-on", "on");
 //-->
+
+	
 </script>
 </html>

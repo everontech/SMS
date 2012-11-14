@@ -64,7 +64,7 @@ public class UserBean {
 	}
 
 	public String getName() {
-		return name;
+		return name.trim();
 	}
 
 	public void setName(String name) {
@@ -72,7 +72,7 @@ public class UserBean {
 	}
 
 	public String getPhone1() {
-		return phone1;
+		return phone1.trim();
 	}
 	
 	/**	 
@@ -96,7 +96,7 @@ public class UserBean {
 	 * @return
 	 */
 	public String getPhoneBottom1() {
-		return phone1.substring(7);
+		return phone1.substring(7).trim();
 	}		
 	
 
@@ -137,7 +137,7 @@ public class UserBean {
 	}
 
 	public String getEmail() {
-		return email;
+		return email.trim();
 	}
 
 	public void setEmail(String email) {

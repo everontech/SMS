@@ -159,13 +159,36 @@ jQuery.fn.toCenter = function(){
 	return this.attr("align", "center");
 };
 
-// 비밀번호 체크
-function checkPassword(pwd){
-    reg1 = /^[a-z\d]{6,12}$/i;  //a-z와 0-9이외의 문자가 있는지 확인
-    reg2 = /[a-z]/i;  //적어도 한개의 a-z 확인
-    reg3 = /\d/;  //적어도 한개의 0-9 확인
-    return reg1.test(pwd) && reg2.test(pwd) && reg3.test(pwd);
-} 
+//비밀번호 체크
+function checkPassword(uid, upw)
+{
+    if(!/^[a-zA-Z0-9]{8,20}$/.test(upw))
+    { 
+        alert('비밀번호는 숫자와 영문자 조합으로 8~20자리를 사용해야 합니다.'); 
+        return false;
+    }
+  
+    var chk_num = upw.search(/[0-9]/g); 
+    var chk_eng = upw.search(/[a-z]/ig);
+    if(chk_num < 0 || chk_eng < 0)
+    { 
+        alert('비밀번호는 숫자와 영문자를 혼용하여야 합니다.'); 
+        return false;
+    }
+    
+    if(/(\w)\1\1\1/.test(upw))
+    {
+        alert('비밀번호에 같은 문자를 4번 이상 사용하실 수 없습니다.'); 
+        return false;
+    }
+    if(upw.search(uid)>-1)
+    {
+        alert('ID가 포함된 비밀번호는 사용하실 수 없습니다.'); 
+        return false;
+    }
+
+    return true;
+}
 
 
 $(document).ready(function(){

@@ -5,7 +5,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	// requset 로 부터 예약 내역 리스트를 가져온다.
-	List<SMS> list = (List<SMS>)request.getAttribute("list");
+	List<SMSBean> list = (List<SMSBean>)request.getAttribute("list");
 %>	
 <c:set var="list"  value ="<%=list %>" />
 <%-- 헤더  --%>

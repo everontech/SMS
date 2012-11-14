@@ -37,7 +37,7 @@ public class ReservedListAction implements Action {
 		}
 		
 		// 내 문자내역을 가져오기
-		List<SMS> list = (List<SMS>)dao.getReservedList(userIndex, page, limit);
+		List<SMSBean> list = (List<SMSBean>)dao.getReservedList(userIndex, page, limit);
 		request.setAttribute("list", list);
 		forward.setPath("./sms/reservedList.jsp"); 
 		return forward;

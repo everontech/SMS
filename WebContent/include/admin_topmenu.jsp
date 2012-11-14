@@ -123,9 +123,7 @@
             <li class="gnb_sub">
             	<a href="#" id="top_menu2"><img src="../images/top/menu02_off.gif" alt="문자관리" border="0"/></a>
                 <ul class="gnb_sub2">
-                    <li><a href="../MyMessageAction.sm"  id="sms_manage_menu"><img src="../images/top/menu_sub04_off.gif"  alt="내 문자함" border="0"/></a></li>
-                    <li><a href="../sms/add_message.jsp"  id="sms_manage_menu"><img src="../images/top/menu_sub04_off.gif"  alt="문자함 추가" border="0"/></a></li>
-					<li><a href="../MyGroupListAction.sm"  id="my_group_menu"><img src="../images/top/menu_sub06_off.gif"  alt="내 그룹명" border="0"/></a></li>                                                
+                    <li><a href="../MyMessageAction.sm"  id="sms_manage_menu"><img src="../images/top/menu_sub04_off.gif"  alt="문자함 추가" border="0"/></a></li>
                 </ul>
             </li>
             <li class="gnb_sub">

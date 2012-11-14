@@ -18,7 +18,7 @@ public class BoardReplyWriteAction implements Action {
 	@Override
 	public ActionForward execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		ActionForward forward = new ActionForward();
+		request.setCharacterEncoding("euc-kr");
 		BoardDAO dao = new BoardDAO();
 		//  인덱스로 해당 게시물을 뽑아온다.
 		String index = (String)request.getParameter("parentIndex");
@@ -46,7 +46,7 @@ public class BoardReplyWriteAction implements Action {
 			response.setContentType("text/html;charset=euc-kr");
 			PrintWriter out = response.getWriter();
 			out.println("<script>");
-			out.println("history.back(-1);");
+			out.println("window.location.href='./boardDetailAction.bo?index=" +index + "';");
 			out.println("</script>");	
 			out.close();
 		}else{

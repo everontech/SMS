@@ -16,6 +16,9 @@ import kr.co.police.CommonCon;
  */
 public class BoardDAO extends CommonCon {
 	DataSource dataSource;
+	public ResultSet rs;
+	public PreparedStatement pstmt;
+	public Connection conn;
 	
 	public BoardDAO(){
 		dataSource = getDataSource();
@@ -297,6 +300,12 @@ public class BoardDAO extends CommonCon {
 				pstmt.setInt(1, index);
 				pstmt.setString(2, password);			
 				pstmt.executeUpdate();
+				
+				// 조회수 테이블에서도 해당 게시물 뷰 삭제
+				sql = "DELETE  FROM view_check WHERE  f_board_index = ? ";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, index);
+				pstmt.executeUpdate();				
 			}
 
 			result = pstmt.executeUpdate();
@@ -315,12 +324,31 @@ public class BoardDAO extends CommonCon {
 	 * @param index
 	 * 		게시물 인덱스
 	 */
-	public void updateReadCount(int index){
-		String sql = "UPDATE board set f_view_count = f_view_count + 1 WHERE f_index =  + index";
+	public void updateReadCount(int boardIndex, int userIndex){
+		//  먼저 이전에 조회를 했는지 체크한다.
+		String sql = "SELECT count(*) as cnt FROM view_check WHERE f_board_index = ? AND f_user_index = ? ";
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, boardIndex);
+			pstmt.setInt(2, userIndex);
+			rs = pstmt.executeQuery();
+			rs.next();
+			if(rs.getInt("cnt") > 0){
+				return;
+			}
+			// 조회 테이블에 등록			
+			sql = "INSERT INTO view_check(f_board_index, f_user_index) VALUES (? , ?) ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, boardIndex);
+			pstmt.setInt(2, userIndex);					
+			pstmt.executeUpdate();		
+			// 조회수 증가			
+			sql = "UPDATE board set f_view_count = f_view_count + 1 WHERE f_index = ? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, boardIndex);			
 			pstmt.executeUpdate();			
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("updateReadCount 에러 : " + e.getMessage());			
@@ -377,9 +405,8 @@ public class BoardDAO extends CommonCon {
 			pstmt.setString(4, data.getRegisterName());	
 			pstmt.setString(5, "");								// 댓글이므로 파일은 사용안함	
 			pstmt.setInt(6, data.getParentIndex());	
-			pstmt.setString(8, data.getRegDate());	
-			pstmt.setInt(9, data.getRegUserIndex());	
-			pstmt.setString(10, "");	
+			pstmt.setInt(7, data.getRegUserIndex());	
+			pstmt.setString(8, "");	
 			// update
 			result = pstmt.executeUpdate();
 			return result > 0;
@@ -391,6 +418,32 @@ public class BoardDAO extends CommonCon {
 			connClose();
 		}
 	}
+	
+	/**
+	 * 리소스 반환 반환 순서대로 닫아준다.
+	 */
+	public void connClose() {
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+			}
+		}
+
+		if (pstmt != null) {
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+			}
+		}
+
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+			}
+		}
+	}		
 
 
 	

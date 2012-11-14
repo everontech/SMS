@@ -3,7 +3,7 @@ package kr.go.police.sms;
 /**
  * 문자 전송 dto
  */
-public class SMS {
+public class SMSBean {
 	private int index; // 인덱스
 	private int userIndex;
 	private String id; // 아이디
