@@ -71,9 +71,11 @@
 		});
 		
 		$("#sms_manage_menu").mouseover(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub04_on.gif");
+			$(this).children("img").attr("src", "./images/top/menu_sub09_on.gif");
 		}).mouseout(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub04_off.gif");
+			if($(this).attr("data-on") != "on"){					
+				$(this).children("img").attr("src", "./images/top/menu_sub09_off.gif");
+			}
 		});		
 		
 		$("#my_group_menu").mouseover(function(){
@@ -82,19 +84,33 @@
 			$(this).children("img").attr("src", "./images/top/menu_sub04_off.gif");
 		});			
 		
-		// 주소록 하위메뉴
-		$("#my_address_book_top_menu").mouseover(function(){
+		// 내 주소록 하위 메뉴
+		$("#address_book_menu").mouseover(function(){
 			$(this).children("img").attr("src", "./images/top/menu_sub05_on.gif");
 		}).mouseout(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub05_off.gif");
-		});		
-		
-		$("#add_my_address_book_top_menu").mouseover(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub06_on.gif");
-		}).mouseout(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub06_off.gif");
+			if($(this).attr("data-on") != "on"){				
+				$(this).children("img").attr("src", "./images/top/menu_sub05_off.gif");
+			}
 		});	
 		
+		// 게시판 보기
+		$("#notice_view_menu").mouseover(function(){
+			$(this).children("img").attr("src", "./images/top/menu_sub07_on.gif");
+		}).mouseout(function(){
+			if($(this).attr("data-on") != "on"){
+				$(this).children("img").attr("src", "./images/top/menu_sub07_off.gif");
+			}
+		});		
+		
+		// 문의 보기
+		$("#board_view_menu").mouseover(function(){
+			$(this).children("img").attr("src", "./images/top/menu_sub07_on.gif");
+		}).mouseout(function(){
+			if($(this).attr("data-on") != "on"){
+				$(this).children("img").attr("src", "./images/top/menu_sub07_off.gif");
+			}
+		});			
+
 		// 문의 하위메뉴
 		$("#board_view_top_menu").mouseover(function(){
 			$(this).children("img").attr("src", "./images/top/menu_sub07_on.gif");
@@ -119,32 +135,32 @@
         <ul class="gnb">
         	<li class="admin_btn"><a href="./UserListAction.ac"><img src="./images/top/btn_manager.gif" alt="관리자 모드"  border="0" /></a></li>
         	<li class="gnb_sub">
-            	<a href="#" id="top_menu1"><img src="./images/top/menu01_off.gif" alt="문자발송"  border="0" /></a>
+            	<a href="./SmsSendViewAction.sm" id="top_menu1"><img src="./images/top/menu01_off.gif" alt="문자발송"  border="0" /></a>
                 <ul class="gnb_sub1">
-                	<li><a href="./sms/index.jsp"  id="send_top_menu"><img src="./images/top/menu_sub01_off.gif"  alt="문자보내기"  border="0" /></a></li>
+                	<li><a href="./SmsSendViewAction.sm"  id="send_top_menu"><img src="./images/top/menu_sub01_off.gif"  alt="문자보내기"  border="0" /></a></li>
                     <li><a href="./ReservedListAction.sm" id="reservered_send_top_menu"><img src="./images/top/menu_sub02_off.gif"  alt="예약내역"  border="0" /></a></li>
                     <li><a href="./ReservedListAction.sm" id="result_top_menu"><img src="./images/top/menu_sub03_off.gif"  alt="전송결과"  border="0" /></a></li>
             	</ul>
             </li>    
             <li class="gnb_sub">
-            	<a href="#" id="top_menu2"><img src="./images/top/menu02_off.gif" alt="문자관리" border="0"/></a>
+            	<a href="./MyMessageAction.sm" id="top_menu2"><img src="./images/top/menu02_off.gif" alt="문자관리" border="0"/></a>
                 <ul class="gnb_sub2">
-                    <li><a href="./MyMessageAction.sm"  id="sms_manage_menu"><img src="./images/top/menu_sub04_off.gif"  alt="내 문자함" border="0"/></a></li>
-                    <li><a href="./sms/add_message.jsp"  id="sms_manage_menu"><img src="./images/top/menu_sub04_off.gif"  alt="문자함 추가" border="0"/></a></li>
-					<li><a href="./MyGroupListAction.sm"  id="my_group_menu"><img src="./images/top/menu_sub06_off.gif"  alt="내 그룹명" border="0"/></a></li>                                            
+                    <li><a href="./MyMessageAction.sm"  id="sms_manage_menu"><img src="./images/top/menu_sub09_off.gif"  alt="문자함 관리" border="0"/></a></li>
+                    <li><a href="./sms/add_message.jsp"  id="sms_enu"><img src="./images/top/menu_sub10_off.gif"  alt="그룹관리" border="0"/></a></li>
+					<!-- <li><a href="./MyGroupListAction.sm"  id="my_group_menu"><img src="./images/top/menu_sub04_off.gif"  alt="문자함추가" border="0"/></a></li> -->                                            
                 </ul>
             </li>
             <li class="gnb_sub">
-            	<a href="#"  id="top_menu3"><img src="./images/top/menu03_off.gif" alt="주소록" border="0"/></a>
+            	<a href="./AddressGroupListAction.ad"  id="top_menu3"><img src="./images/top/menu03_off.gif" alt="주소록" border="0"/></a>
                 <ul class="gnb_sub3">
-                	<li><a href="#"  id="my_address_book_top_menu"><img src="./images/top/menu_sub05_off.gif"  alt="내 주소록" border="0"/></a></li>
-                    <li><a href="#"  id="add_my_address_book_top_menu"><img src="./images/top/menu_sub06_off.gif"  alt="주소록 추가" border="0"/></a></li>
+                	<li><a href="./AddressGroupListAction.ad"  id="address_book_menu"><img src="./images/top/menu_sub05_off.gif"  alt="내 주소록" border="0"/></a></li>
                 </ul>
             </li>
             <li class="gnb_sub">
-            	<a href="#" id="top_menu4"><img src="./images/top/menu04_off.gif" alt="문의/제안" border="0"/></a>
+            	<a href="./NoticeListAction.bo" id="top_menu4"><img src="./images/top/menu04_off.gif" alt="문의/제안" border="0"/></a>
             	<ul class="gnb_sub4">
-                	<li><a href="#"  id="board_view_top_menu"><img  src="./images/top/menu_sub07_off.gif"  alt="문의보기" border="0"/></a></li>
+                	<li><a href="./NoticeListAction.bo"  id="notice_view_menu"><img  src="./images/top/menu_sub07_off.gif"  alt="공지사항" border="0"/></a></li>                    	
+                	<li><a href="./BoardListAction.bo"  id="board_view_menu"><img  src="./images/top/menu_sub07_off.gif"  alt="문의보기" border="0"/></a></li>
                     <li><a href="#"  id="board_write_top_menu"><img src="./images/top/menu_sub08_off.gif"  alt="문의하기" border="0"/></a></li>
                 </ul>
             </li>

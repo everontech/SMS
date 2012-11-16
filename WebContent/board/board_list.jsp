@@ -7,8 +7,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <%
 	List<BoardBean> list = (List<BoardBean>)request.getAttribute("list");
-%>  
-<c:set var="list"  value ="<%=list %>" />	
+	// 페이지네이션
+	String pagiNation = (String)request.getAttribute("pagiNation");
+	// 리스트 갯수
+	int listSize = (Integer)request.getAttribute("listSize");	
+	//	리스트 번호
+	int no = (Integer)request.getAttribute("no");		
+%>
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
 <body>
@@ -20,7 +25,7 @@
 			<jsp:include page="../modules/sidebox.jsp" />
      	   <div class="boderWrap">
 				<h3>
-					<img src="images/notice/title_notice.gif" alt="공지사항" />
+					<img src="images/notice/title_notice.gif" alt="문의보기" />
 				</h3>
 				<!--게시판-->
 				<table id="board_table" width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -41,14 +46,20 @@
 						</tr>
 					</thead>
 					<tbody>
-					<!-- 공지사항 -->
+					<!--  공지사항이 없는경우 -->
+					<c:if test="${empty list}">
+						<tr>
+							<td colspan="5"> 문의사항이 없습니다.</td>
+						</tr> 
+					</c:if>
+										
+					<!-- 문의목록 -->
 					<c:forEach var="data"  items="${list}" >
 						<tr>
-							<td class="num">${data.index}</td>
+							<td class="num"><%=no--%></td>
 							<td class="tite">
-									${data.hasFile?'<img src="images/notice/icon_disk.gif" />':''}
 									${data.newIcon?'<img src="images/notice/icon_n.gif" />':''}							
-									<a href="./boardDetailAction.bo?index=${data.index}">${data.notice?'[공지]':''}
+									<a href="./BoardDetailAction.bo?index=${data.index}">${data.notice?'[공지]':''}
 									${data.title}</a>
 							</td>
 							<td class="writer">${data.registerName}</td>
@@ -58,28 +69,18 @@
 					</c:forEach>		
 					</tbody>
 				</table>
-				<!-- 
-				<div class="page">
-					<a href="#"><img src="images/notice/page_prev_btn.gif" /></a><a
-						href="#"><span>1</span></a><a href="#">2</a><a href="#"><img
-						src="images/notice/page_next_btn.gif" /></a>
-				</div>
-				-->
+				<c:if test="${(empty list) == false}">
+					${pagiNation}
+				</c:if>
 			</div>
 		</div>
-		</div>
-		<div id="footer">푸터영역</div>
 	</div>
+<jsp:include page="../modules/footer.jspf" />	
 </body>
 <script type="text/javascript">
 <!--
 $(function(){
-	// 메뉴 처리
-	$("#top_menu4").attr("data-on", "on");
-	$("#top_menu4 > img").attr("src", "./images/top/menu04_on.gif");
-	$("#board_view_top_menu > img").attr("src", "./images/top/menu_sub07_on.gif");
-	$("#board_view_top_menu").attr("data-on", "on");
-	$("#top_menu4").trigger("mouseover");
+
 	
     // odd td colume stand out
     $("#board_table tbody tr").each(function(i){
@@ -96,8 +97,17 @@ $(function(){
       function () {
         $(this).siblings().andSelf().removeClass("hover");
       }
-    );   
+    ); 
     
+    
+	// 메뉴 처리
+	$("#top_menu4").attr("data-on", "on");
+	$("#top_menu4 > img").attr("src", "./images/top/menu04_on.gif");
+	$("#board_view_menu > img").attr("src", "./images/top/menu_sub07_on.gif");
+	$("#board_view_menu").attr("data-on", "on");
+	$("#top_menu4").trigger("mouseover");
+	$(".gnb_sub4").show();
+	
 });	
 //-->
 </script>

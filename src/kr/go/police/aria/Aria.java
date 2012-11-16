@@ -1,8 +1,8 @@
-package kr.co.police.aria;
+package kr.go.police.aria;
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 
-import kr.co.police.SMSUtil;
+import kr.go.police.SMSUtil;
 
 import org.apache.http.util.ByteArrayBuffer;
 

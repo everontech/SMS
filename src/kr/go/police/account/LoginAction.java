@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import kr.co.police.aria.Aria;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
+import kr.go.police.aria.Aria;
 
 public class LoginAction implements Action {
 	private AccountDAO dao = new AccountDAO();
@@ -39,7 +39,7 @@ public class LoginAction implements Action {
 			// 사용자 정보 세션 설정
 			initUserInfoSession(request,  id);
 			forward.setRedirect(true);
-			forward.setPath("./sms/index.jsp"); 
+			forward.setPath("./SmsSendViewAction.sm"); 
 			return forward;	
 		}else{			// 사용자 정보가 맞지 않으면
 			response.setContentType("text/html;charset=euc-kr");

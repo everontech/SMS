@@ -76,17 +76,11 @@
 			$(this).children("img").attr("src", "../images/top/menu_sub04_off.gif");
 		});		
 		
-		// 주소록 하위메뉴
-		$("#my_address_book_top_menu").mouseover(function(){
+		//  주소록 하위메뉴
+		$("#address_book_menu").mouseover(function(){
 			$(this).children("img").attr("src", "../images/top/menu_sub05_on.gif");
 		}).mouseout(function(){
 			$(this).children("img").attr("src", "../images/top/menu_sub05_off.gif");
-		});		
-		
-		$("#add_my_address_book_top_menu").mouseover(function(){
-			$(this).children("img").attr("src", "../images/top/menu_sub06_on.gif");
-		}).mouseout(function(){
-			$(this).children("img").attr("src", "../images/top/menu_sub06_off.gif");
 		});	
 		
 		// 문의 하위메뉴
@@ -131,15 +125,15 @@
             <li class="gnb_sub">
             	<a href="#"  id="top_menu3"><img src="../images/top/menu03_off.gif" alt="주소록" border="0"/></a>
                 <ul class="gnb_sub3">
-                	<li><a href="#"  id="my_address_book_top_menu"><img src="../images/top/menu_sub05_off.gif"  alt="내 주소록" border="0"/></a></li>
-                    <li><a href="#"  id="add_my_address_book_top_menu"><img src="../images/top/menu_sub06_off.gif"  alt="주소록 추가" border="0"/></a></li>
+                	<li><a href="../AddressGroupListAction.ad"  id="address_book_menu"><img src="../images/top/menu_sub05_off.gif"  alt="내 주소록" border="0"/></a></li>
                 </ul>
             </li>
             <li class="gnb_sub">
             	<a href="#" id="top_menu4"><img src="../images/top/menu04_off.gif" alt="문의/제안" border="0"/></a>
             	<ul class="gnb_sub4">
-                	<li><a href="../boardListAction.bo"  id="board_view_top_menu"><img  src="../images/top/menu_sub07_off.gif"  alt="문의보기" border="0"/></a></li>
-                    <li><a href="#"  id="board_write_top_menu"><img src="../images/top/menu_sub08_off.gif"  alt="문의하기" border="0"/></a></li>
+                	<li><a href="../NoticeListAction.bo"  id="notice_view_menu"><img  src="../images/top/menu_sub07_off.gif"  alt="공지사항" border="0"/></a></li>            	
+                	<li><a href="../BoardListAction.bo"  id="board_view_menu"><img  src="../images/top/menu_sub07_off.gif"  alt="문의보기" border="0"/></a></li>
+                    <li><a href="#"  id="Board_write_top_menu"><img src="../images/top/menu_sub08_off.gif"  alt="문의하기" border="0"/></a></li>
                 </ul>
             </li>
         </ul>

@@ -1,4 +1,4 @@
-package kr.co.police;
+package kr.go.police.aria;
 
 //
 //  ARIA.java

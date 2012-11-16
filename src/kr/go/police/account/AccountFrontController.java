@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-import kr.co.police.LoginCheck;
+import kr.go.police.LoginCheck;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 

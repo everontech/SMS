@@ -11,8 +11,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import kr.co.police.CommonCon;
-import kr.co.police.aria.Aria;
+import kr.go.police.CommonCon;
+import kr.go.police.aria.Aria;
 
 /**
  * 巩磊 傈价, 郴开 包府

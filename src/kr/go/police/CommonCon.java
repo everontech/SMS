@@ -1,4 +1,4 @@
-package kr.co.police;
+package kr.go.police;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;

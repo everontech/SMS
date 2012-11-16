@@ -10,9 +10,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import kr.co.police.CommonCon;
-import kr.co.police.SMSUtil;
-import kr.co.police.aria.Aria;
+import kr.go.police.CommonCon;
+import kr.go.police.SMSUtil;
+import kr.go.police.aria.Aria;
 
 /**
  * 계정 (login, regsiter etc)관련 Dao

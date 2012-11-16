@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import kr.co.police.LoginCheck;
+import kr.go.police.LoginCheck;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
@@ -29,10 +29,12 @@ public class SmsFrontController extends javax.servlet.http.HttpServlet
 		ActionForward forward = null;
 		Action action = null;
 
-		if (command.equals("/Sms.sm")) {
+		if (command.equals("/SmsSendViewAction.sm")) {
 			action = new SmsAction();
 			try {
-				forward = action.execute(request, response);
+				forward = new ActionForward();
+				response.setContentType("text/html;charset=euc-kr");					
+				forward.setPath("./sms/main.jsp");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

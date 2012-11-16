@@ -23,13 +23,13 @@
             <div class="notice_box">
             	<div class="notice_box_title">
                 	<h2><img src="./images/boder/title_notice.gif" alt="공지사항" /></h2>
-                    <a href="./boardListAction.bo"><img src="./images/boder/btn_more.gif" alt="more" /></a>
+                    <a href="./NoticeListAction.bo"><img src="./images/boder/btn_more.gif" alt="more" /></a>
                 </div> 
                 <ul>
 					<!-- 공지사항 -->
 					<c:forEach var="data"  items="${list}" >
 						<li><img src="./images/boder/bullet.gif" /> 
-                        		<a href="./boardDetailAction.bo?index=${data.index}" > 
+                        		<a href="./BoardDetailAction.bo?index=${data.index}" > 
                    					${data.title}</a></li>
 					</c:forEach>	
                 </ul>

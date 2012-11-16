@@ -1,4 +1,4 @@
-package kr.go.police.board;
+package kr.go.police.address;
 
 import java.io.IOException;
 
@@ -11,14 +11,16 @@ import kr.go.police.LoginCheck;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
-public class BoardFrontController extends javax.servlet.http.HttpServlet
+/**
+ *	주소록 컨트롤러
+ */
+public class AddressFrontController extends javax.servlet.http.HttpServlet
 		implements javax.servlet.Servlet {
-	
 	static final long serialVersionUID = 1L;
-
+	
 	protected void doProcess(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
+		
 		// 로그인 여부 확인
 		if(!LoginCheck.checkLogin(request, response)){
 			return;
@@ -30,63 +32,73 @@ public class BoardFrontController extends javax.servlet.http.HttpServlet
 		ActionForward forward = null;
 		Action action = null;
 		
-		// 공지사항
-		if (command.equals("/NoticeListAction.bo")) {
-			action = new NoticeListAction();
+		// 내 주소록 목록
+		if (command.equals("/AddressListAction.ad")) {
+			action = new AddressListAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		// 문의보기
-		}else if (command.equals("/BoardListAction.bo")) {
-			action = new BoardListAction();
+		// 내 주소록 그룹 목록			
+		} else if (command.equals("/AddressGroupListAction.ad")) {
+			action = new AddressGroupListAction();
+			try {
+				forward = action.execute(request, response);
+				response.setContentType("text/html;charset=euc-kr");	
+				//response.setHeader(arg0, arg1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		// 주소록 그룹추가
+		} else if (command.equals("/GroupAddAction.ad")) {
+			action = new GroupAddAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		// 게시물 삭제	
-		} else if (command.equals("/BoardDeleteAction.bo")) {
-			action = new NoticeListAction();
+		// 그룹 삭제
+		} else if (command.equals("/GroupDelAction.ad")) {
+			action = new GroupDelAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		//	게시물 등록	
-		} else if (command.equals("/BoardWriteAction.bo")) {
-			action = new NoticeListAction();
+		// 그룹 수정처리
+		} else if (command.equals("/GroupModifyAction.ad")) {
+			action = new GroupModifyAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		//	게시물 수정
-		} else if (command.equals("/BoardModifyAction.bo")) {
-			action = new NoticeListAction();
+		// 주소록 추가
+		} else if (command.equals("/AddressAddAction.ad")) {
+			action = new AddressAddAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		//	게시물 세부보기
-		} else if (command.equals("/BoardDetailAction.bo")) {
-			action = new BoardDetailViewAction();
+		// 주소록 수정
+		} else if (command.equals("/AddressModifyAction.ad")) {
+			action = new AddressModifyAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		//	댓글등록
-		} else if (command.equals("/BoardReplyAction.bo")) {
-			action = new BoardReplyWriteAction();
+		// 주소록 삭제
+		} else if (command.equals("/AddressDelAction.ad")) {
+			action = new AddressDelAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-		}		
+			}		
+		}
 		
 		if (forward != null) {
 			if (forward.isRedirect()) {

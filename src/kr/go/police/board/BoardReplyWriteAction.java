@@ -46,7 +46,7 @@ public class BoardReplyWriteAction implements Action {
 			response.setContentType("text/html;charset=euc-kr");
 			PrintWriter out = response.getWriter();
 			out.println("<script>");
-			out.println("window.location.href='./boardDetailAction.bo?index=" +index + "';");
+			out.println("window.location.href='./BoardDetailAction.bo?index=" +index + "';");
 			out.println("</script>");	
 			out.close();
 		}else{

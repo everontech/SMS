@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 
-import kr.co.police.CommonCon;
+import kr.go.police.CommonCon;
+import kr.go.police.address.AddressBean;
+import kr.go.police.aria.Aria;
 
 
 /**
@@ -28,17 +30,15 @@ public class BoardDAO extends CommonCon {
 	}
 
 	/**
-	 * 게시판 글수
+	 * 공지사항 글수
 	 * @return
 	 */
 	public int getNoticeListCount(){
 		int count = 0;
-		
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT count(*) FROM board ");
+			pstmt = conn.prepareStatement("SELECT count(*) FROM board  WHERE f_notice = 'y'  ");
 			rs = pstmt.executeQuery();
-			
 			if(rs.next()){
 				count = rs.getInt(1);
 			}
@@ -50,6 +50,28 @@ public class BoardDAO extends CommonCon {
 		}
 		return count;
 	}
+	
+	/**
+	 *  게시물 글수
+	 * @return
+	 */
+	public int getBoardCount(){
+		int count = 0;
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT count(*) FROM board  WHERE f_notice = 'n'  ");
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getBoardCount 에러 : " +  e.getMessage());
+		}finally{
+			connClose();
+		}
+		return count;
+	}	
 
 	/**
 	 * 게시물 자세히 보기
@@ -88,29 +110,75 @@ public class BoardDAO extends CommonCon {
 		return data;
 	}
 	
+	
+	
 	/**
-	 * 게시물 목록 보기
+	 * 내 주소록 리스트
+	 * @param userIndex
+	 * 		유저 인덱스
+	 * @param groupndex
+	 * 		그룹 인덱스
+	 * @param start
+	 * 		시작번호
+	 * @param end
+	 * 		끝번호
 	 * @return
 	 */
-	public List<BoardBean> getBoardList(int page, int limit){
+	public List<AddressBean> getAddressList(int userIndex, int groupIndex, int start, int end) {
+		List<AddressBean> list = new ArrayList<AddressBean>();
+		AddressBean data = null;		
+		try {
+			
+			Aria aria = Aria.getInstance();				
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM address_book WHERE" +
+					" f_user_index = ? AND f_group_index = ? ORDER BY f_index DESC LIMIT ?, ? ");
+			pstmt.setInt(1, userIndex);	
+			pstmt.setInt(2, groupIndex);
+			pstmt.setInt(3, start -1);	
+			pstmt.setInt(4, end);						
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				// 문자함 그룹
+			    data = new AddressBean();	
+			    data.setIndex(rs.getInt("f_index"));
+			    data.setPeople(aria.encryptHexStr2DecryptStr(rs.getString("f_people")));
+			    data.setPhone(aria.encryptHexStr2DecryptStr(rs.getString("f_phone")));		
+			    data.setGroupIndex(rs.getInt("f_group_index"));
+				list.add(data);
+  			}
+			
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getAddressList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}
+	
+	/**
+	 * 공지사항 목록 보기
+	 * @return
+	 */
+	public List<BoardBean> getNoticeList(int start, int end, String search) {
 		List<BoardBean> list = new ArrayList<BoardBean>();
 		BoardBean data = null;		
-		int startRow = (page -1 ) * 10 +1;		// 시작 번호
-		int endRow = startRow + limit -1;		// 끝 번호
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_parent_index = 0 ORDER BY f_notice DESC , f_index ASC LIMIT ?, ?");
-			pstmt.setInt(1, startRow);
-			pstmt.setInt(2, endRow);			
+			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_notice = 'y' ORDER BY f_index DESC LIMIT ?, ? ");
+			pstmt.setInt(1, start -1);
+			pstmt.setInt(2, end);						
 			rs = pstmt.executeQuery();
 			
 			while(rs.next())	{
 			    data = new BoardBean();	
 			    data.setIndex(rs.getInt("f_index"));
 				data.setTitle(rs.getString("f_title"));
-			    data.setNotice(rs.getBoolean("f_notice"));
 			    data.setViewCount(rs.getInt("f_view_count"));
 			    data.setParentIndex(rs.getInt("f_parent_index"));
+				data.setNotice(rs.getBoolean("f_notice"));			    
 				data.setFilename(rs.getString("f_filename"));
 				data. setRegisterName(rs.getString("f_reg_user"));
 				data.setRegDate(rs.getString("f_reg_date"));
@@ -121,29 +189,25 @@ public class BoardDAO extends CommonCon {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("getBoardList 에러 : " + e.getMessage());
+			System.out.println("getNoticeList 에러 : " + e.getMessage());
 			return null;
 		}finally{
 			connClose();
 		}
-
 	}	
 	
 	/**
-	 * 공지사항 목록 보기
+	 * 게시물 목록 보기
 	 * @return
 	 */
-	public List<BoardBean> getNoticeList(int page, int limit){
+	public List<BoardBean> getBoardList(int start, int end, String search) {
 		List<BoardBean> list = new ArrayList<BoardBean>();
 		BoardBean data = null;		
-		int startRow = (page -1 ) * 10 +1;		// 시작 번호
-		int endRow = startRow + limit -1;		// 끝 번호			
-
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_notice = 'y' ORDER BY f_index DESC LIMIT ?, ? ");
-			pstmt.setInt(1, startRow);
-			pstmt.setInt(2, endRow);						
+			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_notice = 'n' ORDER BY f_index DESC LIMIT ?, ? ");
+			pstmt.setInt(1, start -1);
+			pstmt.setInt(2, end);						
 			rs = pstmt.executeQuery();
 			
 			while(rs.next())	{
@@ -152,7 +216,6 @@ public class BoardDAO extends CommonCon {
 				data.setTitle(rs.getString("f_title"));
 			    data.setViewCount(rs.getInt("f_view_count"));
 			    data.setParentIndex(rs.getInt("f_parent_index"));
-				data.setNotice(rs.getBoolean("f_notice"));			    
 				data.setFilename(rs.getString("f_filename"));
 				data. setRegisterName(rs.getString("f_reg_user"));
 				data.setRegDate(rs.getString("f_reg_date"));
@@ -229,8 +292,6 @@ public class BoardDAO extends CommonCon {
 				data. setRegisterName(rs.getString("f_reg_user"));
 				data.setRegDate(rs.getString("f_reg_date"));
 				data.setRegUserIndex(rs.getInt("f_reg_user_index"));
-				
-				System.out.println(data.getRegisterName());
 				list.add(data);
   			}		
 			return list;

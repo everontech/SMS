@@ -10,8 +10,6 @@
 	List<BoardBean> replyList = (List<BoardBean>)request.getAttribute("replyList");
 	
 %>  
-<c:set var="data"  value ="<%=data%>" />	
-<c:set var="replyList"  value ="<%=replyList%>" />	
 <%-- Çì´õ  --%>
 <jsp:include page="../modules/header.jsp" />
 <body>
@@ -48,7 +46,7 @@
 	                          </tr>
 	                      <tr class="re">
 	                               <td><%=session.getAttribute("id")%> |</td>
-	                        <td><form id="frm" action="./boardReplyAction.bo?parentIndex=${data.index}" method="post"><textarea id="reply_content" name="reply_content" style="width:580px; height:50px; margin:0 0; padding: 0 0;"></textarea></form></td>
+	                        <td><form id="frm" action="./BoardReplyAction.bo?parentIndex=${data.index}" method="post"><textarea id="reply_content" name="reply_content" style="width:580px; height:50px; margin:0 0; padding: 0 0;"></textarea></form></td>
 	                               <td><a href="#" id="reply_btn"><img src="images/notice/btn_re.gif" alt="´ñ±Ûµî·Ï" /></a></td>
 	                          </tr>
 							<!-- ´ñ±Û¸ñ·Ï -->

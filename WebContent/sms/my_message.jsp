@@ -52,6 +52,19 @@ $(function() {
     	var groupIndex = $(this).children("option:selected").val();
     	window.location.href= "./MyMessageAction.sm?groupIndex=" +  groupIndex;
     });
+    
+    // 문자함 드레그 처리
+    // 부모 박스안에서만 이동가능 처리
+    $(".box").draggable({ containment: "parent", scroll: false });
+	$("#add_btn").button();    
+	// 메뉴 처리
+	$("#top_menu2").attr("data-on", "on");
+	$("#top_menu2 > img").attr("src", "./images/top/menu02_on.gif");
+	$("#sms_manage_menu > img").attr("src", "./images/top/menu_sub09_on.gif");
+	$("#sms_manage_menu").attr("data-on", "on");
+	$("#top_menu2").trigger("mouseover");
+	$(".gnb_sub2").show();
+	
 });
 </script>
 <body>
@@ -63,27 +76,41 @@ $(function() {
 			<%-- 사이드 메뉴  --%>
 			<jsp:include page="../modules/sidebox.jsp" />
 
-			<div id="contentsWrap">
-				<h3>
-					<img src="../images/lettersend/title.gif" alt="내문자함" />
-				</h3>
-				<form style="float: right;">
+
+        <div id="contentsWrap_m">
+			<h3>
+				<img src="./images/lettersend/title_manage.gif" alt="내문자함" />
+			</h3>
+            <p class="choice_gruop" style="vertical-align: middle;">
 					<select id="group_select">
 						<option value="0">기본그룹</option>
 						<c:forEach var="group"  items="${groups}" >
 							<option ${groupIndex ==group.index?'selected':''} value="${group.index}">${group.group}</option>
 						</c:forEach>							
 					</select>
-				</form>
+            		<a href="#" id="add_btn">
+            			문자함추가
+            		</a>					
+            </p>
+            <p class="top_bg"></p>
+            <div class="letterbox_m">
+				<!--  주소록이 없는경우 -->
+				<c:if test="${empty messages}">
+						<h3 style="text-align: center;">문자함이 없습니다.</h3>
+				</c:if>
 				<c:forEach var="msg"  items="${messages}" >
-								<div class="column">
-							    <div class="portlet">
-							        <div class="portlet-header">${msg.title}</div>
-							        <div class="portlet-content">${msg.message}</div>
-							    </div>					
-					 </div>
-				</c:forEach>				
-			</div>
+	        		<ul class="box">
+	        			<li>
+						    <div class="portlet">
+						        <div class="portlet-header">${msg.title}</div>
+						        <div class="portlet-content">${msg.message}</div>
+						    </div>	
+						   </li> 
+	                </ul>
+				</c:forEach>	
+            </div>   
+            <p class="bottom_bg"></p>     
+        </div> 
 	</div>
 </div>
 <jsp:include page="../modules/footer.jspf" />	

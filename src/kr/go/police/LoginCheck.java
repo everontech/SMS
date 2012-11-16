@@ -1,4 +1,4 @@
-package kr.co.police;
+package kr.go.police;
 
 import java.io.IOException;
 import java.io.PrintWriter;
