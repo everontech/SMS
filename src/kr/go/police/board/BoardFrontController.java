@@ -46,6 +46,13 @@ public class BoardFrontController extends javax.servlet.http.HttpServlet
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		//	문의하기
+		}else if (command.equals("/BoardWriteAction.bo")) {
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		// 게시물 삭제	
 		} else if (command.equals("/BoardDeleteAction.bo")) {
 			action = new NoticeListAction();

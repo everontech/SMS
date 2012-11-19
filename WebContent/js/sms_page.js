@@ -3,7 +3,6 @@
  *  메인 문자 발송 페이지 
  *  main.jsp
  */
-
 var phoneReg =  /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;	// 핸드폰 정규식
 // 폼 정규식 및 메세지 관련
 jQuery.phone = {
@@ -33,9 +32,9 @@ jQuery.phone = {
 	 * 키값을 받아 코드값이 한글일 경우 문자가 byte로 되기 때문에 2글자로 처리 
 	 */
 	checkLength : function(event){	// 문자 메시지 80자 제한
-		var that = $("#f_message");
+		var that = $("#message");
 		var textThat = $("#textByte");
-		var buf = that.val();
+		var buf = that.val() || that.text();
 		var encodedStr = $.phone.checkEnter(buf);
 		var l = 0;
 
@@ -49,11 +48,17 @@ jQuery.phone = {
 		        for (var i=0; i< buf.length; i++) { 
 	                l += (buf.charCodeAt(i) > 128) ? 2 : 1; //  한글 처리 
 	                if (l > 80){
-	                	$.phone.smsMode = false;
-		                alert( "80자 이상 입력시 MMS로 변환 됩니다..");
-		                 that.val( buf.substring(0,80) );
-		                 $(".choice li input").first().attr('checked', '');		                 
-		                 $(".choice li input").last().attr('checked', 'chekced');
+	                	// sms 모드일경우 mms 모드로 전환한다.
+	                	if($.phone.smsMode){
+			                alert( "80자 이상 입력시 MMS로 변환 됩니다..");
+			               //$("#sms_sep_icon").attr("src", "./images/lettersend/icon_mms.gif");
+		                	$.phone.smsMode = false;
+			                 that.val( buf.substring(0,80) );
+			                 $(".choice li input").first().attr('checked', '');		                 
+			                 $(".choice li input").last().attr('checked', 'chekced');			                
+	                	}
+	                }else{
+	                	$.phone.smsMode = true;
 	                }
 		        }
 			}else{
@@ -80,7 +85,6 @@ jQuery.phone = {
 			}
 		}
 		
-		
 	},
 	/*
 	 * split 와 같은 , 를 붙여준후 입력값 체크후 시간을 넣어준후 전송
@@ -95,13 +99,14 @@ jQuery.phone = {
 		var phoneNumbers = "";
 		var senderCount = 0; //  보내는 사람 카운트
 		var firstSender = "";
-		$("#pone_list li").each(function(){
-			if( $(this).find("input:last").val() != "" ){
+		$("#pone_list ul li").each(function(){
+			var $input = $(this).find("input:odd");
+			if( $input.val() != "" ){
 				if( senderCount == 0 ){
-					firstSender = $(this).find("input:last").val();
+					firstSender =$input.val();
 				}
 				senderCount++;
-				phoneNumbers += $(this).find("input:last").val() + ",";
+				phoneNumbers += $input.val() + ",";
 			}
 		});
 
@@ -121,12 +126,12 @@ jQuery.phone = {
 		}
 		
 		// 입력된 내용이 없을때 false 처리
-		if( isDefault == true || $("#f_message").val().length == 0 ){
+		if( isDefault == true || $("#message").val().length == 0 ){
 			alert("입력된내용이 없습니다.");
 			return false;
 		}
 		
-		var callback_num = $("#f_callback").val();
+		var callback_num = $("#my_phone_num").val();
 		if( callback_num.length == 0 /* || !phoneReg.test(callback_num) */ ){
 			alert("내 번호를 정확히 입력하세요.");
 			return false;			
@@ -161,7 +166,7 @@ jQuery.phone = {
 					f_send_state : $("#f_send_state").val(),
 					f_deptcode: $("#f_deptcode").val(),
 					f_message : encodeURIComponent( $("#f_message").val() ),
-					f_callback : $("#f_callback").val(),
+					f_callback : $("#my_phone_num").val(),
 					f_count : senderCount
 				};
 			/*
@@ -300,10 +305,14 @@ jQuery.phone = {
 
 			if( count > size ){	// input 입력공간이 부족한 경우
 				//count++;
-				html = "<li><div class='lt'><input name='recvName"+ count + "' id='recvName"+ count + "' type='Text' class='inp'>"
-								+ "<div class='nt'>" + count + "</div></div><div class='rt'>"
-								+ "<input name='recvPhone" + count + "' id='recvPhone" + count + "' type='Text' class='inp'>"
-								+ "<div class='bt'><img src='./images/btn_close2.gif' alt='닫기'></div></div></li>";
+				/*
+                <li><span>05</span><input name="recvName1" id="recvName1" type="text" class="inp" /></li>
+                <li><input name="recvPhone1" id="recvPhone1" type="text" class="inp" value="" style="width:150px;" /></li>
+                <li class="bt"><img src="./images/sms/btn_close2.gif" alt="닫기" /></li>
+                */
+				html = "<li><span>" + count + "</span><input name='recvName"+ count + "' id='recvName"+ count + "' type=text' class='inp'>"
+								+ "<li><input name='recvPhone" + count + "' id='recvPhone" + count + "' type='Text' class='inp'></li>"
+								+ "<li class='bt'><img src='./images/sms/btn_close2.gif' alt='닫기'></li>";
 			 
 				$("#pone_list li:last").after(html);	// 동적 생성	
 				size++;			
@@ -338,7 +347,7 @@ jQuery.html = {
 				}).mouseout(function(){
 					$(this).css("color", "#666");
 				}).click(function(e){
-					var message = $("#f_message");
+					var message = $("#message");
 					if(isDefault == true){
 						 message.empty();
 						isDefault = false;
@@ -446,41 +455,32 @@ $(document).ready(function(){
 	/*
 	 *	숫자만 입력 허용-- 전화번호 입력란만 설정
 	 */
-	$(".rt input, #f_callback").inputNumber();
+	$("#pone_list ul li input:odd").inputNumber();
 
 	/*
 	 *	초기 메시지란에는 메세지 notice정보가 입력 되어있기 때문에 
 	 *  사용자가 처음 포커스를 줄때 기본 메시지창에 입력된 값은 삭제해줌
 	 */
-	$("#f_message").one('click',function(){ // 디폴트 메세지 삭제
+	$("#message").one('click',function(){ // 디폴트 메세지 삭제
 		if( isDefault == true ){ // 기본 문자 인지 확인
 			$(this).empty();
 		}
 	});
 	
 	$("#resetTextBtn").click(function(){ // 다시 쓰기 버튼
-		$("#f_message").val("");
-		$("#textByte").val("0/0Bytes");
+		$("#message").val("");
+		$("#textByte").text("0/0Bytes");
 		return false;
 	});
 
-	$("#f_message").keydown(function(e) { // 메세지 키 입력시 마다 키값 체크
+	$("#message").keydown(function(e) { // 메세지 키 입력시 마다 키값 체크
 		isDefault = false;
 		$.phone.checkLength(e);
 	});	
 
-	//$(".rt input.inp").JQFNumKeypad({clearText: 'Clean'});
-	//
-
 	$("#reserveBtn").click(function(){ //예약 버튼 클릭시 예약창 modal
 		$('#dateTimePicker').modal(options);
 	});
-
-	 /*
-	$("#ajaxSearch").one('click',function(){ // 디폴트 메세지 삭제
-			$(this).val("");
-	});
-	*/
 
 	/*
 	 *	전화번호 입력란이 10개이기 때문에 사용자가 추가 버튼을 누를시
@@ -488,19 +488,17 @@ $(document).ready(function(){
 	 *  생성된 태그는 동적 이벤트 할당
 	 */
 	$("#listPlus").click(function(){
-		var index = $("#pone_list li").size();
-		index++;
-		var html = "<li><div class='lt'><input name='recvName"+ index + "' id='recvName"+ index + "' type='Text' class='inp'>"
-					+ "<div class='nt'>" + index + "</div></div><div class='rt'>"
-					+ "<input name='recvPhone" + index + "' id='recvPhone" + index + "' type='text' class='inp'>"
-					+ "<div class='bt'><img src='../images/sms/btn_close2.gif' alt='닫기'></div></div></li>";
-			 
-		$("#pone_list li:last").after(html);
-		var lastInput = $("#pone_list li:last input:last");
-		currentPhoneInput = lastInput;
-		lastInput.inputNumber().focus();
+		var index = $("#pone_list ul").size();
 
-		//alert($("#pone_list").html());
+		var html = "<ul><li><span>" + (++index) + "</span><input name='recvName"+ index + "' id='recvName"+ index + "' type=text' class='inp'>"
+					+ " <li><input name='recvPhone" + index + "' id='recvPhone" + index + "' type='Text' class='inp' style=\"width:150px;\"></li>"
+					+ " <li class='bt'><img src='./images/sms/btn_close2.gif' alt='닫기'></li></ul>";
+			 
+	   $("#pone_list ul:last").after(html);
+		var $lastInput = $("#recvPhone" + index);
+		$lastInput.focus();				
+		currentPhoneInput = $lastInput;
+
 	});
 
 
@@ -510,13 +508,20 @@ $(document).ready(function(){
 	 *
 	 */
 	$(".bt").live("click", function(){
-		$(this).parents("li").children("div").
-		children("input").css("background-image", "none").val("");
+		$(this).parents("ul")
+			.children("li")
+			.children("input").css("background-image", "none").val("");
 	});
 	
-	$(".rt :input").live("focusin", function(){
-		//	$(this).children("input").css("background", "none");
+	// 현재 포커스를 받은 input 객체 저장
+	$("#pone_list ul li input:odd").live("focusin", function(){
 		currentPhoneInput = $(this);
+	});
+	
+	$("#special td").click(function(e){
+		$.phone.checkLength(e);		
+		var $message = $("#message");
+		$message.val($message.val() + $(this).text());
 	});
 
 	/*  
@@ -585,9 +590,9 @@ $(document).ready(function(){
 	});
 
 	$("#reset").click(function(){ // 초기화
-		$("#pone_list li").each(function(){
-			$(this).children("div").children("input").css("background-image", "none").val("");
-		});
+		$("#pone_list ul")
+			.children("li")
+				.children("input").css("background-image", "none").val("");
 	});
 	
 	$("#vknPad").click(function(){ // Virtual Numeric Keypad
@@ -663,15 +668,15 @@ $(document).ready(function(){
      * 내 문자 혹은 특수 문자 영역 선택처리
      */
     $("#myMessageBox").click(function(){
-    	$(this).attr("src", "../images/lettersend/tab01_on.gif");
-    	$("#specailCharBox").attr("src", "../images/lettersend/tab02_off.gif");    	
+    	$(this).attr("src", "./images/lettersend/tab01_on.gif");
+    	$("#specailCharBox").attr("src", "./images/lettersend/tab02_off.gif");    	
     	$(".my02").hide();    	
     	$(".my01").show();
     });
     
     $("#specailCharBox").click(function(){
-    	$(this).attr("src", "../images/lettersend/tab02_on.gif");
-    	$("#myMessageBox").attr("src", "../images/lettersend/tab01_off.gif");    	    	
+    	$(this).attr("src", "./images/lettersend/tab02_on.gif");
+    	$("#myMessageBox").attr("src", "./images/lettersend/tab01_off.gif");    	    	
     	$(".my01").hide();    	
     	$(".my02").show();
     });
@@ -693,8 +698,4 @@ $(document).ready(function(){
 			});
 		},50);
 	},50);
-	
-	
-	
-
 });

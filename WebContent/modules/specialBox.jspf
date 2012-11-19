@@ -1,0 +1,172 @@
+<style>
+table#special{
+ color:#80818E;
+}
+table#special td:hover{
+ color:#6A9AFF;
+ cursor: pointer;
+}
+</style>
+<table width="100%" id="special">
+	<tr>
+    	<td>¡Ù</td>
+        <td>¡Ú</td>
+        <td>¡Ø</td>
+        <td>¡Û</td>
+        <td>¡Ü</td>
+        <td>¡Ý</td>
+        <td>¡Þ</td>
+        <td>¡ß</td>
+        <td>¡à</td>
+        <td>¡á</td>
+        <td>¡â</td>
+        <td>¡ã</td>
+        <td>¡ä</td>
+        <td>¡å</td>
+        <td>¡æ</td>
+        <td>¡ç</td>
+        <td>¡è</td>
+        <td>¡é</td>
+        <td>¡ê</td>
+        <td>¡ë</td>
+        <td>¢·</td>
+	</tr>
+	<tr>
+        <td>¢¸</td>
+        <td>¢¹</td>
+        <td>¢º</td>
+        <td>¢»</td>
+        <td> ¢¼ </td>
+        <td> ¢½</td>
+        <td>¢¾</td>
+        <td>¢¿</td>
+        <td>¢À</td>
+        <td>¢Á</td>
+        <td>¢Â</td>
+        <td>¢Ã</td>
+        <td>¢Ä</td>
+        <td>¢Å</td>
+        <td>¢Æ</td>
+        <td>¢Ç</td>
+        <td>¢È</td>
+        <td>¢É</td>
+        <td>¢Ê</td>
+        <td>¢Ë</td>
+        <td>¢Ì</td>             		
+	</tr>
+	<tr>
+        <td>¢Í</td>
+        <td>¢Î</td>
+        <td>¢Ï</td>
+        <td>¢Ð</td>
+        <td>¢Ñ</td>
+        <td>¢Õ</td>
+        <td>¢Ö</td>         
+        <td>¡²</td>
+        <td>¡³</td>
+        <td>¡´</td>
+        <td>¡µ</td>
+        <td>¡²</td>
+        <td>¡³</td>
+        <td>¡´</td>
+        <td>¡µ</td>
+        <td>¡¶</td>
+        <td>¡·</td>      
+        <td>¡²</td>
+        <td>¡³</td>
+        <td>¡´</td>
+        <td>¡µ</td>     		
+	</tr>
+<tr> 
+	<td>¡²</td>
+	<td>¡³</td>
+	<td>¡´</td>
+	<td>¡µ</td>
+	<td>¡¶</td>
+	<td>¡·</td>
+	<td>¡¸</td>
+	<td>¡¹</td>
+	<td>¡º</td>
+	<td>¡»</td>
+	<td>¡¼</td> 
+	<td>¡½</td>
+	<td>¢°</td>
+	<td>¥ò</td>
+	<td>¢¦</td>
+	<td>¥ó</td>
+	<td>¥ø</td>
+	<td>¥÷</td>
+	<td>¥ì</td>
+	<td>¥Ò</td>
+	<td>¥Ï</td>
+</tr>
+<tr>
+	<td>¥Ä</td>
+	<td>¡Á</td>
+	<td>¡Â</td>
+	<td>¡Ã</td>
+	<td>¡Ä</td>
+	<td>¡Å</td>
+	<td>¡Î</td>
+	<td>¡Ï</td>
+	<td>¡Ð</td>
+	<td>¡Ñ</td>
+	<td>¡Ó</td>
+	<td>¡Ô</td>		
+	<td>¡Õ</td>
+	<td>¡Ö</td>
+	<td>¡ì</td>
+	<td>¡í</td>
+	<td>¦¢</td>
+	<td>¦¡</td>
+	<td>©û</td>
+	<td>©ü</td>
+	<td>©ý</td>
+</tr>
+<tr>
+	<td>©þ</td>
+	<td>¦£</td>	
+	<td>¨±</td>
+	<td>¨²</td>
+	<td>¨³</td>
+	<td>¨´</td>
+	<td>¨µ</td>
+	<td>¨¶</td>
+	<td>¨·</td>
+	<td>¨¸</td>
+	<td>¨¹</td>
+	<td>¨º</td>
+	<td>¨»</td> 
+	<td>¨¼</td>
+	<td>¨½</td>
+	<td>¨¾</td>
+	<td>¨¿</td>
+	<td>¨À</td>
+	<td>¨Á</td>
+	<td>¨Â</td>
+	<td>¨Ã</td>							
+</tr>
+<tr>
+	<td>¨Ä</td>
+	<td>¨Å</td>
+	<td>¨Æ</td>		
+	<td>¨Ç</td>
+	<td>¨È</td>
+	<td>¨É</td>
+	<td>¨Ê</td>
+	<td>¨Ë</td>
+	<td>¨Ì</td>
+	<td>¨Í</td>
+	<td>¨Î</td>
+	<td>¨Ï</td>
+	<td>¨Ð</td>
+	<td>¨Ñ</td>
+	<td>¨Ò</td>
+	<td>¨Ó</td>
+	<td>¨Ô</td>
+	<td>¨Õ</td>
+	<td>¨Ö</td>
+	<td>¨×</td>
+	<td>¨Ø</td>
+</tr>
+</table> 
