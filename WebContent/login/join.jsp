@@ -298,7 +298,7 @@ function() {
 			</p>
 		</div>
 	</div>
-<jsp:include page="../modules/footer.jspf" />	
+<jsp:include page="../include/footer.jspf" />	
 </body>
 
 </html>

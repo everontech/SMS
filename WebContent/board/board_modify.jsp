@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
 <%@ page import="java.util.*" %>	
-<%@ page import="kr.go.police.account.*" %>	
-<%@ page import="java.util.*" %>	    
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+<%@ page import="kr.go.police.board.*" %>		    
+<%
+	// 게시물 내용 가져오기
+	BoardBean data = (BoardBean)request.getAttribute("data");
+%>  
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
 <body>
@@ -15,12 +17,13 @@
 			<jsp:include page="../modules/sidebox.jsp" />
 	        <div class="boderWrap">
 	        	<h3><img src="images/notice/title_notice.gif" alt="공지사항" /></h3>
-	          	  <!--게시판-->
-	          	  	<form id="frm" action="./BoardWriteAction.bo" method="post"  >
+	          	  <!--게시판 수정 -->
+	          	  	<form id="frm" action="./BoardModifyAction.bo" method="post"  >
+	          	  		<input value="${data.index}" type="hidden" name="index"   />
 		            	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 		                    <thead>
 		                        <tr height="34px;">
-		                            <th colspan="2">문의 하기</th>
+		                            <th colspan="2">문의 수정</th>
 		                      </tr>
 		                    </thead>
 		                    <tbody>
@@ -34,7 +37,7 @@
 		                          </tr>
 		                          <tr>
 		                              <td><strong>제목</strong></td>
-		                              <td class="tite"><input id="title" name="title" type="text" class="none" style="width:385px" title="제목을 입력하세요" /></td>
+		                              <td class="tite"><input id="title" name="title"  value="${data.title}"  type="text" class="none" style="width:385px" title="제목을 입력하세요" /></td>
 		                    	  </tr>
 		                          <tr style="display: none;">
 		                              <td><strong>첨부파일</strong></td>
@@ -45,7 +48,7 @@
 		                          </tr>
 		                   		  <tr  class="end">
 		                      		  <td><strong>내용</strong></td>
-		                              <td colspan="2"><textarea title=""  id="content" name="content"></textarea></td>
+		                              <td colspan="2"><textarea title=""  id="content"  name="content">${data.content}</textarea></td>
 		                    	  </tr>
 			                  </tbody>                
 			          	</table>

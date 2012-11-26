@@ -50,7 +50,27 @@ public class SmsFrontController extends javax.servlet.http.HttpServlet
 					e.printStackTrace();
 				}
 			}
-		// 문자함 추가
+		// 문자함 추가 화면
+		} else if (command.equals("/AddMyMessageView.sm")) {
+			if(LoginCheck.checkLogin(request, response)){			
+				action = new AddMyMessageView();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}	
+		// 문자함 보기 화면
+		} else if (command.equals("/MyMessageView.sm")) {
+			if(LoginCheck.checkLogin(request, response)){			
+				action = new MyMessageView();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}		
+		// 문자함 추가 처리
 		} else if (command.equals("/MyMessageAddAction.sm")) {
 			if(LoginCheck.checkLogin(request, response)){			
 				action = new MyMessageAddAction();
@@ -60,7 +80,27 @@ public class SmsFrontController extends javax.servlet.http.HttpServlet
 					e.printStackTrace();
 				}
 			}	
-		// 내 문자함 그룹
+		// 문자함 수정
+		} else if (command.equals("/MyMessageModifyAction.sm")) {
+			if(LoginCheck.checkLogin(request, response)){			
+				action = new MyMessageModifyAction();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		// 문자함 삭제
+		} else if (command.equals("/MyMessageDeleteAction.sm")) {
+			if(LoginCheck.checkLogin(request, response)){			
+				action = new MyMessageDeleteAction();
+				try {
+					forward = action.execute(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}	
+		// 내 문자함 그룹 리스트
 		} else if (command.equals("/MyGroupListAction.sm")) {
 			if(LoginCheck.checkLogin(request, response)){			
 				action = new MyGroupListAction();
@@ -69,8 +109,8 @@ public class SmsFrontController extends javax.servlet.http.HttpServlet
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}		
-		// 내 문자함 그룹
+			}
+		// 그룹 추가 
 		} else if (command.equals("/GroupAddAction.sm")) {
 			if(LoginCheck.checkLogin(request, response)){			
 				action = new GroupAddAction();

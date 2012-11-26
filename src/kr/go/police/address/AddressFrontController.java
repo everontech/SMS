@@ -98,6 +98,22 @@ public class AddressFrontController extends javax.servlet.http.HttpServlet
 			} catch (Exception e) {
 				e.printStackTrace();
 			}		
+		// 주소록 선택창
+		} else if (command.equals("/AddressBookWindow.ad")) {
+			action = new AddressBookWindow();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}		
+		// 선택된 그룹의 주소록 목록
+		} else if (command.equals("/AddressListTableAction.ad")) {
+			action = new AddressListTableAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}		
 		}
 		
 		if (forward != null) {

@@ -76,6 +76,44 @@ public class AddressDAO extends CommonCon {
 		}
 	}	
 	
+	
+	/**
+	 * 	선택 그룹의 전체 주소록 가져오기
+	 * @param groupIndex
+	 * 		그룹 인덱스
+	 * @return
+	 */
+	public List<AddressBean> getAddressList(int groupIndex) {
+		List<AddressBean> list = new ArrayList<AddressBean>();
+		AddressBean data = null;		
+		try {
+			
+			Aria aria = Aria.getInstance();				
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM address_book WHERE" +
+					"  f_group_index = ? ORDER BY f_index DESC ");
+			pstmt.setInt(1, groupIndex);
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				// 문자함 그룹
+			    data = new AddressBean();	
+			    data.setIndex(rs.getInt("f_index"));
+			    data.setPeople(aria.encryptHexStr2DecryptStr(rs.getString("f_people")));
+			    data.setPhone(aria.encryptHexStr2DecryptStr(rs.getString("f_phone")));		
+			    data.setGroupIndex(rs.getInt("f_group_index"));
+				list.add(data);
+  			}
+			
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getAddressList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}	
+	
 
 	/**
 	 * 	해당 주소록 갯수
@@ -223,7 +261,7 @@ public class AddressDAO extends CommonCon {
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement("SELECT * FROM address_book_group WHERE" +
-					" f_user_index = ? ORDER BY f_index DESC LIMIT ?, ? ");
+					" f_user_index = ? ORDER BY f_size DESC LIMIT ?, ? ");
 			pstmt.setInt(1, userIndex);	
 			pstmt.setInt(2, start -1);	
 			pstmt.setInt(3, end);				
@@ -245,6 +283,40 @@ public class AddressDAO extends CommonCon {
 			connClose();
 		}
 	}	
+	
+	/**
+	 * 내 주소록 전체 그룹리스트
+	 * @param userIndex
+	 * 	유저 인덱스
+	 * @return
+	 */
+	public List<Group> getGroupList(int userIndex) {
+		List<Group> list = new ArrayList<Group>();
+		Group data = null;		
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM address_book_group WHERE" +
+					" f_user_index = ? ORDER BY f_size DESC ");
+			pstmt.setInt(1, userIndex);	
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				// 문자함 그룹
+			    data = new Group();	
+			    data.setIndex(rs.getInt("f_index"));
+			    data.setGroup(rs.getString("f_group"));
+			    data.setCount(rs.getInt("f_size"));			    
+				list.add(data);
+  			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getMyGroupList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}	
+	
 	
 	/**
 	 * 내 주소록 그룹 갯수

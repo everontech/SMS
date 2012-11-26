@@ -2,9 +2,7 @@
 	pageEncoding="EUC-KR"%>
 <%@ page import="java.util.*" %>	
 <%@ page import="kr.go.police.*"  %>			
-<%
-
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%-- Çì´õ  --%>
 <jsp:include page="../modules/header.jsp" />
 <link rel="stylesheet" type="text/css" href="./css/sms.css"/>  
@@ -32,7 +30,7 @@
 							<img src="././images/lettersend/icon_disk2.gif" />
 						</p>
 						<p>
-							<textarea id="message" name="message" cols="" rows="" class="txt"></textarea>
+							<textarea style="height:252px;" id="message" name="message" cols="" rows="" class="txt"></textarea>
 						</p>
 						<ul class="txt_01">
 							<li><img  id="sms_sep_icon" src="./images/lettersend/icon_sms.gif" /></li>
@@ -59,63 +57,21 @@
 					<img id="listPlus" src="./images/iconbtn_plus.gif" alt="Ãß°¡" />Ç×¸ñ Ãß°¡
 					</div>
 					-->	
-                        <div class="list_box">
-                            <ul style="margin-top: 5px;">
-                                <li><span>01</span><input name="recvName1" id="recvName1"  maxlength="5" type="text" class="inp" /></li>
-                                <li><input name="recvPhone1" id="recvPhone1" type="text" class="inp" maxlength="11" value="" style="width:150px;" /></li>
-                                <li class="bt"><img src="./images/sms/btn_close2.gif" alt="´Ý±â" /></li>
-                            </ul>
+                   <div class="list_box">
+					<c:forEach var="index"  begin="1" end="10" step="1">
                             <ul>
-                                <li><span>02</span><input name="recvName2" id="recvName2"  maxlength="5"  type="text" class="inp" /></li>
-                                <li><input name="recvPhone2" id="recvPhone2" type="text" class="inp" maxlength="11" value="" style="width:150px;" /></li>
+                                <li><span>${index != "10"?"0":""}${index}</span><input name="recvName${index}" id="recvName${index}"  maxlength="5"  type="text" class="inp nameInp" /></li>
+                                <li><input name="recvPhone${index}" id="recvPhone${index}" type="text" class="inp" maxlength="11" value="" style="width:150px;" /></li>
                                 <li class="bt"><img src="./images/sms/btn_close2.gif" alt="´Ý±â" /></li>
                             </ul>
-                            <ul>
-                                <li><span>03</span><input name="recvName3" id="recvName3"  maxlength="5"  type="text" class="inp" /></li>
-                                <li><input name="recvPhone3" id="recvPhone3" type="text" class="inp" maxlength="11" value="" style="width:150px;" /></li>
-                                <li class="bt"><img src="./images/sms/btn_close2.gif" alt="´Ý±â" /></li>
-                            </ul>
-                            <ul>
-                                <li><span>04</span><input name="recvName4" id="recvName4" maxlength="5"  type="text" class="inp" /></li>
-                                <li><input name="recvPhone4" id="recvPhone4" type="text" class="inp" maxlength="11" value="" style="width:150px;"/></li>
-                                <li class="bt"><img src="./images/sms/btn_close2.gif" alt="´Ý±â" /></li>
-                            </ul>
-                            <ul>
-                                <li><span>05</span><input name="recvName5" id="recvName5" maxlength="5"  type="text" class="inp" /></li>
-                                <li><input name="recvPhone5" id="recvPhone5" type="text" class="inp" maxlength="11" value="" style="width:150px;" /></li>
-                                <li class="bt"><img src="./images/sms/btn_close2.gif" alt="´Ý±â" /></li>
-                            </ul>
-                            <ul>
-                                <li><span>06</span><input name="recvName6" id="recvName6" maxlength="5"  type="text" class="inp" /></li>
-                                <li><input name="recvPhone6" id="recvPhone6" type="text" class="inp" value="" style="width:150px;" /></li>
-                                <li class="bt"><img src="./images/sms/btn_close2.gif" alt="´Ý±â" /></li>
-                            </ul>
-                            <ul>
-                                <li><span>07</span><input name="recvName7" id="recvName7" maxlength="5"  type="text" class="inp" /></li>
-                                <li><input name="recvPhone7" id="recvPhone7" type="text" class="inp" maxlength="11" value="" style="width:150px;" /></li>
-                                <li class="bt"><img src="./images/sms/btn_close2.gif" alt="´Ý±â" /></li>
-                            </ul>
-                            <ul>
-                                <li><span>08</span><input name="recvName8" id="recvName8" type="text" class="inp" /></li>
-                                <li><input name="recvPhone9" id="recvPhone9" type="text" class="inp" value="" style="width:150px;" /></li>
-                                <li class="bt"><img src="./images/sms/btn_close2.gif" alt="´Ý±â" /></li>
-                            </ul>
-                            <ul>
-                                <li><span>09</span><input name="recvName9" id="recvName9"  maxlength="5"  type="text" class="inp" /></li>
-                                <li><input name="recvPhone9" id="recvPhone9" type="text" class="inp" maxlength="11" value="" style="width:150px;"/></li>
-                                <li class="bt"><img src="./images/sms/btn_close2.gif" alt="´Ý±â" /></li>
-                            </ul>
-                            <ul>
-                                <li><span>10</span><input name="recvName10" id="recvName10"  maxlength="5"  type="text" class="inp" /></li>
-                                <li><input name="recvPhone10" id="recvPhone10" type="text"  maxlength="11" class="inp" value="" style="width:150px;"/></li>
-                                <li class="bt"><img src="./images/sms/btn_close2.gif" alt="´Ý±â" /></li>
-                            </ul>
+					</c:forEach>
+
                         </div>
 						<!--div class="nsent"-->
 						<div class="nsent" id="JsNewNum" style="margin-top: 10px;">
 							<span id="toolbar" class="ui-widget-header ui-corner-all" >
-						    	<a tabindex="996" id="addList" href="#">ÁÖ¼Ò·Ï</a>
-                                <a tabindex="995" id="addExcel" href="#">¿¢¼¿</a> 							
+						    	<a tabindex="996" id="address_book_btn" href="#" onClick="return false;">ÁÖ¼Ò·Ï</a>
+                                <a style="display: none;" tabindex="995" id="addExcel" href="#" onClick="return false;">¿¢¼¿</a> 							
 								<a href="#" tabindex="992" onClick="return false;" id="vknPad">¼ýÀÚÆÐµå</a> 
                             	<a href="#" tabindex="991" onClick="return false;" id="reset">ÃÊ±âÈ­</a>
                       	   		<a tabindex="994" id="listPlus" href="#" onClick="return false;">ÀÔ·ÂÃß°¡</a>  
@@ -127,9 +83,9 @@
 						</div>
                         <div class="to" style="font-size: 16px; font-weight: bold;text-align: center;">
 							³» ¹øÈ£ :<input type="text" name="my_phone_num" id="my_phone_num"
-								value="" style="width: 181px; margin-left: 5px;" class="inp" />
+								value="${sessionScope.phone}" style="width: 181px; margin-left: 5px;" class="inp" />
 						</div>
-						<div class="btn">
+						<div class="btn" ">
 							<a id="finalSendBtn" href="#" onClick="return false">
 								<img src="./images/sms/btn_send.gif" alt="º¸³»±â" />
 							</a>

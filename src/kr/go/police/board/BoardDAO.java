@@ -306,7 +306,7 @@ public class BoardDAO extends CommonCon {
 	}		
 	
 	/**
-	 * 게시판 글 등록
+	 * 문의 게시판 글 등록
 	 * @return
 	 * 	등록 여부
 	 */
@@ -318,14 +318,14 @@ public class BoardDAO extends CommonCon {
 			String sql = "INSERT INTO board ( f_title, f_content, f_notice, f_reg_user, f_filename, f_parent_index, " +
 					"f_reg_date, f_reg_user_index, f_password) VALUES (?, ?, ?, ?, ?, ?, now(), ?, password(?) )";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(2, data.getTitle());			
-			pstmt.setString(3, data.getContent());	
-			pstmt.setBoolean(4, data.isNotice());	
-			pstmt.setString(5, data.getRegisterName());	
+			pstmt.setString(1, data.getTitle());			
+			pstmt.setString(2, data.getContent());	
+			pstmt.setString(3, data.isNotice()?"y":"n");	
+			pstmt.setString(4, data.getRegisterName());	
+			pstmt.setString(5, "");				
 			pstmt.setInt(6, 0);	
-			pstmt.setString(7, data.getRegDate());	
-			pstmt.setInt(8, data.getRegUserIndex());	
-			pstmt.setString(9, data.getPwd());	
+			pstmt.setInt(7, data.getRegUserIndex());	
+			pstmt.setString(8, data.getPwd());	
 			// update
 			result = pstmt.executeUpdate();
 			return result > 0;
@@ -337,6 +337,35 @@ public class BoardDAO extends CommonCon {
 			connClose();
 		}
 	}
+	
+	/**
+	 * 문의 게시물 수정
+	 * @return
+	 * 	등록 여부
+	 */
+	public boolean modifyBoard(BoardBean data){
+		int result = 0;
+		try {
+			conn = dataSource.getConnection();
+			String sql = "UPDATE board SET f_title = ?, f_content = ?, f_notice = ?, " +
+					" f_password = ?, f_modi_date = now() WHERE f_index = ? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, data.getTitle());			
+			pstmt.setString(2, data.getContent());	
+			pstmt.setString(3, data.isNotice()?"y":"n");	
+			pstmt.setString(4, data.getPwd());
+			pstmt.setInt(5, data.getIndex());	
+			// update
+			result = pstmt.executeUpdate();
+			return result > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("modifyBoard 에러 : " + e.getMessage());
+			return false;
+		}finally{
+			connClose();
+		}
+	}	
 	
 	/**
 	 * 게시판 글 삭제
@@ -373,12 +402,52 @@ public class BoardDAO extends CommonCon {
 			return result > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("insertBoard 에러 : " + e.getMessage());
+			System.out.println("deleteBoard 에러 : " + e.getMessage());
 			return false;
 		}finally{
 			connClose();
 		}
 	}	
+	
+	/**
+	 * 게시판 글 삭제
+	 * @return
+	 * 	삭제 여부
+	 */
+	public boolean deleteBoard(int index){
+		int result = 0;
+		
+		try {
+			conn = dataSource.getConnection();
+			// 글 삭제
+			String sql = "DELETE  FROM board WHERE  f_index =  ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, index);
+			result = pstmt.executeUpdate();			
+			
+			// 삭제가 되었으면  부모글일경우 댓글이 있으면 댓글도 삭제
+			if(result > 0){
+				sql = "DELETE  FROM board WHERE  f_parent_index = ? ";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, index);
+				pstmt.executeUpdate();
+				
+				// 조회수 테이블에서도 해당 게시물 뷰 삭제
+				sql = "DELETE  FROM view_check WHERE  f_board_index = ? ";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, index);
+				pstmt.executeUpdate();				
+			}
+
+			return result > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("deleteBoard 에러 : " + e.getMessage());
+			return false;
+		}finally{
+			connClose();
+		}
+	}		
 
 	/**
 	 * 	조회수 업데이트

@@ -83,14 +83,11 @@ $(function() {
 			</h3>
             <p class="choice_gruop" style="vertical-align: middle;">
 					<select id="group_select">
-						<option value="0">기본그룹</option>
 						<c:forEach var="group"  items="${groups}" >
 							<option ${groupIndex ==group.index?'selected':''} value="${group.index}">${group.group}</option>
 						</c:forEach>							
 					</select>
-            		<a href="#" id="add_btn">
-            			문자함추가
-            		</a>					
+            		<a href="./AddMyMessageView.sm" id="add_btn">문자함추가</a>					
             </p>
             <p class="top_bg"></p>
             <div class="letterbox_m">
@@ -101,9 +98,10 @@ $(function() {
 				<c:forEach var="msg"  items="${messages}" >
 	        		<ul class="box">
 	        			<li>
-						    <div class="portlet">
+						    <div class="portlet"><a href="./MyMessageView.sm?index=${msg.index}" title="메시지 보기" >
 						        <div class="portlet-header">${msg.title}</div>
 						        <div class="portlet-content">${msg.message}</div>
+						        </a>
 						    </div>	
 						   </li> 
 	                </ul>

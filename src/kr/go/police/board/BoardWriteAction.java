@@ -11,52 +11,46 @@ import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
 /**
- *	댓글 등록 액션
+ *	게시물  등록 액션
  */
-public class BoardReplyWriteAction implements Action {
+public class BoardWriteAction implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		request.setCharacterEncoding("euc-kr");
-		BoardDAO dao = new BoardDAO();
-		//  인덱스로 해당 게시물을 뽑아온다.
-		String index = (String)request.getParameter("parentIndex");
-		if(index == null){
-			// 등록 실패
-			response.setContentType("text/html;charset=euc-kr");
-			PrintWriter out = response.getWriter();
-			out.println("<script>");
-			out.println("alert('댓글 등록 실패');");
-			out.println("history.back(-1);");
-			out.println("</script>");	
-			out.close();
-			return null;
-		}
-		// 부모 인덱스
-		int parentIndex = Integer.valueOf(index);
-		// 댓글 내용
-		String content = (String)request.getParameter("reply_content");
+		// 사용자 이름, 인덱스 얻기
 		HttpSession session = request.getSession();
-		// 댓글 내용
+		BoardDAO dao = new BoardDAO();
 		BoardBean data = new BoardBean();
-		data.setParentIndex(parentIndex);
-		data.setRegisterName((String)session.getAttribute("id"));
+		
+		String title = (String)request.getParameter("title");						// 제목
+		String content = (String)request.getParameter("content");			// 내용
+		String pwd = (String)request.getParameter("board_pwd");			// 비밀번호
+		
+		System.out.println("title : " +  title);
+		data.setRegisterName(session.getAttribute("name").toString());	// 이름
+		int userIndex = Integer.valueOf(session.getAttribute("index").toString());
+		data.setRegUserIndex(userIndex);											// 유저 인덱스
+		data.setTitle(title);
 		data.setContent(content);
-		// 댓글 등록 처리
-		if(dao.replyBoard(data, parentIndex)){
+		data.setPwd(pwd);
+		data.setNotice(false);		// 공지사항이 아니므로
+		
+		// 등록 처리
+		if(dao.insertBoard(data)){
 			response.setContentType("text/html;charset=euc-kr");
 			PrintWriter out = response.getWriter();
 			out.println("<script>");
-			out.println("window.location.href='./BoardDetailView.bo?index=" +index + "';");
+			out.println("alert('문의를 등록하였습니다.');");			
+			out.println("window.location.href='./BoardListAction.bo';");
 			out.println("</script>");	
 			out.close();
-		}else{
-			// 등록 실패
+		}else{				// 등록 실패
 			response.setContentType("text/html;charset=euc-kr");
 			PrintWriter out = response.getWriter();
 			out.println("<script>");
-			out.println("alert('댓글 등록 실패');");
+			out.println("alert('문의 등록 실패');");
 			out.println("history.back(-1);");
 			out.println("</script>");	
 			out.close();

@@ -5,9 +5,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	// requset 로 부터 그룹리스트를 가져온다.
+	int count =0;
 	List<Group> groupList = (List<Group>)request.getAttribute("groups");
 %>	
 <c:set var="list"  value ="<%=groupList %>" />
+<c:set var="size"  value ="<%=groupList.size() %>" />
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
 <body>
@@ -28,19 +30,27 @@
 	</div>	
 	<div id="wrapper">
 		<%-- 상단메뉴  --%>
-		<jsp:include page="../modules/admin_topmenu.jsp" />
+		<jsp:include page="../modules/topmenu.jsp" />
 		<div id="contents">
 			<%-- 사이드 메뉴  --%>
-			<jsp:include page="../modules/admin_sidebox.jsp" />
+			<jsp:include page="../modules/sidebox.jsp" />
      	   <div class="boderWrap">
 				<h3>
-					<img src="images/notice/title_notice.gif" alt="내그룹" />
+					<img src="images/notice/title_group.gif" alt="그룹관리" />
 				</h3>
 				<form id="delForm" action="./GroupDelAction.sm">
 					<input value="" id="groupIndex" name="groupIndex" type="hidden" />
 				</form>				
-				<!--게시판-->
-				<div style="float: right;"><a href="#"  id="add_btn">추가</a></div>
+				<%--
+					그룹은 10개 이내일때만 생성 가능하게 한다.
+				 --%>
+				<div></div>		
+					<p style="float: left;display: inline-block;font-size: 1.2em; margin-top: 10px;font-weight: bold;"  >그룹 : ${size}개</p>
+					<c:if test="${size < 10}">
+						<div style="float: right;display: inline-block;margin-bottom: 5px;">
+							<a href="#"  id="add_btn">추가</a>
+						</div>
+					</c:if>
 				<table style="float: left;" id="groupList" width="100%" border="0" cellpadding="0" cellspacing="0">
 					<colgroup>
 						<col width="15%" />
@@ -59,13 +69,18 @@
 					<c:forEach var="user"  items="${list}" >
 						<tr>
 							<td>					
-					   		   ${user.index}
+					   		   <%=++count%>
 					       </td>
 							<td>					
-					   		   <a class="group_td"  data-index="${user.index}"  href="#" onclick="javascript:return false;" >${user.group}</a>
+					   		   <a ${user.group != '기본그룹'?'class="group_td"':''}  data-index="${user.index}"  href="#" onclick="javascript:return false;" >${user.group}</a>
 					       </td>	
-							<td>					
-					   		   <a class="group_del" data-index="${user.index}"  href="#" onclick="javascript:return false;" ><img src="./images/sms/bt_categoryAll_close.gif" alt="삭제" /></a>
+							<td>		
+								<%--
+									기본그룹은 삭제처리를 할수 없다.
+								 --%>
+								<c:if test="${user.group != '기본그룹'}">		
+					   		   		<a class="group_del" data-index="${user.index}"  href="#" onclick="javascript:return false;" ><img src="./images/sms/bt_categoryAll_close.gif" alt="삭제" /></a>
+					   		   	</c:if>	
 					       </td>					       		
 					     </tr> 
 					</c:forEach>
@@ -79,6 +94,18 @@
 <script type="text/javascript">
 <!--
 $(function(){
+	
+	// 메뉴 처리
+	$("#top_menu2").attr("data-on", "on");
+	$("#top_menu2 > img").attr("src", "./images/top/menu02_on.gif");
+	$("#my_group_menu > img").attr("src", "./images/top/menu_sub10_on.gif");
+	$("#my_group_menu").attr("data-on", "on");
+	$("#top_menu2").trigger("mouseover");
+	$(".gnb_sub2").show();
+	
+	// buttons ui
+	$("#add_btn").button();
+	
     // odd td colume stand out
     $("#groupList tbody tr").each(function(i){
        if(i % 2 == 0){
@@ -129,9 +156,26 @@ $(function(){
                 		alert("그룹명을 입력하세요");
                 		return;
                 	}     
+                	
+                	//	동일한 그룹명이 있는지 체크
+                	var existCheck = true;
+                	$(".group_td").each(function(){
+                		var existedGroup = $.trim($(this).text());
+                		if(existedGroup == $.trim(groupVal)){
+                			alert(existedGroup.replace("그룹", "") +"그룹이 이미 존재합니다.");
+                			existCheck = false;
+                			return false;
+                		}
+               		});
+                	
+                	if(existCheck == false){
+                		return;
+                	}
+                	
                 	$("#addFrm").submit();                        	
                 },
                 "취소": function() {
+                	$( "#addFrm #groupName").val("");    	                	
                     $( this ).dialog( "close" );
                 }
             }
@@ -139,6 +183,7 @@ $(function(){
     
     // 그룹추가버튼
     $("#add_btn").click(function(){
+    	$( "#addFrm #groupName").val("");    	
     	$( "#dialog-add-form" ).dialog( "open" );
     });
     
@@ -155,22 +200,13 @@ $(function(){
 	$(".group_del").click(function(){
 		// 그룹명 얻기
 		var group = $(this).parent("td").siblings().first().next().children().text();
-		if(confirm(group + "그룹을 삭제 하시겠습니까?")){
+		if(confirm(group+ "그룹을 삭제 하시겠습니까?")){
 			var index = $(this).attr("data-index");
 			// 삭제 폼 전송
 			$("#delForm > input:first").val(index);
 			$("#delForm").submit();
 		}
 	});  
-	
-	//modify_btn
-    
-
-	$("#top_menu2").attr("data-on", "on");
-	$("#top_menu2 > img").attr("src", "./images/top/menu02_on.gif");
-	//$("#my_group_menu > img").attr("src", "./images/top/menu_sub07_on.gif");
-	$("#my_group_menu").attr("data-on", "on");
-	$("#top_menu2").trigger("mouseover");
 
 });	
 //-->

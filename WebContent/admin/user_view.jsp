@@ -168,7 +168,6 @@
 				</div>
 			</div>
 		</div>
-		<div id="footer">푸터영역</div>
 	</div>
 	<!--  다이얼 로그 -->
 	<div id="approveConfirm" title="승인처리 확인">
@@ -177,15 +176,12 @@
 				style="float: left; margin: 0 7px 20px 0;"></span>사용자를 승인처리 하시겠습니까?
 		</p>
 	</div>
-
 	<div id="refuseConfirm" title="미승인처리 확인">
 		<p>
 			<span class="ui-icon ui-icon-alert"
 				style="float: left; margin: 0 7px 20px 0;"></span>사용자를 미승인처리 하시겠습니까?
 		</p>
 	</div>
-
+	<jsp:include page="../modules/footer.jspf" />	
 </body>
-
-
 </html>

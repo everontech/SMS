@@ -6,6 +6,13 @@
 <%
 	// requset 로 부터 유저 리스트를 가져온다.
 	List<UserBean> list = (List<UserBean>)request.getAttribute("userList");
+	// 페이지네이션
+	String pagiNation = (String)request.getAttribute("pagiNation");
+	// 리스트 갯수
+	int listSize = (Integer)request.getAttribute("listSize");	
+	//	리스트 번호
+	int no = (Integer)request.getAttribute("no");	
+
 %>	
 <c:set var="list"  value ="<%=list %>" />
 <%-- 헤더  --%>
@@ -34,6 +41,7 @@
 				-->	
 					<thead>
 						<tr height="34px;">
+							<th>No.</th>						
 							<th>이름</th>
 							<th>아이디</th>							
 							<th>경찰서</th>
@@ -45,8 +53,11 @@
 					</thead>
 					<tbody>
 					<!--  회원 리스트 -->
-					<c:forEach var="user"  items="${list}" >
+					<c:forEach var="user"  items="${list}"  >
 						<tr>
+							<td>					
+					   		   <%=no--%>
+					       </td>						
 							<td>					
 					   		   <a href="./UserDetailAction.ac?index=${user.index}" >${user.name}</a>
 					       </td>
@@ -72,18 +83,13 @@
 					</c:forEach>
 					</tbody>
 				</table>
-				<!-- 
-				<div class="page">
-					<a href="#"><img src="images/notice/page_prev_btn.gif" /></a><a
-						href="#"><span>1</span></a><a href="#">2</a><a href="#"><img
-						src="images/notice/page_next_btn.gif" /></a>
-				</div>
-				-->
+				<c:if test="${(empty list) == false}">
+					${pagiNation}
+				</c:if>				
 			</div>
 		</div>
-		</div>
-		<div id="footer">푸터영역</div>
 	</div>
+	<jsp:include page="../modules/footer.jspf" />	
 </body>
 <script type="text/javascript">
 <!--
@@ -97,14 +103,16 @@ $(function(){
     });
  
     // 테이블 현재 열 강조 효과
-    $("#usersList td").hover(
-      function () {
-        $(this).siblings().andSelf().addClass("hover");
-      },
-      function () {
-        $(this).siblings().andSelf().removeClass("hover");
-      }
-    );   
+    $("#usersList tr").bind('mouseover', function(){
+    	var $this = $(this);
+    	$this.find("td").addClass("hover");
+    	//$this.find("a").spectrum();     
+    }).bind('mouseout', function(){
+    	var $this = $(this);    	
+    	$this.find("td").removeClass("hover");
+    	//$this.find("a").css("color", "#8b8b8b"); 
+    });
+
     
 	/*
 	$("#top_menu4").attr("data-on", "on");

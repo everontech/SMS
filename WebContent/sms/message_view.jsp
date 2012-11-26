@@ -4,17 +4,17 @@
 <%@ page import="kr.go.police.sms.*" %>		
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-	int userIndex = Integer.valueOf(session.getAttribute("index").toString());
-	// 내 그룹 목록 가져오기
-	SmsDAO dao = new SmsDAO();	
-	List<Group> groupList = dao.getMyGroupList(userIndex);		
-	int groupIndex = 0;
+		int groupIndex = 0;
+		// 해당 메세지객체
+		Message data = (Message)request.getAttribute("message");
+		// 그룹 리스트
+		List<Group> groupList = (List<Group>)request.getAttribute("groups");
 %>	
+<c:set var="data"  value ="<%=data %>" />
 <c:set var="groups"  value ="<%=groupList %>" />
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
   <style>
-  	#group_list { cursor: pointer;}
     .column { width: 170px; float: left; padding-bottom: 100px; }
     .portlet { margin: 0 1em 1em 0; cursor: pointer; }
     .portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; }
@@ -27,7 +27,6 @@
 <script>
 
 $(function() {
-
 	// 메뉴 처리
 	$("#top_menu2").attr("data-on", "on");
 	$("#top_menu2 > img").attr("src", "./images/top/menu02_on.gif");
@@ -35,6 +34,7 @@ $(function() {
 	$("#sms_manage_menu").attr("data-on", "on");
 	$("#top_menu2").trigger("mouseover");
 	$(".gnb_sub2").show();
+    
 
     // odd td colume stand out
     $("#group_list tbody tr:odd").each(function(i){
@@ -51,34 +51,7 @@ $(function() {
       }
     ); 
     
-    
-    var $selectedTd = null;
-    // 그룹 선택시 해당 그룹으로 문자함 등록설정
-    $("#group_list tbody tr td").click(function(i){
-       var $this = $(this).parent("tr").children("td").siblings().first().next();
-       var group = $.trim($this.text());
-       /*
-       if(!confirm(group.replace("그룹", "") + "그룹에 문자함을 등록하시겠습니까?")){
-       	    $this.siblings().last().children("input").removeAttr("checked");       	   
-    		return;
-       }
-       */
-       
-   	   if($selectedTd != null){	// 이전 선택그룹
-   		   // 이전 선택 td selectedGroup 클래스 제거
-   		   $selectedTd.children("a").removeClass("selectedGroup");
-   		   $selectedTd.siblings().last().children("input").removeAttr("checked");   	    	   
-       }
-   	   //  해당 그룹 인덱스 얻기
-   	   var groupIndex = $(this).children().attr("href");
-    	$("#groupIndex").val(groupIndex);			//  폼에 그룹 인덱스 설정
-    	// 선택한 그룹임을 강조처리
-   	   $this.children().addClass("selectedGroup");
-   	   $this.siblings().last().children("input").attr("checked", "checked");   	     	
-   	   $selectedTd = $this;
-    });
-    
-    // 문자함 추가
+    // 문자함 수정
     $("#add_btn").click(function(){
     	var $title = $("#title");
     	var $message = $("#message");    	
@@ -93,14 +66,15 @@ $(function() {
     		alert("내용을 입력하세요");
     		return;
     	}    	
-    	
-    	// 그룹 선택 확인
-    	if(!$selectedTd){
-    		alert("그룹을 선택하세요");
-    		return;
-    	}
-    	
+
     	$("#frm").submit();
+    });
+    
+    // 삭제 처리
+    $("#delete_btn").click(function(){
+    	if(confirm(" 문자함을 삭제하시겠습니까?")){
+    		$("#delete_frm").submit();
+    	}
     });
 });
 </script>
@@ -114,13 +88,19 @@ $(function() {
 			<jsp:include page="../modules/sidebox.jsp" />
   	      <div id="contentsWrap">
         	<h3><img src="images/lettersend/title_manage_e.gif" alt="문자함등록" /></h3>
-            <div class="phone">    
-            	<form id="frm" action="./MyMessageAddAction.sm" method="post">
+            <div class="phone">   
+            	<form id="delete_frm" action="./MyMessageDeleteAction.sm" method="post">
+                		<input value="${data.index}" id="index" name="index" type="hidden" />
+                		<input value="${data.groupIndex}" id="groupIndex" name="groupIndex"  type="hidden" />                		
+                </form>
+                             
+            	<form id="frm" action="./MyMessageModifyAction.sm" method="post">
                 	<fieldset>       
-                		<input value="${group.index}" id="groupIndex" name="groupIndex" type="hidden" />
-                        <p><label>제목</label><input type="text" class="title" id="title" name="title" /></p>
+                		<input value="${data.index}" id="index" name="index" type="hidden" />
+                		<input value="${data.groupIndex}" id="groupIndex" name="groupIndex"  type="hidden" />
+                        <p><label>제목</label><input type="text"  value="${data.title}" class="title" id="title" name="title" /></p>
                         <p style=" padding-top:5px;margin-right:30px; text-align:center; background:#f0f0f0; width:236px; height:20px;">
-                        <label>내용</label></p><textarea name="message" id="message" cols="" rows="" class="txt"></textarea>
+                        <label>내용</label></p><textarea name="message" id="message" cols="" rows="" class="txt">${data.message}</textarea>
                 	</fieldset>
                 </form>
                 <ul class="txt_01">
@@ -129,6 +109,7 @@ $(function() {
                 </ul>
                 <ul class="btn">
                	    <li><a href="#" onclick="return false" id="add_btn"><img src="./images/lettersend/btn_en.gif"  border="0"/></a></li>
+               	    <li><a href="#" onclick="return false" id="delete_btn">삭제</a></li>
                     <li><a href="javascript:history.go(-1);"  id="cancel_btn"><img src="./images/lettersend/btn_cn.gif" border="0" /></a></li>
                 </ul>
             </div>
@@ -151,8 +132,8 @@ $(function() {
 							<c:forEach var="group"  items="${groups}" >
 								<tr>
 	                        		<td><%=++groupIndex%></td>								
-									<td><a href="${group.index}" onclick="return false" >${group.group}</a></td>
-									<td><input type="checkbox" /></td>
+									<td ${group.index == data.groupIndex ?"class='selectedGroup' ":"" }>${group.group}</td>
+									<td></td>
 								</tr>
 							</c:forEach>		
 						</tbody>	                    

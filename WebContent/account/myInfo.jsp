@@ -208,9 +208,8 @@ $(function() {
 				</div>
 			</div>
 		</div>
-		<div id="footer">ÇªÅÍ¿µ¿ª</div>
 	</div>
-
+	<jsp:include page="../modules/footer.jspf" />	
 </body>
 
 

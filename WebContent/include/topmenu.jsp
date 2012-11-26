@@ -133,7 +133,7 @@
             	<ul class="gnb_sub4">
                 	<li><a href="../NoticeListAction.bo"  id="notice_view_menu"><img  src="../images/top/menu_sub07_off.gif"  alt="공지사항" border="0"/></a></li>            	
                 	<li><a href="../BoardListAction.bo"  id="board_view_menu"><img  src="../images/top/menu_sub07_off.gif"  alt="문의보기" border="0"/></a></li>
-                    <li><a href="#"  id="Board_write_top_menu"><img src="../images/top/menu_sub08_off.gif"  alt="문의하기" border="0"/></a></li>
+                    <li><a href="../BoardWriteViewAction.bo "  id="Board_write_menu"><img src="../images/top/menu_sub08_off.gif"  alt="문의하기" border="0"/></a></li>
                 </ul>
             </li>
         </ul>

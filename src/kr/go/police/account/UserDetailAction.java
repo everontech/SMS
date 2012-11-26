@@ -21,7 +21,7 @@ public class UserDetailAction implements Action {
 		UserBean data = dao.getUserDetail(index);
 		// 사용자 정보 담기
 		request.setAttribute("userData", data);
-		forward.setPath("./admin/userDetail.jsp");
+		forward.setPath("./admin/user_view.jsp");
 		return forward;			
 	}
 }

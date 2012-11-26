@@ -60,7 +60,7 @@
 							<td class="tite">
 									${data.hasFile?'<img src="images/notice/icon_disk.gif" />':''}
 									${data.newIcon?'<img src="images/notice/icon_n.gif" />':''}							
-									<a href="./BoardDetailAction.bo?index=${data.index}">${data.notice?'[공지]':''}
+									<a href="./BoardDetailView.bo?index=${data.index}">${data.notice?'[공지]':''}
 									${data.title}</a>
 							</td>
 							<td class="writer">${data.registerName}</td>

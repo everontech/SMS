@@ -88,8 +88,13 @@
 							<td>					
 					   		    ${data.count}
 					       </td>					       
-							<td>					
-					   		   <a class="group_del" data-index="${data.index}"  href="#" onclick="javascript:return false;" ><img src="./images/sms/bt_categoryAll_close.gif" alt="삭제" /></a>
+							<td>
+								<%--
+									기본그룹은 삭제처리를 할수 없다.
+								 --%>
+								<c:if test="${data.group != '기본그룹'}">														
+					   		   		<a class="group_del" data-index="${data.index}"  href="#" onclick="javascript:return false;" ><img src="./images/sms/bt_categoryAll_close.gif" alt="삭제" /></a>
+								</c:if>						   		   	
 					       </td>					       		
 					     </tr> 
 					</c:forEach>

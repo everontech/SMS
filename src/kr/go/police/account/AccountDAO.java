@@ -61,7 +61,10 @@ public class AccountDAO extends CommonCon {
 	}
 	
 	/**
-	 * 회원가입 
+	 * 회원가입 처리
+	 * 가입시 사용승인은 미승인으로 처리한후
+	 * 추후 관리자가 승인변경처리후 사용할수 있도록 한다.
+	 * 회원을 가입하면 기본문자함 그룹 및 주소록 기본 그룹도 생성한다.
 	 * @return
 	 */
 	protected boolean joinUser(UserBean data){
@@ -85,7 +88,26 @@ public class AccountDAO extends CommonCon {
 			pstmt.setString(8, data.getPsName());				
 			// update
 			result = pstmt.executeUpdate();
-			return result > 0;
+			
+			// 회원가입 실패면
+			if(result <= 0){
+				return false;
+			}
+			
+			//  문자함 기본그룹 생성 하기
+			sql = "INSERT INTO message_group (f_user_index, f_group) VALUES( " +
+					"(SELECT f_index FROM user_info WHERE f_id = ?), '기본그룹' )";		
+			pstmt = conn.prepareStatement(sql);		
+			pstmt.setString(1, data.getId());	
+			pstmt.executeUpdate();
+			//  주소록 기본그룹 생성 하기
+			sql = "INSERT INTO address_book_group (f_user_index, f_group) VALUES( " +
+					"(SELECT f_index FROM user_info WHERE f_id = ?), '기본그룹' )";		
+			pstmt = conn.prepareStatement(sql);		
+			pstmt.setString(1, data.getId());	
+			pstmt.executeUpdate();
+			
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("joinUser 에러 : " + e.getMessage());
@@ -288,33 +310,26 @@ public class AccountDAO extends CommonCon {
 		return count;
 	}
 	
+
 	/**
-	 * 	유저 목록 가져오기
-	 * @param page
-	 * 	페이지
-	 * @param limit
-	 * 	가져올수
+	 * 유저 목록 가져오기
 	 * @param search
-	 * 	검색어
-	 * @param userClass
-	 * 	등급
-	 * @param psName
-	 * 경찰서
+	 * @param start
+	 * 		시작 번호
+	 * @param end
+	 * 		마지막 번호
 	 * @return
 	 */
-	protected List<UserBean> getUserList(int page, int limit, final String search,
-				int userClass, String psName){
+	protected List<UserBean> getUserList(final String search, int start, int end){
 		List<UserBean> list = new ArrayList<UserBean>();
 		UserBean data = null;		
-		int startRow = (page -1 ) * 10 +1;		// 시작 번호
-		int endRow = startRow + limit -1;		// 끝 번호
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE (f_id like ? OR f_name like ?) ORDER BY f_index DESC LIMIT ?, ? ");
 			pstmt.setString(1, "%" + search + "%");	
 			pstmt.setString(2, "%" + search + "%");
-			pstmt.setInt(3, startRow);
-			pstmt.setInt(4, endRow);			
+			pstmt.setInt(3, start -1);	
+			pstmt.setInt(4, end);			
 			rs = pstmt.executeQuery();
 			Aria aria = Aria.getInstance();	
 			while(rs.next())	{

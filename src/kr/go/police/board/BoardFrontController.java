@@ -47,23 +47,32 @@ public class BoardFrontController extends javax.servlet.http.HttpServlet
 				e.printStackTrace();
 			}
 		//	문의하기
+		}else if (command.equals("/BoardWriteViewAction.bo")) {
+			try {
+				forward =  new ActionForward();
+				forward.setPath("./board/board_write.jsp"); 				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		//	문의하기처리
 		}else if (command.equals("/BoardWriteAction.bo")) {
+			action = new BoardWriteAction();			
+			try {
+				forward = action.execute(request, response);		
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
+		// 문의수정보기화면	
+		} else if (command.equals("/BoardModifyViewAction.bo")) {
+			action = new BoardModifyView();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-		// 게시물 삭제	
+			}			
+		// 내 문의 삭제처리	
 		} else if (command.equals("/BoardDeleteAction.bo")) {
-			action = new NoticeListAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		//	게시물 등록	
-		} else if (command.equals("/BoardWriteAction.bo")) {
-			action = new NoticeListAction();
+			action = new BoardDeleteAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
@@ -71,15 +80,15 @@ public class BoardFrontController extends javax.servlet.http.HttpServlet
 			}
 		//	게시물 수정
 		} else if (command.equals("/BoardModifyAction.bo")) {
-			action = new NoticeListAction();
+			action = new BoardModifyAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		//	게시물 세부보기
-		} else if (command.equals("/BoardDetailAction.bo")) {
-			action = new BoardDetailViewAction();
+		} else if (command.equals("/BoardDetailView.bo")) {
+			action = new BoardDetailView();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {

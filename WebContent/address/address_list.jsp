@@ -50,16 +50,19 @@
 			<jsp:include page="../modules/sidebox.jsp" />
      	   <div class="boderWrap">
 				<h3>
-					<img src="images/notice/title_notice.gif" alt="주소록" />
+					<img src="images/lettersend/title_address.gif" alt="내 주소록 " />
 				</h3>
 				<!--  주소록 삭제 -->
 				<form method="post"  id="delForm" action="./AddressDelAction.ad">
 					<input value="" id="index" name="index" type="hidden" />
 					<input type="hidden" value="${groupIndex}"  name="groupIndex"  />							
 				</form>				
-				<div id="buttons" style="float: right;margin-bottom: 5px;">
-					<a   href="#"  id="add_btn">추가</a>
-					<a   href="./AddressGroupListAction.ad" >그룹목록</a>					
+				<div id="buttons" style="margin-bottom: 5px;">
+					<p style="float: left;display: inline-block;font-size: 14px;margin-top: 10px;font-size: 1.2em; font-weight: bold;"  >인원 : ${listSize}명</p>
+					<div style="float: right;display: inline-block;margin-bottom: 5px;" >
+						<a   href="#"  id="add_btn">추가</a>
+						<a   href="./AddressGroupListAction.ad" >그룹목록</a>
+					</div>						
 				</div>
 				<table width="100%" border="0" cellpadding="0" cellspacing="0">
 					<colgroup>

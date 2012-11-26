@@ -39,7 +39,13 @@ public class LoginAction implements Action {
 			// 사용자 정보 세션 설정
 			initUserInfoSession(request,  id);
 			forward.setRedirect(true);
-			forward.setPath("./SmsSendViewAction.sm"); 
+			// 관리자이면 관리자 모드로 이동
+			if(id.equals("admin")){
+				forward.setPath("./UserListAction.ac"); 	
+			}else{		// 일반 사용자
+				forward.setPath("./SmsSendViewAction.sm");
+			}
+			
 			return forward;	
 		}else{			// 사용자 정보가 맞지 않으면
 			response.setContentType("text/html;charset=euc-kr");
@@ -63,11 +69,14 @@ public class LoginAction implements Action {
 	private void initUserInfoSession(HttpServletRequest request, String id) {
 		// 아이디를값을 이용하여 사용자정보를 가져온다.
 		UserBean data = dao.getUserInfo(id);
-		Aria aria = Aria.getInstance();	
 		// 세션에 사용자 정보를 담는다.
 		HttpSession session = request.getSession();
 		session.setAttribute("name",  data.getName());
 		session.setAttribute("id", data.getId());
+		// 관리자 인지 확인
+		if(data.getId().equals("admin")){
+			session.setAttribute("admin", true);
+		}
 		session.setAttribute("class", data.getUserClass());
 		session.setAttribute("index", data.getIndex());
 		session.setAttribute("phone",  data.getPhone1());		

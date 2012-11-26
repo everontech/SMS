@@ -59,7 +59,7 @@
 							<td class="num"><%=no--%></td>
 							<td class="tite">
 									${data.newIcon?'<img src="images/notice/icon_n.gif" />':''}							
-									<a href="./BoardDetailAction.bo?index=${data.index}">${data.notice?'[공지]':''}
+									<a href="./BoardDetailView.bo?index=${data.index}">${data.notice?'[공지]':''}
 									${data.title}</a>
 							</td>
 							<td class="writer">${data.registerName}</td>

@@ -40,7 +40,7 @@ public class SmsDAO extends CommonCon {
 	 * @return
 	 * 메시지 리스트
 	 */
-	protected List<Message> getMyMessage(int userIndex, int groupIndex){
+	protected List<Message> getMyMessages(int userIndex, int groupIndex){
 		List<Message> list = new ArrayList<Message>();
 		Message data = null;		
 		try {
@@ -66,12 +66,46 @@ public class SmsDAO extends CommonCon {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("getMyMessage 에러 : " + e.getMessage());
+			System.out.println("getMyMessages 에러 : " + e.getMessage());
 			return null;
 		}finally{
 			connClose();
 		}
 	}
+
+	/**
+	 * 	선택한 문자함 메세지 보기
+	 * @param index
+	 * 		메시지 인덱스
+	 * @return
+	 */
+	protected Message getMyMessage(int index){
+		Message data = null;		
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM message WHERE" +
+					" f_index =?  ");
+			pstmt.setInt(1, index);
+			rs = pstmt.executeQuery();
+			while(rs.next())	{
+				// 인덱스, 등록아이디, 제목, 내용, 그룹인덱스, 그룹명
+			    data = new Message();	
+			    data.setIndex(rs.getInt("f_index"));
+			    data.setId(rs.getString("f_id"));	  		
+			    data.setTitle(rs.getString("f_message_title"));			    
+			    data.setMessage(rs.getString("f_message_text"));
+			    data.setGroupIndex(rs.getInt("f_group_index"));
+			    data.setGroup(rs.getString("f_message_group"));
+			}		
+			return data;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getMyMessage 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}	
 	
 	/**
 	 * 내 문자함 목록
@@ -288,7 +322,7 @@ public class SmsDAO extends CommonCon {
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement("SELECT * FROM message_group WHERE" +
-					" f_user_index = ? ORDER BY f_index DESC ");
+					" f_user_index = ? ORDER BY f_index ASC ");
 			pstmt.setInt(1, userIndex);	
 			rs = pstmt.executeQuery();
 			while(rs.next()){
@@ -339,6 +373,60 @@ public class SmsDAO extends CommonCon {
 		}
 	}
 	
+	/**
+	 * 	문자함 수정
+	 * @param msg
+	 * 	메시지 객체
+	 * @return
+	 */
+	public boolean modifyMyMessage(Message msg) {
+		int result = 0;
+		try {
+			conn = dataSource.getConnection();
+			String sql = "UPDATE message  SET   f_message_title = ?, f_message_text = ? " +
+					"WHERE f_index = ? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, msg.getTitle());				// 제목	
+			pstmt.setString(2, msg.getMessage());			// 메세지	
+			pstmt.setInt(3, msg.getIndex());					//  인덱스	
+			// update
+			result = pstmt.executeUpdate();
+			return result > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("modifyMyMessage 에러 : " + e.getMessage());
+			return false;
+		}finally{
+			connClose();
+		}
+	}	
+	
+	
+
+	/**
+	 * 	메세지 삭제
+	 * @param index
+	 * 	메세지 인덱스
+	 * @return
+	 */
+	public boolean delMessage(int index) {
+		int result = 0;
+		try {
+			conn = dataSource.getConnection();
+			String sql = "DELETE FROM message WHERE 1 =1 AND f_index = ? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, index);						// 메세지 인덱스
+			// update
+			result = pstmt.executeUpdate();
+			return result > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("delMessage 에러 : " + e.getMessage());
+			return false;
+		}finally{
+			connClose();
+		}
+	}		
 
 	/**
 	 * 	문자함 그룹 추가
@@ -440,6 +528,7 @@ public class SmsDAO extends CommonCon {
 			try {
 				rs.close();
 			} catch (SQLException e) {
+				System.out.println("rs 에러" + e.getMessage());				
 			}
 		}
 
@@ -447,6 +536,7 @@ public class SmsDAO extends CommonCon {
 			try {
 				pstmt.close();
 			} catch (SQLException e) {
+				System.out.println("pstmt 에러" + e.getMessage());
 			}
 		}
 
@@ -454,8 +544,36 @@ public class SmsDAO extends CommonCon {
 			try {
 				conn.close();
 			} catch (SQLException e) {
+				System.out.println("conn 에러" + e.getMessage());								
 			}
 		}
-	}	
+	}
+
+	/**
+	 * 내 기본 그룹 인덱스 가져오기
+	 * @param userIndex
+	 * 		유저 인덱스
+	 * @return
+	 */
+	public int getMyBaseGroup(int userIndex) {
+		int groupIndex = 0;
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM message_group WHERE" +
+					" f_user_index = ? ORDER BY f_index ASC LIMIT 1 ");
+			pstmt.setInt(1, userIndex);	
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+			    groupIndex = rs.getInt("f_index");
+  			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getMyBaseGroup 에러 : " + e.getMessage());
+		}finally{
+			connClose();
+		}
+		
+		return groupIndex;
+	}
 	
 }

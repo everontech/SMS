@@ -86,16 +86,17 @@ jQuery.phone = {
 		}
 		
 	},
+	
 	/*
 	 * split 와 같은 , 를 붙여준후 입력값 체크후 시간을 넣어준후 전송
 	 */
 	send : function(){	// 문자 전송
 		var remainder = parseInt( $("#freeSendCount span").text() );	// 남은 메시지 건수
 		if( remainder == 0){	// 남은 갯수가가 없을때
-			alert("남은 메세지 건수가 없습니다.");
-			return false;			
+			//alert("남은 메세지 건수가 없습니다.");
+			//return false;			
 		}
-		
+
 		var phoneNumbers = "";
 		var senderCount = 0; //  보내는 사람 카운트
 		var firstSender = "";
@@ -128,12 +129,14 @@ jQuery.phone = {
 		// 입력된 내용이 없을때 false 처리
 		if( isDefault == true || $("#message").val().length == 0 ){
 			alert("입력된내용이 없습니다.");
+			$("#message").focus();
 			return false;
 		}
 		
 		var callback_num = $("#my_phone_num").val();
 		if( callback_num.length == 0 /* || !phoneReg.test(callback_num) */ ){
 			alert("내 번호를 정확히 입력하세요.");
+			$("#my_phone_num").focus();
 			return false;			
 		}
 
@@ -321,7 +324,6 @@ jQuery.phone = {
 				$("#recvPhone"+count).val( phoneNum );	// 전화번호 넣기
 		}
 	}	
-	
 }
 
 // ajax 로드 관련
@@ -469,7 +471,7 @@ $(document).ready(function(){
 	
 	$("#resetTextBtn").click(function(){ // 다시 쓰기 버튼
 		$("#message").val("");
-		$("#textByte").text("0/0Bytes");
+		$("#textByte").text("0/80Bytes");
 		return false;
 	});
 
@@ -556,25 +558,12 @@ $(document).ready(function(){
 	});
 	
 	var addressWindow = null;
-	$("#addList").click(function(){	// 주소록 버튼
-		/****************  이전 주소록 **************/
-		//document.all.f_id.value = "<%= f_id%>";  
-		//var url = "../Address/Read_address.jsp";
-		//var title = "read_addr";
-		//var status = "toolbar=no, scrollbars=no, status=no, menubar=no, width=500, height=500, top=100, left=200";
-		//if(!chkwindow || chkwindow.closed) { 	// 새창이 부모창 위에 보여주기 위함
-		//	chkwindow = window.open(url, title, status);
-		//} else {
-		//	chkwindow.window.close();
-		//	chkwindow = window.open(url, title, status);
-		//}
-
-		//document.form1.target = title;
-		//document.form1.action = url;
-		//document.form1.method="post";
-		//document.form1.submit();
-		/****************  새로운 주소록 **************/
-		var url = "./addressWindow.html";
+	/**
+	 * 주소록 선택시
+	 * 주소록 윈도우 창을 띄워준다.
+	 */
+	$("#address_book_btn").click(function(){		// 주소록 버튼
+		var url = "./AddressBookWindow.ad";
 		var title = "addressWindow";
 		var status = "toolbar=no, scrollbars=no, status=no, menubar=no, width=900, height=750, top=100, left=200";
 		if( addressWindow != null ) { 	// 새창이 부모창 위에 보여주기 위함
@@ -680,7 +669,6 @@ $(document).ready(function(){
     	$(".my01").hide();    	
     	$(".my02").show();
     });
-    
     
     
 	/*

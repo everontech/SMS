@@ -116,14 +116,14 @@
             	<a href="#" id="top_menu1"><img src="./images/top/menu01_off.gif" alt="문자발송"  border="0" /></a>
                 <ul class="gnb_sub1">
                 	<li><a href="./UserListAction.ac"  id="user_list_menu"><img src="./images/top/menu_sub01_off.gif"  alt="회원관리"  border="0" /></a></li>
-                    <li><a href="./ReservedListAction.sm" id="reservered_send_top_menu"><img src="./images/top/menu_sub02_off.gif"  alt="예약내역"  border="0" /></a></li>
-                    <li><a href="./ReservedListAction.sm" id="result_top_menu"><img src="./images/top/menu_sub03_off.gif"  alt="전송결과"  border="0" /></a></li>
+                    <li><a href="#" id="reservered_send_top_menu"><img src="./images/top/menu_sub02_off.gif"  alt="예약내역"  border="0" /></a></li>
+                    <li><a href="#" id="result_top_menu"><img src="./images/top/menu_sub03_off.gif"  alt="전송결과"  border="0" /></a></li>
             	</ul>
             </li>    
             <li class="gnb_sub">
             	<a href="#" id="top_menu2"><img src="./images/top/menu02_off.gif" alt="문자관리" border="0"/></a>
                 <ul class="gnb_sub2">
-                    <li><a href="./MyMessageAction.sm"  id="sms_manage_menu"><img src="./images/top/menu_sub04_off.gif"  alt="문자함 추가" border="0"/></a></li>
+                    <li><a href="#"  id="sms_manage_menu"><img src="./images/top/menu_sub04_off.gif"  alt="문자함 추가" border="0"/></a></li>
                 </ul>
             </li>
             <li class="gnb_sub">
@@ -136,9 +136,10 @@
             <li class="gnb_sub">
             	<a href="#" id="top_menu4"><img src="./images/top/menu04_off.gif" alt="문의/제안" border="0"/></a>
             	<ul class="gnb_sub4">
-                	<li><a href="#"  id="board_view_top_menu"><img  src="./images/top/menu_sub07_off.gif"  alt="문의보기" border="0"/></a></li>
-                    <li><a href="#"  id="board_write_top_menu"><img src="./images/top/menu_sub08_off.gif"  alt="문의하기" border="0"/></a></li>
-                </ul>
+                	<li><a href="./AdminNoticeListAction.bo"  id="notice_view_menu"><img  src="./images/top/menu_sub07_off.gif"  alt="공지사항" border="0"/></a></li>                    	
+                	<li><a href="./AdminBoardListAction.bo"  id="board_view_menu"><img  src="./images/top/menu_sub07_off.gif"  alt="문의보기" border="0"/></a></li>
+                    <li><a href="./AdminBoardWriteViewAction.bo"  id="board_write_menu"><img src="./images/top/menu_sub08_off.gif"  alt="문의하기" border="0"/></a></li>
+                </ul>            	
             </li>
         </ul>
     </div>

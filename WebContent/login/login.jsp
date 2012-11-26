@@ -23,9 +23,8 @@ $(function(){
 	//	비밀번호에서 엔터키를 입력하면 로그인 버튼 트리거처리
     $("form #pwd").keydown(function(event){
        if(event.keyCode == 13){
-    	 //  alert("로그인");
-    	   $("body").trigger("focusout");
-            $("#loginBtn").trigger("click");
+    	  // $("body").trigger("focusout");
+            $("#login_btn").focus().trigger("click");
        }
      });	
 	
@@ -34,13 +33,13 @@ $(function(){
 		
 		if ($("form #id").val().length <= 0) {
 			alert("아이디를 입력하세요");
-			$("form #id").trigger("focus");
+			$("form #id").focus();
 			return false;
 		}
 		
 		if ($("form #pwd").val().length <= 0) {
 			alert("비밀번호를 입력하세요");
-			$("form #pwd").trigger("focus");
+			$("form #pwd").focus();
 			return false;
 		}
 		// 아이디 저장이면
@@ -76,10 +75,10 @@ $(function(){
 					</p>
 					<p class="pw">
 						<label for="pwd"><img src="../images/login/txt_ow.gif"
-							alt="비밀번호" /></label> <input type="password" id="pwd" name="pwd" value="zhtmahtm01" />
+							alt="비밀번호" /></label> <input type="password" id="pwd" name="pwd" value="goqkfkrl01" />
 					</p>
 					<p class="btnLogin">
-						<input type="image" src="../images/login/btn_login.gif" alt="로그인" />
+						<input id="login_btn" type="image" src="../images/login/btn_login.gif" alt="로그인" />
 					</p>
 					<p class="id_send">
 						<input type="checkbox" id="id_fill" name="id_fill" />아이디 저장
@@ -91,7 +90,7 @@ $(function(){
 					<img src="../images/login/btn_find.gif" alt="아이디비번찾기" />
 				</a>
 
-				<a 	href="./join.jsp" id="loginBtn">
+				<a 	href="./join.jsp" >
 					<img src="../images/login/btn_join.gif" alt="회원가입" />
 				</a>
 			</p>

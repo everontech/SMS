@@ -79,9 +79,9 @@
 		});		
 		
 		$("#my_group_menu").mouseover(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub04_on.gif");
+			$(this).children("img").attr("src", "./images/top/menu_sub10_on.gif");
 		}).mouseout(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub04_off.gif");
+			$(this).children("img").attr("src", "./images/top/menu_sub10_off.gif");
 		});			
 		
 		// 내 주소록 하위 메뉴
@@ -120,10 +120,12 @@
 			}
 		});	
 		
-		$("#board_write_top_menu").mouseover(function(){
+		$("#board_write_menu").mouseover(function(){
 			$(this).children("img").attr("src", "./images/top/menu_sub08_on.gif");
 		}).mouseout(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub08_off.gif");
+			if($(this).attr("data-on") != "on"){			
+				$(this).children("img").attr("src", "./images/top/menu_sub08_off.gif");
+			}
 		});			
 		
 	});
@@ -133,7 +135,11 @@
 	<div id="header">
     	<h1 class="logo"><a href=""><img src="./images/top/logo.gif"  alt="강원청SMS" border="0" /></a></h1>
         <ul class="gnb">
-        	<li class="admin_btn"><a href="./UserListAction.ac"><img src="./images/top/btn_manager.gif" alt="관리자 모드"  border="0" /></a></li>
+        	<li class="admin_btn">
+        	<% if(session.getAttribute("admin") != null && (Boolean)session.getAttribute("admin") == true){ %>
+        	<a href="./UserListAction.ac"><img src="./images/top/btn_manager.gif" alt="관리자 모드"  border="0" /></a>
+        	<%} %>
+        	</li>
         	<li class="gnb_sub">
             	<a href="./SmsSendViewAction.sm" id="top_menu1"><img src="./images/top/menu01_off.gif" alt="문자발송"  border="0" /></a>
                 <ul class="gnb_sub1">
@@ -146,7 +152,7 @@
             	<a href="./MyMessageAction.sm" id="top_menu2"><img src="./images/top/menu02_off.gif" alt="문자관리" border="0"/></a>
                 <ul class="gnb_sub2">
                     <li><a href="./MyMessageAction.sm"  id="sms_manage_menu"><img src="./images/top/menu_sub09_off.gif"  alt="문자함 관리" border="0"/></a></li>
-                    <li><a href="./sms/add_message.jsp"  id="sms_enu"><img src="./images/top/menu_sub10_off.gif"  alt="그룹관리" border="0"/></a></li>
+                    <li><a href="./MyGroupListAction.sm"  id="my_group_menu"><img src="./images/top/menu_sub10_off.gif"  alt="그룹관리" border="0"/></a></li>
 					<!-- <li><a href="./MyGroupListAction.sm"  id="my_group_menu"><img src="./images/top/menu_sub04_off.gif"  alt="문자함추가" border="0"/></a></li> -->                                            
                 </ul>
             </li>
@@ -161,7 +167,7 @@
             	<ul class="gnb_sub4">
                 	<li><a href="./NoticeListAction.bo"  id="notice_view_menu"><img  src="./images/top/menu_sub07_off.gif"  alt="공지사항" border="0"/></a></li>                    	
                 	<li><a href="./BoardListAction.bo"  id="board_view_menu"><img  src="./images/top/menu_sub07_off.gif"  alt="문의보기" border="0"/></a></li>
-                    <li><a href="./BoardWriteAction.bo"  id="board_write_top_menu"><img src="./images/top/menu_sub08_off.gif"  alt="문의하기" border="0"/></a></li>
+                    <li><a href="./BoardWriteViewAction.bo"  id="board_write_menu"><img src="./images/top/menu_sub08_off.gif"  alt="문의하기" border="0"/></a></li>
                 </ul>
             </li>
         </ul>

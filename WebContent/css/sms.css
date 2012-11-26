@@ -1,5 +1,3 @@
-
-
 /* numeric controls */
 ol#controls {
 	display: none;
@@ -64,4 +62,8 @@ li#keyPadClose a {
 
 #resetTextBtn,#addFile, .bt img{
 	cursor: pointer;
+}
+
+.inp{
+	text-indent: .5em;
 }

@@ -1,5 +1,32 @@
 var ENTER_KEY = 13; // Enter keycode 값
 
+jQuery.fn.util = {
+		selectAll : function(check){
+			var flag = check;
+			$("input:checkbox").each(function(){
+				this.checked = flag;
+			});
+		},
+		spectrum : function(){  
+		   return $(this).css('rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')');  
+		 }
+};
+
+// 스펙트럼 효과주기
+$.fn.spectrum = function(){
+	return this.each(function(){
+		$(this).css('color', 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')');  
+	});
+};
+
+// 전체 체크 활성화/ 비활성화
+jQuery.fn.selectAll = function(check){
+	var flag = check;	
+	return this.each(function(){
+		this.checked = flag;
+	});
+};
+
 // 주완 유틸리티 함수
 jQuery.myUtil = {
 
