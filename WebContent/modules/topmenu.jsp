@@ -63,6 +63,16 @@
 			}
 		});
 		
+		// 전송 결과
+		$("#send_result_list_menu").mouseover(function(){
+			$(this).children("img").attr("src", "./images/top/menu_sub03_on.gif");
+		}).mouseout(function(){
+			if($(this).attr("data-on") != "on"){					
+				$(this).children("img").attr("src", "./images/top/menu_sub03_off.gif");
+			}
+		});		
+		
+		
 		// 문자관리 하위메뉴
 		$("#result_top_menu").mouseover(function(){
 			$(this).children("img").attr("src", "./images/top/menu_sub03_on.gif");
@@ -145,7 +155,7 @@
                 <ul class="gnb_sub1">
                 	<li><a href="./SmsSendViewAction.sm"  id="send_top_menu"><img src="./images/top/menu_sub01_off.gif"  alt="문자보내기"  border="0" /></a></li>
                     <li><a href="./ReservedListAction.sm" id="reservered_send_top_menu"><img src="./images/top/menu_sub02_off.gif"  alt="예약내역"  border="0" /></a></li>
-                    <li><a href="./ReservedListAction.sm" id="result_top_menu"><img src="./images/top/menu_sub03_off.gif"  alt="전송결과"  border="0" /></a></li>
+                    <li><a href="./SmsSendResultAction.sm" id="send_result_list_menu"><img src="./images/top/menu_sub03_off.gif"  alt="전송결과"  border="0" /></a></li>
             	</ul>
             </li>    
             <li class="gnb_sub">

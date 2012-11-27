@@ -91,37 +91,43 @@ jQuery.phone = {
 	 * split 와 같은 , 를 붙여준후 입력값 체크후 시간을 넣어준후 전송
 	 */
 	send : function(){	// 문자 전송
+		/*
 		var remainder = parseInt( $("#freeSendCount span").text() );	// 남은 메시지 건수
 		if( remainder == 0){	// 남은 갯수가가 없을때
 			//alert("남은 메세지 건수가 없습니다.");
 			//return false;			
 		}
+		*/
 
-		var phoneNumbers = "";
+		var phoneNumbers = [];
 		var senderCount = 0; //  보내는 사람 카운트
 		var firstSender = "";
-		$("#pone_list ul li").each(function(){
-			var $input = $(this).find("input:odd");
+		
+		// 입력 전화번호 가져오기
+		$("#pone_list ul").each(function(){
+			var $input = $(this).find("li:odd input");
 			if( $input.val() != "" ){
 				if( senderCount == 0 ){
 					firstSender =$input.val();
 				}
 				senderCount++;
-				phoneNumbers += $input.val() + ",";
+				phoneNumbers.push($input.val());
 			}
 		});
 
 		
 
 		// 남은 메세지 건수 와 보내는 메시지 갯수를 비교 처리
+		/*
 		if(  remainder < parseInt( senderCount ) ){
 			alert("남은 메세지 건수를 확인하세요");
 			return false;			
 		}
+		*/
 				
-		phoneNumbers = phoneNumbers.substr(0,(phoneNumbers.length-1) );
+		//phoneNumbers = phoneNumbers.substr(0,(phoneNumbers.length-1) );
 		// 입력된 전화번가 없을경우  false 처리
-		if( phoneNumbers == "" ){
+		if( phoneNumbers.length <= 0 ){
 			alert("입력된 전화번호가 없습니다.");
 			return false;
 		}
@@ -148,7 +154,8 @@ jQuery.phone = {
 		if( $.phone.check() == true  ){
 				// 즉시 전송
 			$.phone.doNotDuplicate();	// 같은 전화번호 제거 처리
-			$("#f_to_telnum1").val(phoneNumbers);
+			// 받는 사람 전화번호를 넣어준다.
+			$("#call_to_nums").val(phoneNumbers.join(","));
 			if( $("#reservationTime span").text() == "" ){
 				$("#f_reserve_date").val( $.date.getNow() ); 
 				$("#f_reserve_time").val( $.date.getTime() ); 
@@ -160,38 +167,57 @@ jQuery.phone = {
 				$("#f_reserve_date").val( date ); 
 				$("#f_reserve_time").val( time );
 			}
+			
+			// ajax 발송 데이터
 			var data = {
-					f_id : $("#chk_ps").next().val(),
-					f_to_telnum1 : $.trim($("#f_to_telnum1").val()),
-					f_reserve_date : $("#f_reserve_date").val(),
-					f_reserve_time : $("#f_reserve_time").val(),
-					f_from_telnum : $("#f_from_telnum").val(),
-					f_send_state : $("#f_send_state").val(),
-					f_deptcode: $("#f_deptcode").val(),
-					f_message : encodeURIComponent( $("#f_message").val() ),
-					f_callback : $("#my_phone_num").val(),
-					f_count : senderCount
-				};
+					call_to_nums : phoneNumbers.join(","),						// 받는 전화번호들(콤마로 연결)
+					message : $("#message").val(),									// 메세지
+					my_phone_num :  $("#my_phone_num").val(),				// 내 전화번호
+					callback : $("#callback").val()										// 내 발송 수신할 번호
+					//reserve_date : $("#f_reserve_date").val(),
+					//reserve_time : $("#f_reserve_time").val(),
+					//send_state : $("#f_send_state").val(),
+					//deptcode:  "", //$("#f_deptcode").val(),					
+			};
+			
 			/*
 			 *	ajax 로 sms 발송처리
 			 */			
 			if( confirm("문자메세지를 발송 하시겠습니까?") == true){
 				var str = (senderCount == 1)?(firstSender + "에게 문자 발송"):
 											(firstSender + "외 " + (senderCount-1) + "명 문자 발송");
-				$.post("./ajax/send_proc.jsp", data, function(result){
-					if( $.trim(result) == "true" ){
-						// 전송시 우측 하단에 알림창을 띄움
-						$.messager.show({
-							title: "전송 알림창",
-							msg: str ,
-							timeout:3000,
-							showType: "slide"
-						});
-						$("#freeSendCount span").text( remainder - senderCount );
-						$.post("./ajax/writeLog.jsp", {msg :str + " 성공", f_callback : callback_num } );	// 로그
+				
+				// ajax 로 문자 발송 내역 처리
+				$.post("./SmsSendAction.sm", data, function(result){
+					var sendCount = parseInt($.trim(result));
+					if( sendCount > 0 ){
+						$("#send_count").text(sendCount);
+						$("#send_result_dialog").dialog({
+					            modal: true,
+					            width: 350,
+					            buttons: {
+					                "전송내역이동" : function() {
+					                    $( this ).dialog( "close" );
+					                    window.location.href = "./SmsSendResultAction.sm";
+					                },
+					                "다시보내기" : function() {
+					                    $( this ).dialog( "close" );
+					                },					                
+					                /*
+					                "문자함저장" : function() {
+					                    $( this ).dialog( "close" );
+					                },
+					                */					                
+					                "확인" : function() {
+					                    $( this ).dialog( "close" );
+					                    //  문자내용 및 전화번호 리셋
+					                    $("#message, .list_box .inp").val("");
+					                },
+					                
+					            }
+					    });
 					}else{
-						alert("발송실패");
-						$.post("./ajax/writeLog.jsp", {msg : str + "  실패", f_callback : callback_num } ); // 로그
+						alert($.trim(result));
 					}
 				});
 			}
@@ -205,12 +231,17 @@ jQuery.phone = {
  	check : function() {	// 입력된 전화번호 체크
 		var flag = true;
 		var str = "";
-		$("#pone_list li").each(function(index){
-			var that = $(this).children(".rt").find(":input");
+		var invaildInput = null;
+		$("#pone_list ul").each(function(index){
+			var that = $(this).find("li:odd input");		
 			var pNum = that.val();
 			/*that.css("background", "none");*/
 			if( pNum != "" ){
 				if( !phoneReg.test(pNum) ){
+					// 잘못된 전화번호중에 맨 첫번째만 추출 
+					if(invaildInput == null){
+						invaildInput = that;
+					}
 					str += (index + 1) + "번 ";
 					that.css({"background-image" : "url(./images/invalid.gif)",
 							  "background-position" : "left top",
@@ -222,6 +253,10 @@ jQuery.phone = {
 		});
 		if( str != "" ){
 			alert( str + "전화번호를 정확히 입력하세요" );
+			// 잘못 입력된 전화번호의 첫번째에 포커스
+			if(invaildInput != null){
+				invaildInput.focus();
+			}
 		}
 		return flag;
 	},
@@ -247,6 +282,7 @@ jQuery.phone = {
 	 *
 	 */
 	doNotDuplicate : function(){
+		/*
 		var arr = new Array();
 		$("#pone_list li").each(function(index){
 			var that = $(this).children(".rt").find(":input");
@@ -271,6 +307,7 @@ jQuery.phone = {
 		if( flag == false){
 			alert("중복전화번호는 자동제거됩니다.");
 		}
+		*/
 		
 	},
 	/*
@@ -574,7 +611,7 @@ $(document).ready(function(){
 
 	});
 	
-	$("#finalSendBtn").click(function(){	// 보내기 버튼
+	$("#send_btn").click(function(){	// 보내기 버튼
 		$.phone.send();
 	});
 
@@ -676,7 +713,7 @@ $(document).ready(function(){
 	 * 우측 특수문자들 모음 기본 인덱스는 첫번째로 함
 	 */
 	$.html.character(0);
-	
+	/*
 	setTimeout(function(){ // 스크립트 분할 로드
 		$.html.messages("public", "all");	// 지연 스크립트-1 ( 공통 메시지  )
 		setTimeout(function(){
@@ -686,4 +723,6 @@ $(document).ready(function(){
 			});
 		},50);
 	},50);
+	*/
+	
 });

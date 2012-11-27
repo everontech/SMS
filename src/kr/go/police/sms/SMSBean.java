@@ -4,7 +4,7 @@ package kr.go.police.sms;
  * 문자 전송 dto
  */
 public class SMSBean {
-	private int index; // 인덱스
+	private long index; // 인덱스
 	private int userIndex;
 	private String id; // 아이디
 	private String deptCode; // 부서코드
@@ -17,12 +17,13 @@ public class SMSBean {
 	private String callback; // 콜백
 	private String deptName; // 부서명
 	private boolean mms; // mms 여부
+	private String regDate;		// 발송등록 시간
 
-	public int getIndex() {
+	public long getIndex() {
 		return index;
 	}
 
-	public void setIndex(int index) {
+	public void setIndex(long index) {
 		this.index = index;
 	}
 	
@@ -121,5 +122,18 @@ public class SMSBean {
 	public void setMms(boolean mms) {
 		this.mms = mms;
 	}
+
+	public String getRegDate() {
+		if(regDate != null){
+			return regDate.substring(5, 16);
+		}
+		return regDate;
+	}
+
+	public void setRegDate(String regDate) {
+		this.regDate = regDate;
+	}
+	
+	
 
 }

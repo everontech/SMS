@@ -11,25 +11,32 @@ import kr.go.police.LoginCheck;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
+/**
+ *	문자 관련 필터 
+ */
 public class SmsFrontController extends javax.servlet.http.HttpServlet
 		implements javax.servlet.Servlet {
 	static final long serialVersionUID = 1L;
 	
 	protected void doProcess(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		
-		// 로그인 여부 확인
-		if(!LoginCheck.checkLogin(request, response)){
-			return;
-		}
-		
+
 		String RequestURI = request.getRequestURI();
 		String contextPath = request.getContextPath();
 		String command = RequestURI.substring(contextPath.length());
 		ActionForward forward = null;
 		Action action = null;
-
-		if (command.equals("/SmsSendViewAction.sm")) {
+		
+		// 문자 발송 처리
+		if (command.equals("/SmsSendAction.sm")) {
+			action = new SmsSendAction();
+			try {
+				forward = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}		
+		// 문자 보내기 화면	
+		}else if (command.equals("/SmsSendViewAction.sm")) {
 			action = new SmsAction();
 			try {
 				forward = new ActionForward();
@@ -148,9 +155,9 @@ public class SmsFrontController extends javax.servlet.http.HttpServlet
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		// 전체문자 전송 내역	
-		} else if (command.equals("/AllSmsAction.sm")) {
-			action = new AllSmsAction();
+		// 전송결과 내역	
+		} else if (command.equals("/SmsSendResultAction.sm")) {
+			action = new SmsSendResultAction();
 			try {
 				forward = action.execute(request, response);
 			} catch (Exception e) {

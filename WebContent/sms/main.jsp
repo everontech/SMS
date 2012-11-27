@@ -21,6 +21,7 @@
         <div id="contentsWrap">
         	<h3><img src="./images/lettersend/title.gif" alt="문자보내기" /></h3>
             <div class="phone">
+            			<input type="hidden"  value="${sessionScope.phone}"  name="callback"  id="callback"  />
 						<ul class="choice">
 							<li><input type="radio" name="radio" alt="SMS" checked="checked" /><span>SMS</span>
 								<input type="radio" name="radio" alt="LSM" /><strong>LSM/MMS</strong>
@@ -66,7 +67,7 @@
                             </ul>
 					</c:forEach>
 
-                        </div>
+                   </div>
 						<!--div class="nsent"-->
 						<div class="nsent" id="JsNewNum" style="margin-top: 10px;">
 							<span id="toolbar" class="ui-widget-header ui-corner-all" >
@@ -86,7 +87,7 @@
 								value="${sessionScope.phone}" style="width: 181px; margin-left: 5px;" class="inp" />
 						</div>
 						<div class="btn" ">
-							<a id="finalSendBtn" href="#" onClick="return false">
+							<a id="send_btn" href="#" onClick="return false">
 								<img src="./images/sms/btn_send.gif" alt="보내기" />
 							</a>
 						</div>
@@ -110,6 +111,13 @@
         </div>
     </div>
 </div>
+
+<div id="send_result_dialog" style="margin-top: 5px;vertical-align:middle;" title="발송추가완료">
+    <p>
+        <span id="send_count"></span>건을 발송내역에 추가하였습니다.
+    </p>
+</div>
+
 	<!-- Numeric Key Pad -->
 	<ol id="controls">
 		<li id="keyPadClose"><a href="#">Close</a></li>

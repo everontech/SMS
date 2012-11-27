@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 
 import kr.go.police.CommonCon;
 import kr.go.police.aria.Aria;
+import kr.go.police.board.BoardBean;
 
 /**
  * 문자 전송, 내역 관리
@@ -254,55 +255,49 @@ public class SmsDAO extends CommonCon {
 	}
 
 
+
 	/**
-	 * 전체 문자 전송 내역
-	 * @param page
-	 * 	페이지
-	 * @param limit
-	 * 한페이지 목록수
+	 *  전송 결과 내역 리스트
+	 * @param userIndex
+	 * 		유저 인덱스
+	 * @param start
+	 * @param end
 	 * @param search
-	 * 	검색어
-	 * @param searchWhat
-	 * 검색구분
 	 * @return
 	 */
-	public List<SMSBean> getAllSmsList(int page, int limit, String search,
-			String searchWhat) {
+	public List<SMSBean> getSendResultList(int userIndex, int start, int end, String search) {
 		List<SMSBean> list = new ArrayList<SMSBean>();
 		SMSBean data = null;		
-		int startRow = (page -1 ) * 10 +1;		// 시작 번호
-		int endRow = startRow + limit -1;		// 끝 번호
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM send_sms_info WHERE" +
-					" (f_id like ? OR f_phone like ?) ORDER BY f_index DESC LIMIT ?, ? ");
+			pstmt = conn.prepareStatement("SELECT * FROM sms_send_info WHERE" +
+					" (f_nameto like ? OR f_callto like ?) AND f_user_index = ? " +
+					" ORDER BY f_index DESC LIMIT ?, ? ");
 			pstmt.setString(1, "%" + search + "%");	
 			pstmt.setString(2, "%" + search + "%");
-			pstmt.setInt(3, startRow);
-			pstmt.setInt(4, endRow);			
+			pstmt.setInt(3, userIndex);				
+			pstmt.setInt(4, start -1);
+			pstmt.setInt(5, end);				
 			rs = pstmt.executeQuery();
 			Aria aria = Aria.getInstance();	
 			while(rs.next())	{
 				// 문자 내역을 담는다.
 			    data = new SMSBean();	
-			    /*
-			    data.setIndex(rs.getInt("f_index"));
-			    data.setId(rs.getString("f_id"));	  			    
-			    data.setName(aria.encryptHexStr2DecryptStr(rs.getString("f_name")));
-			    data.setPsName(rs.getString("f_psname"));
-			    data.setGrade(rs.getString("f_grade"));
-			    data.setDeptName(rs.getString("f_deptname"));
-			    data.setUserClass(rs.getInt("f_class"));
-			    data.setPhone1(aria.encryptHexStr2DecryptStr(rs.getString("f_phone1")));
-			    */
+			    data.setIndex(rs.getLong("f_index"));
+			    data.setFromPhone(rs.getString("f_callfrom"));
+			    data.setMessage(rs.getString("f_message"));
+			    data.setSendState(rs.getInt("f_send_state")  == 0);
+			    data.setSendResult(rs.getInt("f_send_result")  > 0);
+			    data.setRegDate(rs.getString("f_reg_date"));   
+			    data.setCallback(rs.getString("f_callback"));
+			    
 				list.add(data);
-				
   			}
 			
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("getUserList 에러 : " + e.getMessage());
+			System.out.println("getSendResultList 에러 : " + e.getMessage());
 			return null;
 		}finally{
 			connClose();
@@ -574,6 +569,71 @@ public class SmsDAO extends CommonCon {
 		}
 		
 		return groupIndex;
+	}
+
+	/**
+	 * 발송할 문자정보추가 하기
+	 * @param list
+	 * 	발송 문자정보 리스트
+	 * @return
+	 * 	발송 대기 추가 갯수
+	 */
+	public int addSmsSendList(ArrayList<SMSBean> list) {
+		int resultCount = 0;
+		try {
+			conn = dataSource.getConnection();
+			String sql;
+			for(SMSBean data : list){
+				sql = "INSERT INTO sms_send_info ( f_index, f_user_id, f_user_index, f_callto, f_callfrom, f_message, " +
+						"f_send_count, f_send_state, f_reserve_date, f_callback, f_nameto, f_reg_date)" +
+						" VALUES (?, ?, ?, ?, ?, ?, ?, 0, now(), ?,  '', now()) ";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setLong(1, data.getIndex());				// 고유 시퀸스 번호				
+				pstmt.setString(2, data.getId());					// 유저 아이디
+				pstmt.setInt(3, data.getUserIndex());			// 유저 인덱스
+				pstmt.setString(4, data.getToPhone());			// 받는 전화번호
+				pstmt.setString(5, data.getFromPhone());		// 보내는 전화번호				
+				pstmt.setString(6, data.getMessage());			// 메세지
+				pstmt.setInt(7, list.size());							// 해당 문자 전송 갯수					
+				pstmt.setString(8, data.getCallback());			// 발송 수신 전화번호
+				
+				resultCount +=  pstmt.executeUpdate();
+			}
+			return resultCount;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("addSmsSendList 에러 : " + e.getMessage());
+			return 0;
+		}finally{
+			connClose();
+		}
+		
+	}
+
+	/**
+	 * 발송 내역 갯수 
+	 * @param userIndex
+	 * 		검색할 유저 인덱스
+	 * @return
+	 */
+	public int getSendResultCount(int userIndex) {
+		int result = 0;
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT count(*) FROM sms_send_info WHERE" +
+					" f_user_index = ? ORDER BY f_index DESC ");
+			pstmt.setInt(1, userIndex);	
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				result =  rs.getInt(1);
+  			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getSendResultCount 에러 : " + e.getMessage());
+		}finally{
+			connClose();
+		}
+		return result;
 	}
 	
 }
