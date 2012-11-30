@@ -263,7 +263,7 @@ public class SmsDAO extends CommonCon {
 	 * @param start
 	 * @param end
 	 * @param search
-	 * @return
+	 * @return	
 	 */
 	public List<SMSBean> getSendResultList(int userIndex, int start, int end, String search) {
 		List<SMSBean> list = new ArrayList<SMSBean>();
@@ -271,19 +271,19 @@ public class SmsDAO extends CommonCon {
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement("SELECT * FROM sms_send_info WHERE" +
-					" (f_nameto like ? OR f_callto like ?) AND f_user_index = ? " +
+					" f_callto like ? AND f_user_index = ? " +
 					" ORDER BY f_index DESC LIMIT ?, ? ");
 			pstmt.setString(1, "%" + search + "%");	
-			pstmt.setString(2, "%" + search + "%");
-			pstmt.setInt(3, userIndex);				
-			pstmt.setInt(4, start -1);
-			pstmt.setInt(5, end);				
+			pstmt.setInt(2, userIndex);				
+			pstmt.setInt(3, start -1);
+			pstmt.setInt(4, end);				
 			rs = pstmt.executeQuery();
 			Aria aria = Aria.getInstance();	
 			while(rs.next())	{
 				// 문자 내역을 담는다.
 			    data = new SMSBean();	
 			    data.setIndex(rs.getLong("f_index"));
+			    data.setToPhone(rs.getString("f_callto"));			    
 			    data.setFromPhone(rs.getString("f_callfrom"));
 			    data.setMessage(rs.getString("f_message"));
 			    data.setSendState(rs.getInt("f_send_state")  == 0);
@@ -614,15 +614,18 @@ public class SmsDAO extends CommonCon {
 	 * 발송 내역 갯수 
 	 * @param userIndex
 	 * 		검색할 유저 인덱스
+	 * @param search 
+	 * 		검색어
 	 * @return
 	 */
-	public int getSendResultCount(int userIndex) {
+	public int getSendResultCount(int userIndex, String search) {
 		int result = 0;
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement("SELECT count(*) FROM sms_send_info WHERE" +
-					" f_user_index = ? ORDER BY f_index DESC ");
+					" f_user_index = ? AND f_callto like ? ORDER BY f_index DESC ");
 			pstmt.setInt(1, userIndex);	
+			pstmt.setString(2, "%" + search + "%");				
 			rs = pstmt.executeQuery();
 			if(rs.next()){
 				result =  rs.getInt(1);

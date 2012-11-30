@@ -1,8 +1,15 @@
 package kr.go.police.sms;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,154 +23,84 @@ import kr.go.police.action.ActionForward;
  */
 public class SmsFrontController extends javax.servlet.http.HttpServlet
 		implements javax.servlet.Servlet {
+	// key = command , value = Object
+	private Map<String, Object> commandMap = new HashMap<String, Object>();
 	static final long serialVersionUID = 1L;
 	
+	
+	/**
+	 * init 호출시 config 파일을 읽어와 매핑정보 저장
+	 */
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		String configFile = config.getInitParameter("configFile");
+		Properties prop = new Properties();
+		FileInputStream fis = null;
+		try{
+			// properties path 를 읽어온다.			
+			ServletContext context = config.getServletContext();
+			String path = (String)context.getInitParameter("propertiesPath");
+			System.out.println("properties Path : " + path);				
+			fis = new FileInputStream(path + configFile);
+			prop.load(fis);
+		}catch(IOException ioe){
+			System.out.println("config 파일을 읽을수 없습니다.");			
+			throw new ServletException();
+		}finally{
+			if(fis != null){
+				try{
+					fis.close();
+				}catch(Exception e){}
+			}
+		}
+		// command & class 매핑처리
+		Iterator<Object> keyIter = prop.keySet().iterator();
+		while(keyIter.hasNext()){
+			String command = (String)keyIter.next();
+			// 해당 클래스이름 얻기
+			String className = prop.getProperty(command);
+			System.out.println(className  + " ");		
+			try{
+				// map에 저장처리
+				Class<?> actionClass = Class.forName(className);
+				Object actionInstance = actionClass.newInstance();
+				commandMap.put(command, actionInstance);
+			}catch(ClassNotFoundException e){
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("init complete!");		
+		
+	}
+
 	protected void doProcess(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
+		// command action 얻기
 		String RequestURI = request.getRequestURI();
 		String contextPath = request.getContextPath();
 		String command = RequestURI.substring(contextPath.length());
 		ActionForward forward = null;
 		Action action = null;
+		//	command 매핑정보로 해당 action 수행
+		System.out.println("command : " + command);
+		action = (Action)commandMap.get(command);
+		// 매핑된 액션이 없을경우 에러페이지로 이동
+		if(action == null){
+			response.sendRedirect("./error/error_404.jsp");
+			return;
+		}
 		
-		// 문자 발송 처리
-		if (command.equals("/SmsSendAction.sm")) {
-			action = new SmsSendAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}		
-		// 문자 보내기 화면	
-		}else if (command.equals("/SmsSendViewAction.sm")) {
-			action = new SmsAction();
-			try {
-				forward = new ActionForward();
-				response.setContentType("text/html;charset=euc-kr");					
-				forward.setPath("./sms/main.jsp");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		// 내 문자함
-		} else if (command.equals("/MyMessageAction.sm")) {
-			if(LoginCheck.checkLogin(request, response)){			
-				action = new MyMessageAction();
-				try {
-					forward = action.execute(request, response);
-					response.setContentType("text/html;charset=euc-kr");	
-					//response.setHeader(arg0, arg1);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		// 문자함 추가 화면
-		} else if (command.equals("/AddMyMessageView.sm")) {
-			if(LoginCheck.checkLogin(request, response)){			
-				action = new AddMyMessageView();
-				try {
-					forward = action.execute(request, response);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}	
-		// 문자함 보기 화면
-		} else if (command.equals("/MyMessageView.sm")) {
-			if(LoginCheck.checkLogin(request, response)){			
-				action = new MyMessageView();
-				try {
-					forward = action.execute(request, response);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}		
-		// 문자함 추가 처리
-		} else if (command.equals("/MyMessageAddAction.sm")) {
-			if(LoginCheck.checkLogin(request, response)){			
-				action = new MyMessageAddAction();
-				try {
-					forward = action.execute(request, response);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}	
-		// 문자함 수정
-		} else if (command.equals("/MyMessageModifyAction.sm")) {
-			if(LoginCheck.checkLogin(request, response)){			
-				action = new MyMessageModifyAction();
-				try {
-					forward = action.execute(request, response);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		// 문자함 삭제
-		} else if (command.equals("/MyMessageDeleteAction.sm")) {
-			if(LoginCheck.checkLogin(request, response)){			
-				action = new MyMessageDeleteAction();
-				try {
-					forward = action.execute(request, response);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}	
-		// 내 문자함 그룹 리스트
-		} else if (command.equals("/MyGroupListAction.sm")) {
-			if(LoginCheck.checkLogin(request, response)){			
-				action = new MyGroupListAction();
-				try {
-					forward = action.execute(request, response);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		// 그룹 추가 
-		} else if (command.equals("/GroupAddAction.sm")) {
-			if(LoginCheck.checkLogin(request, response)){			
-				action = new GroupAddAction();
-				try {
-					forward = action.execute(request, response);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}			
-		// 그룹 삭제
-		} else if (command.equals("/GroupDelAction.sm")) {
-			if(LoginCheck.checkLogin(request, response)){			
-				action = new GroupDelAction();
-				try {
-					forward = action.execute(request, response);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}		
-		// 그룹 수정처리
-		} else if (command.equals("/GroupModifyAction.sm")) {
-			if(LoginCheck.checkLogin(request, response)){			
-				action = new GroupModifyAction();
-				try {
-					forward = action.execute(request, response);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}					
-		// 예약 내역	
-		} else if (command.equals("/ReservedListAction.sm")) {
-			action = new ReservedListAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		// 전송결과 내역	
-		} else if (command.equals("/SmsSendResultAction.sm")) {
-			action = new SmsSendResultAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}		
+		System.out.println("class  : " + action.getClass().toString());	
+		try {
+			forward = action.execute(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
 		
 		if (forward != null) {
 			if (forward.isRedirect()) {

@@ -56,7 +56,7 @@ public class SmsFrontcontrollerFilter implements Filter {
 		Action action =null;		
 		// 문자 보내기 화면
 		if(command.equals("/SmsSendViewAction.sm")){
-			System.out.println("do smsSendView filter~");
+			//System.out.println("do smsSendView filter~");
 		}
 		
 		chain.doFilter(request, response);

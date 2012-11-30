@@ -8,6 +8,7 @@
 <link rel="stylesheet" type="text/css" href="./css/sms.css"/>  
 <style>
 #myMessageBox, #specailCharBox{cursor: pointer;}
+#send_result_dialog{ display: none;}
 </style>
 <script type="text/javascript" src="./js/sms_page.js"></script>
 <body>
@@ -147,7 +148,7 @@
 	$("#top_menu1 > img").attr("src", "././images/top/menu01_on.gif");
 	$("#send_top_menu > img").attr("src", "././images/top/menu_sub01_on.gif");
 	$("#send_top_menu").attr("data-on", "on");
-
+	$(".gnb_sub1").show();
 //-->
 </script>
 </html>

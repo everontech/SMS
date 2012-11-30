@@ -1,5 +1,6 @@
 package kr.go.police.board;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,13 +32,17 @@ public class BoardDAO extends CommonCon {
 
 	/**
 	 * 공지사항 글수
+	 * @param search 
+	 * 	검색어
 	 * @return
 	 */
-	public int getNoticeListCount(){
+	public int getNoticeListCount(String search){
 		int count = 0;
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT count(*) FROM board  WHERE f_notice = 'y'  ");
+			pstmt = conn.prepareStatement("SELECT count(*) FROM board  WHERE " +
+					" f_notice = 'y'  AND f_title like ? ");
+			pstmt.setString(1, "%" + search + "%");
 			rs = pstmt.executeQuery();
 			if(rs.next()){
 				count = rs.getInt(1);
@@ -55,11 +60,14 @@ public class BoardDAO extends CommonCon {
 	 *  게시물 글수
 	 * @return
 	 */
-	public int getBoardCount(){
+	public int getBoardCount(String search){
 		int count = 0;
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT count(*) FROM board  WHERE f_notice = 'n'  ");
+			pstmt = conn.prepareStatement("SELECT count(*) FROM board  WHERE" +
+					" f_notice = 'n'  AND  (f_title like ? OR f_reg_user like ?) "); 
+			pstmt.setString(1, "%" + search + "%");
+			pstmt.setString(2, "%" + search + "%");				
 			rs = pstmt.executeQuery();
 			if(rs.next()){
 				count = rs.getInt(1);
@@ -167,9 +175,11 @@ public class BoardDAO extends CommonCon {
 		BoardBean data = null;		
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_notice = 'y' ORDER BY f_index DESC LIMIT ?, ? ");
-			pstmt.setInt(1, start -1);
-			pstmt.setInt(2, end);						
+			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_notice = 'y' " +
+					" AND f_title like ? ORDER BY f_index DESC LIMIT ?, ? ");
+			pstmt.setString(1, "%" + search + "%");
+			pstmt.setInt(2, start -1);
+			pstmt.setInt(3, end);						
 			rs = pstmt.executeQuery();
 			
 			while(rs.next())	{
@@ -205,9 +215,13 @@ public class BoardDAO extends CommonCon {
 		BoardBean data = null;		
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM board WHERE f_notice = 'n' ORDER BY f_index DESC LIMIT ?, ? ");
-			pstmt.setInt(1, start -1);
-			pstmt.setInt(2, end);						
+			pstmt = conn.prepareStatement("SELECT * FROM board WHERE " +
+					" (f_title like ? OR f_reg_user like ?) AND " +
+					"f_notice = 'n' ORDER BY f_index DESC LIMIT ?, ? ");
+			pstmt.setString(1, "%" + search + "%");
+			pstmt.setString(2, "%" + search + "%");	
+			pstmt.setInt(3, start -1);
+			pstmt.setInt(4, end);						
 			rs = pstmt.executeQuery();
 			
 			while(rs.next())	{
@@ -322,7 +336,7 @@ public class BoardDAO extends CommonCon {
 			pstmt.setString(2, data.getContent());	
 			pstmt.setString(3, data.isNotice()?"y":"n");	
 			pstmt.setString(4, data.getRegisterName());	
-			pstmt.setString(5, "");				
+			pstmt.setString(5, data.getFilename());				
 			pstmt.setInt(6, 0);	
 			pstmt.setInt(7, data.getRegUserIndex());	
 			pstmt.setString(8, data.getPwd());	
@@ -339,7 +353,7 @@ public class BoardDAO extends CommonCon {
 	}
 	
 	/**
-	 * 문의 게시물 수정
+	 * 문의 or 공지사항 게시물 수정
 	 * @return
 	 * 	등록 여부
 	 */
@@ -348,13 +362,14 @@ public class BoardDAO extends CommonCon {
 		try {
 			conn = dataSource.getConnection();
 			String sql = "UPDATE board SET f_title = ?, f_content = ?, f_notice = ?, " +
-					" f_password = ?, f_modi_date = now() WHERE f_index = ? ";
+					" f_password = ?, f_modi_date = now(), f_filename = ? WHERE f_index = ? ";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, data.getTitle());			
 			pstmt.setString(2, data.getContent());	
 			pstmt.setString(3, data.isNotice()?"y":"n");	
 			pstmt.setString(4, data.getPwd());
-			pstmt.setInt(5, data.getIndex());	
+			pstmt.setString(5, data.getFilename());			
+			pstmt.setInt(6, data.getIndex());	
 			// update
 			result = pstmt.executeUpdate();
 			return result > 0;
@@ -548,7 +563,7 @@ public class BoardDAO extends CommonCon {
 			connClose();
 		}
 	}
-	
+
 	/**
 	 * 리소스 반환 반환 순서대로 닫아준다.
 	 */

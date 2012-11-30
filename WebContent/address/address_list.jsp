@@ -25,9 +25,9 @@
 				<input type="hidden" id="groupIndex" value="${groupIndex}"  name="groupIndex"  />		    
 				<input type="hidden" id="index"  value=""  name="index"  />
 				<label>이름 : </label>	
-		        <input type="text" size="30" name="peopleName"  id="peopleName" title="이름을 입력하세요" class="text ui-widget-content ui-corner-all" /><br/>
+		        <input type="text" size="30"  class="search" name="peopleName"  id="peopleName" title="이름을 입력하세요" class="text ui-widget-content ui-corner-all" /><br/>
 				<label>전화번호 : </label>		        						    
-		        <input type="text" size="30" name="phoneNum" id="phoneNum" title="전화번호를 입력하세요"  class="text ui-widget-content ui-corner-all" />
+		        <input type="text" size="30"  class="search" name="phoneNum" id="phoneNum" title="전화번호를 입력하세요"  class="text ui-widget-content ui-corner-all" />
 		    </fieldset>
 	    </form>
 	</div>
@@ -36,9 +36,9 @@
 		    <fieldset>
 				<input type="hidden" value="${groupIndex}"  name="groupIndex"  />			    
 				<label>이름 : </label>	
-		        <input type="text" size="30" name="peopleName"  id="peopleName" title="이름을 입력하세요" class="text ui-widget-content ui-corner-all" /><br/>
+		        <input type="text" size="30"  class="search" name="peopleName"  id="peopleName" title="이름을 입력하세요" class="text ui-widget-content ui-corner-all" /><br/>
 				<label>전화번호 : </label>		        						    
-		        <input type="text" size="30" name="phoneNum" id="phoneNum" title="전화번호를 입력하세요"  class="text ui-widget-content ui-corner-all" />
+		        <input type="text" size="30"  class="search" name="phoneNum" id="phoneNum" title="전화번호를 입력하세요"  class="text ui-widget-content ui-corner-all" />
 		    </fieldset>
 	    </form>
 	</div>	
@@ -56,14 +56,23 @@
 				<form method="post"  id="delForm" action="./AddressDelAction.ad">
 					<input value="" id="index" name="index" type="hidden" />
 					<input type="hidden" value="${groupIndex}"  name="groupIndex"  />							
-				</form>				
-				<div id="buttons" style="margin-bottom: 5px;">
-					<p style="float: left;display: inline-block;font-size: 14px;margin-top: 10px;font-size: 1.2em; font-weight: bold;"  >인원 : ${listSize}명</p>
-					<div style="float: right;display: inline-block;margin-bottom: 5px;" >
-						<a   href="#"  id="add_btn">추가</a>
-						<a   href="./AddressGroupListAction.ad" >그룹목록</a>
-					</div>						
-				</div>
+				</form>	
+				<%--	검색 처리 --%>
+				<form style="clear: both; width: 100%; padding:3px; vertical-align: middle;" id="search_frm" action="./AddressListAction.ad" method="get"  >
+					<input value="" name="page" type="hidden" />
+					<input type="hidden" value="${groupIndex}"  name="groupIndex"  />
+					<select id="limit" name="limit" style="float: left; display: inline-block;">
+						<option ${limit == "10"?"selected":""} value="10">10개</option>
+						<option ${limit == "20"?"selected":""} value="20">20개</option>
+						<option ${limit == "30"?"selected":""} value="30">30개</option>
+						<option ${limit == "40"?"selected":""} value="40">40개</option>
+						<option ${limit == "50"?"selected":""} value="50">50개</option>
+					</select>	
+					<div style="float: right; display: inline-block;">
+						<input title="검색할 이름 혹은 전화번호를 입력하세요" style="margin-bottom: 3px;" value="${search}"  class="search" type="text" name="search" id="search" size="20" />
+						<a  href="#"  onclick="return false;" id="search_btn"><img style="margin-bottom:5px;margin-right:5px; right;vertical-align: middle;"  src="./images/base/category_btn.gif" /></a>
+					</div>
+				</form>							
 				<table width="100%" border="0" cellpadding="0" cellspacing="0">
 					<colgroup>
 						<col width="15%" />
@@ -96,7 +105,7 @@
 					   		   <a class="group_td"  data-index="${data.index}"  href="#" onclick="javascript:return false;" >${data.people}</a>
 					       </td>
 							<td>					
-					   		   <a class="group_td"  data-index="${data.index}"  href="#" onclick="javascript:return false;" >${data.phone}</a>
+					   		   <a class="group_td phone"  data-index="${data.index}"  href="#" onclick="javascript:return false;" >${data.phone}</a>
 					       </td>						       	
 							<td>					
 					   		   <a class="group_del" data-index="${data.index}"  href="#" onclick="javascript:return false;" ><img src="./images/sms/bt_categoryAll_close.gif" alt="삭제" /></a>
@@ -105,6 +114,12 @@
 					</c:forEach>
 					</tbody>
 				</table>
+				<%--	삭제 폼 --%>
+				<div id="buttons" style="float: right;  margin-top: 5px;">
+						<a  href="#"  id="add_btn">추가</a>
+						<a  href="./AddressGroupListAction.ad"  >그룹목록</a>
+				</div>		
+				<div style="clear: both;"></div>							
 				<c:if test="${(empty list) == false}">
 					${pagiNation}
 				</c:if>				
@@ -117,14 +132,14 @@
 <!--
 $(function(){
     // odd td colume stand out
-    $("table tbody tr").each(function(i){
+    $("table:last tbody tr").each(function(i){
        if(i % 2 == 0){
        	 $(this).children('td').css('background', '#efe');
        } 
     });
  
     // 테이블 현재 열 강조 효과
-    $("table td").hover(
+    $("table:last td").hover(
       function () {
         $(this).siblings().andSelf().addClass("hover");
       },
@@ -132,7 +147,27 @@ $(function(){
         $(this).siblings().andSelf().removeClass("hover");
       }
     );   
+    //	전화번호 하이픈 처리
+    $(".phone").addHyphen();
+    // 버튼 ui
     $("#buttons a").button();
+	//	입력창 에서 엔터 버튼 입력시 폼전송
+    $("#search").tooltip().keydown(function(event){
+	       if(event.keyCode == 13){
+	    	   $("#search_frm").submit();
+	       }
+    });	 
+	
+	// 검색 버튼    
+    $("#search_btn").click(function(){
+    	$("#search_frm").submit();
+    });  
+	
+    // 페이지 목록수
+    $("#limit").change(function(){
+    	$("#search_frm").submit();
+    });  
+    
     // 수정 다이얼로그 설정
 	$( "#dialog-modify-form" ).dialog({
             autoOpen: false,

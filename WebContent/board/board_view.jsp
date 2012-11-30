@@ -17,7 +17,7 @@
 			<%-- 사이드 메뉴  --%>
 			<jsp:include page="../modules/sidebox.jsp" />
      	   <div class="boderWrap">
-        	<h3><img src="images/notice/title_notice.gif" alt="공지사항" /></h3>
+        	<h3><img src="images/notice/title_inquiryview.gif" alt="문의보기" /></h3>
 	            <!--게시판-->
 	            	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 	                   <colgroup>

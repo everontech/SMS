@@ -1,8 +1,15 @@
 package kr.go.police.address;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,109 +19,86 @@ import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
 /**
- *	주소록 컨트롤러
+ *	주소록, 주소록 그룹 컨트롤러
  */
 public class AddressFrontController extends javax.servlet.http.HttpServlet
 		implements javax.servlet.Servlet {
+	// key = command , value = Object
+	private Map<String, Object> commandMap = new HashMap<String, Object>();
 	static final long serialVersionUID = 1L;
 	
-	protected void doProcess(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		
-		// 로그인 여부 확인
-		if(!LoginCheck.checkLogin(request, response)){
-			return;
+	/**
+	 * init 호출시 config 파일을 읽어와 매핑정보 저장
+	 */
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		String configFile = config.getInitParameter("configFile");
+		Properties prop = new Properties();
+		FileInputStream fis = null;
+		try{
+			// properties path 를 읽어온다.			
+			ServletContext context = config.getServletContext();
+			String path = (String)context.getInitParameter("propertiesPath");
+			System.out.println("properties Path : " + path);				
+			fis = new FileInputStream(path + configFile);
+			prop.load(fis);
+		}catch(IOException ioe){
+			System.out.println("config 파일을 읽을수 없습니다.");			
+			throw new ServletException();
+		}finally{
+			if(fis != null){
+				try{
+					fis.close();
+				}catch(Exception e){}
+			}
+		}
+		// command & class 매핑처리
+		Iterator<Object> keyIter = prop.keySet().iterator();
+		while(keyIter.hasNext()){
+			String command = (String)keyIter.next();
+			// 해당 클래스이름 얻기
+			String className = prop.getProperty(command);
+			System.out.println(className  + " ");		
+			try{
+				// map에 저장처리
+				Class<?> actionClass = Class.forName(className);
+				Object actionInstance = actionClass.newInstance();
+				commandMap.put(command, actionInstance);
+			}catch(ClassNotFoundException e){
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
 		}
 		
+		System.out.println("init complete!");		
+		
+	}
+
+	protected void doProcess(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		// command action 얻기
 		String RequestURI = request.getRequestURI();
 		String contextPath = request.getContextPath();
 		String command = RequestURI.substring(contextPath.length());
 		ActionForward forward = null;
 		Action action = null;
-		
-		// 내 주소록 목록
-		if (command.equals("/AddressListAction.ad")) {
-			action = new AddressListAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		// 내 주소록 그룹 목록			
-		} else if (command.equals("/AddressGroupListAction.ad")) {
-			action = new AddressGroupListAction();
-			try {
-				forward = action.execute(request, response);
-				response.setContentType("text/html;charset=euc-kr");	
-				//response.setHeader(arg0, arg1);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		// 주소록 그룹추가
-		} else if (command.equals("/GroupAddAction.ad")) {
-			action = new GroupAddAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		// 그룹 삭제
-		} else if (command.equals("/GroupDelAction.ad")) {
-			action = new GroupDelAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		// 그룹 수정처리
-		} else if (command.equals("/GroupModifyAction.ad")) {
-			action = new GroupModifyAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		// 주소록 추가
-		} else if (command.equals("/AddressAddAction.ad")) {
-			action = new AddressAddAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		// 주소록 수정
-		} else if (command.equals("/AddressModifyAction.ad")) {
-			action = new AddressModifyAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		// 주소록 삭제
-		} else if (command.equals("/AddressDelAction.ad")) {
-			action = new AddressDelAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}		
-		// 주소록 선택창
-		} else if (command.equals("/AddressBookWindow.ad")) {
-			action = new AddressBookWindow();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}		
-		// 선택된 그룹의 주소록 목록
-		} else if (command.equals("/AddressListTableAction.ad")) {
-			action = new AddressListTableAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}		
-		}
+		//	command 매핑정보로 해당 action 수행
+		System.out.println("command : " + command);
+		action = (Action)commandMap.get(command);
+		// 매핑된 액션이 없을경우 에러페이지로 이동
+		if(action == null){
+			response.sendRedirect("./error/error_404.jsp");
+			return;
+		}		
+		System.out.println("class  : " + action.getClass().toString());	
+		try {
+			forward = action.execute(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
 		
 		if (forward != null) {
 			if (forward.isRedirect()) {

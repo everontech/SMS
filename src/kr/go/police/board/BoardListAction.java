@@ -26,36 +26,54 @@ public class BoardListAction implements Action {
 		// 기본값 설정
 		int page = 1;
 		if(request.getParameter("page") != null){
-			page = Integer.valueOf(request.getParameter("page"));
+			try{
+				page = Integer.valueOf(request.getParameter("page"));
+			}catch(NumberFormatException e){
+				page =1;
+			}
 		}
-		// 한페이지 목록수
+		
+		// 페이지 목록수
 		int limit = 10;
 		if(request.getParameter("limit") != null){
-			limit = Integer.valueOf(request.getParameter("limit"));
+			try{
+				limit = Integer.valueOf(request.getParameter("limit"));
+			}catch(NumberFormatException e){
+				limit = 10;
+			}
 		}
-		// 검색어
+		
+		// 검색 종류
+		/*
+		String what = "이름";
+		if(request.getParameter("what") != null){
+			what = request.getParameter("what");	
+		}
+		*/			
+		
+		// 검색어 
 		String search = "";
 		if(request.getParameter("search") != null){
-			search = request.getParameter("search");
-		}	
-		// 검색 종류
-		String searchWhat = "아이디";
-		if(request.getParameter("what") != null){
-			searchWhat = request.getParameter("what");	
+			search = request.getParameter("search").trim().replace("-", "");
+			// 한글 처리
+			search = new String(search.getBytes("iso-8859-1"), "EUC-KR"); 
 		}			
 		
 		int start = (page -1 ) * limit +1;					// 시작 번호
-		int listSize = dao.getBoardCount();				// 게시물 갯수
+		int listSize = dao.getBoardCount(search);	// 게시물 갯수
 		//	리스트 번호
 		int no = listSize - (page - 1) * limit;		
 		ArrayList<BoardBean> list =
-				(ArrayList<BoardBean>)dao.getBoardList(start,  start * limit, "");
+				(ArrayList<BoardBean>)dao.getBoardList(start,  start * limit, search);
 		// 페이지 네이션 처리
-		String pagiNation = SMSUtil.makePagiNation(listSize, page, limit, "BoardListAction.bo", null);  
+		String params = "limit=" +limit +  "&search=" + search;
+		String pagiNation = SMSUtil.makePagiNation(listSize, page, limit, "BoardListAction.bo", params);  
 		
 		request.setAttribute("no", no);								// 리스트 번호		
 		request.setAttribute("listSize", listSize);					// 총  게시물 갯수
 		request.setAttribute("list", list);								// 게시물 리스트
+		request.setAttribute("limit", limit);							// 한페이지 목록수	
+		request.setAttribute("search", search);						// 검색				
 		request.setAttribute("pagiNation", pagiNation);			// 페이지네이션
 		forward.setPath("./board/board_list.jsp"); 
 		return forward;

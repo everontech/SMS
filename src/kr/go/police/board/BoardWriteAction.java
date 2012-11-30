@@ -35,6 +35,7 @@ public class BoardWriteAction implements Action {
 		data.setTitle(title);
 		data.setContent(content);
 		data.setPwd(pwd);
+		data.setFilename("");			// 문의 게시판은 파일업로드 사용 안함
 		data.setNotice(false);		// 공지사항이 아니므로
 		
 		// 등록 처리

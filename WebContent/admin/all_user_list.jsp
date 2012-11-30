@@ -12,7 +12,6 @@
 	int listSize = (Integer)request.getAttribute("listSize");	
 	//	리스트 번호
 	int no = (Integer)request.getAttribute("no");	
-
 %>	
 <c:set var="list"  value ="<%=list %>" />
 <%-- 헤더  --%>
@@ -26,7 +25,7 @@
 			<jsp:include page="../modules/admin_sidebox.jsp" />
      	   <div class="boderWrap">
 				<h3>
-					<img src="images/notice/title_notice.gif" alt="공지사항" />
+					<img src="images/admin/title_memberlist.gif" alt="공지사항" />
 				</h3>
 				<!--게시판-->
 				<table id="usersList" width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -46,9 +45,8 @@
 							<th>아이디</th>							
 							<th>경찰서</th>
 							<th>부서</th>
+							<th>계급</th>							
 							<th>전화번호</th>
-							<th>계급</th>
-							<th>승인</th>														
 						</tr>
 					</thead>
 					<tbody>
@@ -69,16 +67,13 @@
 					       </td>					
 							<td>					
 					   		   <a href="./UserDetailAction.ac?index=${user.index}" >${user.deptName}</a>
-					       </td>	
-							<td>					
-					   		   <a href="./UserDetailAction.ac?index=${user.index}" >${user.phone1}</a>
-					       </td>	
+					       </td>
 							<td>					
 					   		   <a href="./UserDetailAction.ac?index=${user.index}" >${user.grade}</a>
-					       </td>			
+					       </td>					       	
 							<td>					
-					   		   <a href="./UserDetailAction.ac?index=${user.index}" >${user.approve?"승인":"미승인"}</a>
-					       </td>						       			       					       
+					   		   <a  class="phone" href="./UserDetailAction.ac?index=${user.index}" >${user.phone1}</a>
+					       </td>	
 					     </tr> 
 					</c:forEach>
 					</tbody>
@@ -113,14 +108,14 @@ $(function(){
     	//$this.find("a").css("color", "#8b8b8b"); 
     });
 
+    $(".phone").addHyphen();
     
-	/*
-	$("#top_menu4").attr("data-on", "on");
-	$("#top_menu4 > img").attr("src", "./images/top/menu04_on.gif");
-	$("#board_view_top_menu > img").attr("src", "./images/top/menu_sub07_on.gif");
-	$("#board_view_top_menu").attr("data-on", "on");
-	$("#top_menu4").trigger("mouseover");
-	*/
+	$("#top_menu1").attr("data-on", "on");
+	$("#top_menu1 > img").attr("src", "./images/admin/menu01_admin_on.gif");
+	$("#user_list_sub_menu > img").attr("src", "./images/admin/menu_admin_sub05_on.gif");
+	$("#user_list_sub_menu").attr("data-on", "on");
+	$("#top_menu1").trigger("mouseover");
+
 });	
 //-->
 </script>

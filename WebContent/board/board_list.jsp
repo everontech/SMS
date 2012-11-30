@@ -25,8 +25,23 @@
 			<jsp:include page="../modules/sidebox.jsp" />
      	   <div class="boderWrap">
 				<h3>
-					<img src="images/notice/title_notice.gif" alt="문의보기" />
+					<img src="images/notice/title_inquiryview.gif" alt="문의보기" />
 				</h3>
+				<%--	검색 처리 --%>
+				<form style="clear: both; width: 100%; padding:3px; vertical-align: middle;" id="search_frm" action="./BoardListAction.bo" method="get"  >
+					<input value="" name="page" type="hidden" />
+					<select id="limit" name="limit" style="float: left; display: inline-block;">
+						<option ${limit == "10"?"selected":""} value="10">10개</option>
+						<option ${limit == "20"?"selected":""} value="20">20개</option>
+						<option ${limit == "30"?"selected":""} value="30">30개</option>
+						<option ${limit == "40"?"selected":""} value="40">40개</option>
+						<option ${limit == "50"?"selected":""} value="50">50개</option>
+					</select>	
+					<div style="float: right; display: inline-block;">
+						<input title="검색할 제목을 입력하세요" style="margin-bottom: 3px;" value="${search}"  class="search" type="text" name="search" id="search" size="20" />
+						<a  href="#"  onclick="return false;" id="search_btn"><img style="margin-bottom:5px;margin-right:5px; right;vertical-align: middle;"  src="./images/base/category_btn.gif" /></a>
+					</div>
+				</form>					
 				<!--게시판-->
 				<table id="board_table" width="100%" border="0" cellpadding="0" cellspacing="0">
 					<colgroup>
@@ -69,6 +84,10 @@
 					</c:forEach>		
 					</tbody>
 				</table>
+				<div id="buttons" style="float: right;  margin-top: 5px;">
+					<a href="./BoardWriteViewAction.bo"  id="add_btn">문의하기</a>
+				</div>		
+				<div style="clear: both;"></div>					
 				<c:if test="${(empty list) == false}">
 					${pagiNation}
 				</c:if>
@@ -99,6 +118,24 @@ $(function(){
       }
     ); 
     
+    // 버튼  ui 처리
+    $("#add_btn").button();
+	// 검색 버튼    
+    $("#search_btn").click(function(){
+    	$("#search_frm").submit();
+    });  
+	
+    // 페이지 목록수
+    $("#limit").change(function(){
+    	$("#search_frm").submit();
+    });      
+    
+	//	입력창 에서 엔터 버튼 입력시 폼전송
+    $("#search").tooltip().keydown(function(event){
+	       if(event.keyCode == 13){
+	    	   $("#search_frm").submit();
+	       }
+    });	    
     
 	// 메뉴 처리
 	$("#top_menu4").attr("data-on", "on");

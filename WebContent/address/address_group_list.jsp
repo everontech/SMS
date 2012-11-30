@@ -45,10 +45,6 @@
 				<h3>
 					<img src="images/lettersend/title_address.gif" alt="내그룹" />
 				</h3>
-				<div style="float: right;margin-bottom: 5px;">
-					<!-- <span style="float: left; ">그룹수 : ${listSize} </span> -->
-					<a href="#"  id="add_btn">추가</a>
-				</div>	
 				<table id="groupList" width="100%" border="0" cellpadding="0" cellspacing="0">
 					<colgroup>
 						<col width="15%" />
@@ -100,7 +96,10 @@
 					</c:forEach>
 					</tbody>
 				</table>
-				
+				<div id="buttons" style="float: right;  margin-top: 5px;">
+						<a  href="#"  id="add_btn">추가</a>
+				</div>		
+				<div style="clear: both;"></div>				
 				<c:if test="${(empty list) == false}">
 					${pagiNation}
 				</c:if>	

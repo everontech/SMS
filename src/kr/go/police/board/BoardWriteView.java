@@ -1,4 +1,4 @@
-package kr.go.police.sms;
+package kr.go.police.board;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -6,16 +6,17 @@ import javax.servlet.http.HttpServletResponse;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
-public class SmsAction implements Action {
+/**
+ *	문의 하기 화면
+ */
+public class BoardWriteView implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		ActionForward forward = new ActionForward();
-		SmsDAO dao = new SmsDAO();
-		dao.getPslist();
-		
-		forward.setPath("./sms/index.jsp"); 
+		//	문의하기 화면
+		forward.setPath("./board/board_write.jsp");
 		return forward;
 	}
 

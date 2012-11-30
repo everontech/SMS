@@ -10,6 +10,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import kr.go.police.CommonCon;
+import kr.go.police.aria.ARIAEngine;
 import kr.go.police.aria.Aria;
 import kr.go.police.sms.Group;
 
@@ -40,30 +41,49 @@ public class AddressDAO extends CommonCon {
 	 * 		시작번호
 	 * @param end
 	 * 		끝번호
+	 * @param search 
+	 * 		검색어
+	 * @param what
+	 * 		검색종류 
 	 * @return
 	 */
-	public List<AddressBean> getAddressList(int userIndex, int groupIndex, int start, int end) {
+	public List<AddressBean> getAddressList(int userIndex, int groupIndex, int start, int end, String what, String search) {
 		List<AddressBean> list = new ArrayList<AddressBean>();
 		AddressBean data = null;		
 		try {
-			
-			Aria aria = Aria.getInstance();				
+			Aria aria = Aria.getInstance();		
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM address_book WHERE" +
-					" f_user_index = ? AND f_group_index = ? ORDER BY f_index DESC LIMIT ?, ? ");
+			pstmt = conn.prepareStatement("SELECT * FROM address_book WHERE " +
+					 " f_user_index = ? AND f_group_index = ? ORDER BY f_index DESC LIMIT ?, ? ");
 			pstmt.setInt(1, userIndex);	
 			pstmt.setInt(2, groupIndex);
 			pstmt.setInt(3, start -1);	
-			pstmt.setInt(4, end);						
+			pstmt.setInt(4, end);			
+			System.out.println(pstmt.toString());
 			rs = pstmt.executeQuery();
+			// 검색 종류 설정			
+			what = what.equals("name")?"f_people":"f_phone";
+			
 			while(rs.next()){
+				
 				// 문자함 그룹
 			    data = new AddressBean();	
 			    data.setIndex(rs.getInt("f_index"));
 			    data.setPeople(aria.encryptHexStr2DecryptStr(rs.getString("f_people")));
 			    data.setPhone(aria.encryptHexStr2DecryptStr(rs.getString("f_phone")));		
 			    data.setGroupIndex(rs.getInt("f_group_index"));
-				list.add(data);
+			    
+			    // 검색 조건이 있을경우
+			    if(search.length() > 0){
+					// 매칭되는 검색 결과만
+			    	System.out.println(data.getPhone().trim());
+					if( data.getPeople().contains(search.trim()) || 
+							data.getPhone().contains(search.trim()) ){ 
+						list.add(data);
+					}		
+			    }else{
+			    	list.add(data);
+			    }
   			}
 			
 			return list;
@@ -83,7 +103,7 @@ public class AddressDAO extends CommonCon {
 	 * 		그룹 인덱스
 	 * @return
 	 */
-	public List<AddressBean> getAddressList(int groupIndex) {
+	public List<AddressBean> getAddressList(int groupIndex	) {
 		List<AddressBean> list = new ArrayList<AddressBean>();
 		AddressBean data = null;		
 		try {
@@ -121,20 +141,48 @@ public class AddressDAO extends CommonCon {
 	 * 		유저 인덱스
 	 * @param groupIndex
 	 * 		그룹 인덱스
+	 * @param search 
+	 * @param what 
 	 * @return
 	 */
-	public  int getAddressSize(int userIndex, int groupIndex) {
+	public  int getAddressSize(int userIndex, int groupIndex, String what, String search) {
 		int size = 0;	
+		List<AddressBean> list = new ArrayList<AddressBean>();
+		AddressBean data = null;				
 		try {
+			Aria aria = Aria.getInstance();			
+			/*
+			what = what.equals("name")?"f_people":"f_phone";
+			String subWhere = "";
+			if(search.length() > 0){
+				System.out.println(search);
+				search = " '%" + aria.encryptByte2HexStr(search.trim()) + "%' ";		
+				subWhere = what + " like " + search + " AND ";
+			}
+			*/
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT count(*) FROM address_book WHERE" +
+			pstmt = conn.prepareStatement("SELECT * FROM address_book WHERE " +
 					" f_user_index = ? AND f_group_index = ?  ");
 			pstmt.setInt(1, userIndex);	
 			pstmt.setInt(2, groupIndex);				
 			rs = pstmt.executeQuery();
-			if(rs.next())
-				size = rs.getInt(1);
+			System.out.println(pstmt.toString());	
 			
+			while(rs.next()){
+			    data = new AddressBean();	
+			    data.setPeople(aria.encryptHexStr2DecryptStr(rs.getString("f_people")));
+			    data.setPhone(aria.encryptHexStr2DecryptStr(rs.getString("f_phone")));		
+			    // 검색 조건이 있을경우
+			    if(search.length() > 0){
+					// 매칭되는 검색 결과만
+					if( data.getPeople().contains(search.trim()) || 
+							data.getPhone().contains(search.trim()) ){ 
+						++size;
+					}
+			    }else{
+			    	++size;
+			    }
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("getAddressSize 에러 : " + e.getMessage());

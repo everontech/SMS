@@ -19,7 +19,7 @@
 			<jsp:include page="../modules/sidebox.jsp" />
      	   <div class="boderWrap">
 				<h3>
-					<img src="images/notice/title_notice.gif" alt="예약내역" />
+					<img src="images/sms/title_reservlist.gif" alt="예약내역" />
 				</h3>
 				<!--예약내역 게시판-->
 				<table id="reservedList" width="100%" border="0" cellpadding="0" cellspacing="0">

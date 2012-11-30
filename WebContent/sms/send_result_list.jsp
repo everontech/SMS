@@ -33,12 +33,24 @@
 			<jsp:include page="../modules/sidebox.jsp" />
      	   <div class="boderWrap">
 				<h3>
-					<img src="images/notice/title_notice.gif" alt="전송내역" />
+					<img src="images/sms/title_send.gif" alt="전송내역" />
 				</h3>
-				<!--게시판-->
-				<div style="float: right;  margin-bottom: 5px;">
-					<a href="#" onclick="return false;" id="del_btn">삭제</a>
-				</div>	
+				<%--	검색 처리 --%>
+				<form style="clear: both; width: 100%; padding:3px; vertical-align: middle;" id="search_frm" action="./SmsSendResultAction.sm" method="get"  >
+					<input value="" name="page" type="hidden" />
+					<select id="limit" name="limit" style="float: left; display: inline-block;">
+						<option ${limit == "10"?"selected":""} value="10">10개</option>
+						<option ${limit == "20"?"selected":""} value="20">20개</option>
+						<option ${limit == "30"?"selected":""} value="30">30개</option>
+						<option ${limit == "40"?"selected":""} value="40">40개</option>
+						<option ${limit == "50"?"selected":""} value="50">50개</option>
+					</select>	
+					<div style="float: right; display: inline-block;">							
+						<input title="검색할 전화번호를 입력하세요" style="margin-bottom: 3px;" value="${search}"  class="search phone" type="text" name="search" id="search" size="20" />
+						<a  href="#"  onclick="return false;" id="search_btn"><img style="margin-bottom:5px;margin-right:5px; right;vertical-align: middle;"  src="./images/base/category_btn.gif" /></a>
+					</div>
+				</form>	
+			
 				<table id="sendResultList"  style="clear: both;" width="100%" border="0" cellpadding="0" cellspacing="0">
 				<!-- 
 					<colgroup>
@@ -78,8 +90,8 @@
 							<td>					
 					   		   <%=no--%>
 					       </td>
-							<td>					
-					   		   ${data.fromPhone}
+							<td class="phone">					
+					   		   ${data.toPhone}
 					       </td>						       
 							<td>					
 					   		   <a 	title="${data.message}"  class="message" href="#" onclick="return false;" >${data.message}</a>
@@ -97,6 +109,12 @@
 					</c:forEach>
 					</tbody>
 				</table>
+				<%--	삭제 폼 --%>
+				<form id="del_frm" action="./SmsSendResultAction.sm" method="post" style="float: right;  margin-top: 5px;">
+					<input value="${page}" name="page" type="hidden" />				
+					<a href="#" onclick="return false;" id="del_btn">삭제</a>
+				</form>
+				<div style="clear: both;"></div>				
 				<c:if test="${(empty list) == false}">
 					${pagiNation}
 				</c:if>	
@@ -109,9 +127,8 @@
 				-->
 			</div>
 		</div>
-		</div>
-		<div id="footer">푸터영역</div>
 	</div>
+	<jsp:include page="../modules/footer.jspf" />	
 </body>
 <script type="text/javascript">
 <!--
@@ -136,7 +153,24 @@ $(function(){
     
     // 메시지를 볼수 있도록 툴팁처리
     $(".message").tooltip();
-    
+	//	입력창 에서 엔터 버튼 입력시 폼전송
+    $("#search").tooltip().keydown(function(event){
+	       if(event.keyCode == 13){
+	    	   $("#search_frm").submit();
+	       }
+    });	     
+	// 검색 버튼    
+    $("#search_btn").click(function(){
+    	$("#search_frm").submit();
+    });  
+	
+    $("#limit").change(function(){
+    	$("#search_frm").submit();
+    });  
+	
+	// 전화번호 하이픈 넣기
+	$(".phone").addHyphen();
+	
     // 삭제처리
     $("#del_btn").button().click(function(){
     	var delArr = [];
@@ -165,6 +199,11 @@ $(function(){
     		$check.attr("checked", "checked");
     	}
     });    
+    
+    $("#limit").change(function(){
+    	$("#frm").submit();
+    	//window.location.href="SmsSendResultAction.sm?limit=" + $(this).val();
+    });
 
     $(".gnb_sub1").show();
 	$("#top_menu1").attr("data-on", "on");

@@ -1,4 +1,3 @@
-var ENTER_KEY = 13; // Enter keycode 값
 
 jQuery.fn.util = {
 		selectAll : function(check){
@@ -19,6 +18,20 @@ $.fn.spectrum = function(){
 	});
 };
 
+// 휴대폰 번호에 (-)하이픈 넣기
+$.fn.addHyphen = function(){
+	return this.each(function(){
+		var phone = $.trim($(this).text() || $(this).val() );
+		if(phone.length < 11 && phone.length> 7 ){
+			phone = phone.substr(0, 3) + "-" + phone.substr(3, 3) + "-" + phone.substr(6);
+		}else if(phone.length >= 11){
+			phone= phone.substr(0, 3) + "-" + phone.substr(3, 4) + "-" + phone.substr(7);
+		}
+		$(this).text(phone);
+		$(this).val(phone);
+	});
+};
+
 // 전체 체크 활성화/ 비활성화
 jQuery.fn.selectAll = function(check){
 	var flag = check;	
@@ -27,6 +40,8 @@ jQuery.fn.selectAll = function(check){
 	});
 };
 
+
+var ENTER_KEY = 13; // Enter keycode 값
 // 주완 유틸리티 함수
 jQuery.myUtil = {
 

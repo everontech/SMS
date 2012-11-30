@@ -20,6 +20,9 @@ public class BoardModifyView implements Action {
 		// 게시물내용 가져오기
 		BoardBean data = dao. getDetail(index);
 		request.setAttribute("data", data);
+		String content = data.getContent();
+		content = content.replaceAll("\r\n", "<br/>");
+		data.setContent(content);		
 		// 게시물 보기 페이지로 이동
 		forward.setPath("./board/board_modify.jsp"); 
 		return forward;

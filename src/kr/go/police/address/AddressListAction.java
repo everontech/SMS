@@ -22,30 +22,40 @@ public class AddressListAction implements Action {
 			HttpServletResponse response) throws Exception {
 		ActionForward forward = new ActionForward();
 		AddressDAO dao = new AddressDAO();
-		
 		request.setCharacterEncoding("euc-kr");
 		// 기본값 설정
 		int page = 1;
-
 		if(request.getParameter("page") != null){
-			page = Integer.valueOf(request.getParameter("page"));
+			try{
+				page = Integer.valueOf(request.getParameter("page"));
+			}catch(NumberFormatException e){
+				page =1;
+			}
 		}
 		
+		// 페이지 목록수
 		int limit = 10;
 		if(request.getParameter("limit") != null){
-			limit = Integer.valueOf(request.getParameter("limit"));
+			try{
+				limit = Integer.valueOf(request.getParameter("limit"));
+			}catch(NumberFormatException e){
+				limit = 10;
+			}
 		}
 		
+		// 검색 종류
+		String what = "이름";
+		if(request.getParameter("what") != null){
+			what = request.getParameter("what");	
+		}			
+		
+		// 검색어 
 		String search = "";
 		if(request.getParameter("search") != null){
-			search = request.getParameter("search");
+			search = request.getParameter("search").trim().replace("-", "");
+			// 한글 처리
+			search = new String(search.getBytes("iso-8859-1"), "EUC-KR"); 
 		}	
-		
-		String searchWhat = "아이디";
-		if(request.getParameter("what") != null){
-			searchWhat = request.getParameter("userClass");	
-		}			
-
 		
 		// 내 인덱스
 		HttpSession session = request.getSession();
@@ -58,18 +68,22 @@ public class AddressListAction implements Action {
 		}
 		
 		int start = (page -1 ) * limit +1;		// 시작 번호
-		int listSize = dao.getAddressSize(userIndex, groupIndex);		// 주소록 갯수
+		int listSize = dao.getAddressSize(userIndex, groupIndex, what, search);		// 주소록 갯수
 		//	리스트 번호
 		int no = listSize - (page - 1) * limit;		
 		ArrayList<AddressBean> list =
-				(ArrayList<AddressBean>)dao.getAddressList(userIndex, groupIndex, start,  start * limit);
+				(ArrayList<AddressBean>)dao.getAddressList(userIndex, groupIndex, start,  start * limit, what, search);
 		// 페이지 네이션 처리
-		String pagiNation = SMSUtil.makePagiNation(listSize, page, limit, "AddressListAction.ad", "groupIndex=" + groupIndex);  
+		String params = "limit=" +limit +  "&search=" + search + "&groupIndex=" + groupIndex;
+		String pagiNation = SMSUtil.makePagiNation(listSize, page, limit, "AddressListAction.ad", params);  
 		
 		request.setAttribute("no", no);								// 리스트 번호		
 		request.setAttribute("listSize", listSize);					// 총  주소록그룹 갯수
 		request.setAttribute("list", list);								// 주소록 리스트
-		request.setAttribute("groupIndex", groupIndexStr);		
+		request.setAttribute("limit", limit);							// 한페이지 목록수	
+		request.setAttribute("what", what);							// 검색종류			
+		request.setAttribute("search", search);						// 검색				
+		request.setAttribute("groupIndex", groupIndexStr);	// 그룹 인덱스	
 		request.setAttribute("pagiNation", pagiNation);			// 페이지네이션
 		forward.setPath("./address/address_list.jsp");
 		

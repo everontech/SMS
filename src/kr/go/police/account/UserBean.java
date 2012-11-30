@@ -22,6 +22,7 @@ public class UserBean {
 	private int monthSendLimit; // 월 발송 제한 수
 	private int monthSend; // 월 발송 횟수
 	private int userClass;	// 사용자 등급
+	private String visitDate;	//  접속날짜
 	
 	public int getIndex() {
 		return index;
@@ -153,6 +154,9 @@ public class UserBean {
 	}
 
 	public String getRegDate() {
+		if(regDate != null){
+			return regDate.substring(0, 10);
+		}			
 		return regDate;
 	}
 
@@ -192,4 +196,15 @@ public class UserBean {
 		this.userClass = userClass;
 	}
 
+	public String getVisitDate() {
+		if(visitDate != null){
+			visitDate.substring(2, 16);
+		}
+		return visitDate;
+	}
+
+	public void setVisitDate(String visitDate) {
+		this.visitDate = visitDate;
+	}
+	
 }

@@ -8,8 +8,8 @@ public class SMSBean {
 	private int userIndex;
 	private String id; // 아이디
 	private String deptCode; // 부서코드
-	private String toPhone; // 보내는 전화번호
-	private String fromPhone; // 받는 전화번호
+	private String toPhone;	// 받는 전화번호 
+	private String fromPhone;  // 보내는 전화번호
 	private String message; // 메시지
 	private boolean sendState; // 전송상태
 	private boolean sendResult; // 전송결과

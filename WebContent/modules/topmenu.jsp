@@ -46,7 +46,8 @@
 			}
 		});			
 		
-		// 하위 메뉴
+		// 하위 서브 메뉴
+		// 문자보내기
 		$("#send_top_menu").mouseover(function(){
 			$(this).children("img").attr("src", "./images/top/menu_sub01_on.gif");
 		}).mouseout(function(){
@@ -103,12 +104,12 @@
 			}
 		});	
 		
-		// 게시판 보기
+		// 공지사항게시판 보기
 		$("#notice_view_menu").mouseover(function(){
-			$(this).children("img").attr("src", "./images/top/menu_sub07_on.gif");
+			$(this).children("img").attr("src", "./images/top/menu_admin_sub03_on.gif");
 		}).mouseout(function(){
 			if($(this).attr("data-on") != "on"){
-				$(this).children("img").attr("src", "./images/top/menu_sub07_off.gif");
+				$(this).children("img").attr("src", "./images/top/menu_admin_sub03_off.gif");
 			}
 		});		
 		
@@ -175,7 +176,7 @@
             <li class="gnb_sub">
             	<a href="./NoticeListAction.bo" id="top_menu4"><img src="./images/top/menu04_off.gif" alt="문의/제안" border="0"/></a>
             	<ul class="gnb_sub4">
-                	<li><a href="./NoticeListAction.bo"  id="notice_view_menu"><img  src="./images/top/menu_sub07_off.gif"  alt="공지사항" border="0"/></a></li>                    	
+                	<li><a href="./NoticeListAction.bo"  id="notice_view_menu"><img  src="./images/top/menu_admin_sub03_off.gif"  alt="공지사항" border="0"/></a></li>                    	
                 	<li><a href="./BoardListAction.bo"  id="board_view_menu"><img  src="./images/top/menu_sub07_off.gif"  alt="문의보기" border="0"/></a></li>
                     <li><a href="./BoardWriteViewAction.bo"  id="board_write_menu"><img src="./images/top/menu_sub08_off.gif"  alt="문의하기" border="0"/></a></li>
                 </ul>

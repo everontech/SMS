@@ -46,11 +46,6 @@
 				 --%>
 				<div></div>		
 					<p style="float: left;display: inline-block;font-size: 1.2em; margin-top: 10px;font-weight: bold;"  >그룹 : ${size}개</p>
-					<c:if test="${size < 10}">
-						<div style="float: right;display: inline-block;margin-bottom: 5px;">
-							<a href="#"  id="add_btn">추가</a>
-						</div>
-					</c:if>
 				<table style="float: left;" id="groupList" width="100%" border="0" cellpadding="0" cellspacing="0">
 					<colgroup>
 						<col width="15%" />
@@ -86,6 +81,11 @@
 					</c:forEach>
 					</tbody>
 				</table>
+				<c:if test="${size < 10}">
+					<div style="float: right;display: inline-block;margin-top: 5px;">
+						<a href="#"  id="add_btn">추가</a>
+					</div>
+				</c:if>					
 			</div>
 		</div>
 	</div>

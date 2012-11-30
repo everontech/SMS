@@ -1,8 +1,15 @@
 package kr.go.police.board;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,98 +18,88 @@ import kr.go.police.LoginCheck;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
+/**
+ *	게시물관련 컨트롤러
+ *	문의, 게시판 ..
+ */
 public class BoardFrontController extends javax.servlet.http.HttpServlet
 		implements javax.servlet.Servlet {
-	
+	// key = command , value = Object
+	private Map<String, Object> commandMap = new HashMap<String, Object>();
 	static final long serialVersionUID = 1L;
+	
+	/**
+	 * init 호출시 config 파일을 읽어와 매핑정보 저장
+	 */
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		String configFile = config.getInitParameter("configFile");
+		Properties prop = new Properties();
+		FileInputStream fis = null;
+		try{
+			// properties path 를 읽어온다.			
+			ServletContext context = config.getServletContext();
+			String path = (String)context.getInitParameter("propertiesPath");
+			System.out.println("properties Path : " + path);				
+			fis = new FileInputStream(path + configFile);
+			prop.load(fis);
+		}catch(IOException ioe){
+			System.out.println("config 파일을 읽을수 없습니다.");			
+			throw new ServletException();
+		}finally{
+			if(fis != null){
+				try{
+					fis.close();
+				}catch(Exception e){}
+			}
+		}
+		// command & class 매핑처리
+		Iterator<Object> keyIter = prop.keySet().iterator();
+		while(keyIter.hasNext()){
+			String command = (String)keyIter.next();
+			// 해당 클래스이름 얻기
+			String className = prop.getProperty(command);
+			System.out.println(className  + " ");		
+			try{
+				// map에 저장처리
+				Class<?> actionClass = Class.forName(className);
+				Object actionInstance = actionClass.newInstance();
+				commandMap.put(command, actionInstance);
+			}catch(ClassNotFoundException e){
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("init complete!");		
+		
+	}
 
 	protected void doProcess(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-		// 로그인 여부 확인
-		if(!LoginCheck.checkLogin(request, response)){
-			return;
-		}
-		
+		// command action 얻기
 		String RequestURI = request.getRequestURI();
 		String contextPath = request.getContextPath();
 		String command = RequestURI.substring(contextPath.length());
 		ActionForward forward = null;
 		Action action = null;
-		
-		// 공지사항
-		if (command.equals("/NoticeListAction.bo")) {
-			action = new NoticeListAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		// 문의보기
-		}else if (command.equals("/BoardListAction.bo")) {
-			action = new BoardListAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		//	문의하기
-		}else if (command.equals("/BoardWriteViewAction.bo")) {
-			try {
-				forward =  new ActionForward();
-				forward.setPath("./board/board_write.jsp"); 				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		//	문의하기처리
-		}else if (command.equals("/BoardWriteAction.bo")) {
-			action = new BoardWriteAction();			
-			try {
-				forward = action.execute(request, response);		
-			} catch (Exception e) {
-				e.printStackTrace();
-			}			
-		// 문의수정보기화면	
-		} else if (command.equals("/BoardModifyViewAction.bo")) {
-			action = new BoardModifyView();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}			
-		// 내 문의 삭제처리	
-		} else if (command.equals("/BoardDeleteAction.bo")) {
-			action = new BoardDeleteAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		//	게시물 수정
-		} else if (command.equals("/BoardModifyAction.bo")) {
-			action = new BoardModifyAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		//	게시물 세부보기
-		} else if (command.equals("/BoardDetailView.bo")) {
-			action = new BoardDetailView();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		//	댓글등록
-		} else if (command.equals("/BoardReplyAction.bo")) {
-			action = new BoardReplyWriteAction();
-			try {
-				forward = action.execute(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		//	command 매핑정보로 해당 action 수행
+		System.out.println("command : " + command);
+		action = (Action)commandMap.get(command);
+		// 매핑된 액션이 없을경우 에러페이지로 이동
+		if(action == null){
+			response.sendRedirect("./error/error_404.jsp");
+			return;
 		}		
+		System.out.println("class  : " + action.getClass().toString());	
+		try {
+			forward = action.execute(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
 		
 		if (forward != null) {
 			if (forward.isRedirect()) {

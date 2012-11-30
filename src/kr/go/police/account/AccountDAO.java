@@ -1,6 +1,5 @@
 package kr.go.police.account;
 
-import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +10,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import kr.go.police.CommonCon;
-import kr.go.police.SMSUtil;
 import kr.go.police.aria.Aria;
 
 /**
@@ -44,11 +42,17 @@ public class AccountDAO extends CommonCon {
 			conn = dataSource.getConnection();
 			String sql = "SELECT * FROM user_info WHERE f_id = ? AND f_password =password(?) ";
 			pstmt = conn.prepareStatement(sql);
-			Aria aria = Aria.getInstance();	
 			pstmt.setString(1, id);
 			pstmt.setString(2, pwd);
 			rs = pstmt.executeQuery();
 			if(rs.next()){
+				//	정상 로그인이라면 접속시간 업데이트처리
+				sql = "UPDATE user_info SET f_visit_date = now()" +
+						" WHERE f_id = ? AND f_password =password(?) ";
+				pstmt = conn.prepareStatement(sql);				
+				pstmt.setString(1, id);		
+				pstmt.setString(2, pwd);				
+				pstmt.executeUpdate();
 				return true;
 			}
 		}catch(Exception e){
@@ -310,51 +314,6 @@ public class AccountDAO extends CommonCon {
 		return count;
 	}
 	
-
-	/**
-	 * 유저 목록 가져오기
-	 * @param search
-	 * @param start
-	 * 		시작 번호
-	 * @param end
-	 * 		마지막 번호
-	 * @return
-	 */
-	protected List<UserBean> getUserList(final String search, int start, int end){
-		List<UserBean> list = new ArrayList<UserBean>();
-		UserBean data = null;		
-		try {
-			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE (f_id like ? OR f_name like ?) ORDER BY f_index DESC LIMIT ?, ? ");
-			pstmt.setString(1, "%" + search + "%");	
-			pstmt.setString(2, "%" + search + "%");
-			pstmt.setInt(3, start -1);	
-			pstmt.setInt(4, end);			
-			rs = pstmt.executeQuery();
-			Aria aria = Aria.getInstance();	
-			while(rs.next())	{
-				// 인덱스, 아이디, 이름, 경찰서명, 계급, 부서명, 등급
-			    data = new UserBean();	
-			    data.setIndex(rs.getInt("f_index"));
-			    data.setId(rs.getString("f_id"));	  			    
-			    data.setName(aria.encryptHexStr2DecryptStr(rs.getString("f_name")));
-			    data.setPsName(rs.getString("f_psname"));
-			    data.setGrade(rs.getString("f_grade"));
-			    data.setDeptName(rs.getString("f_deptname"));
-			    data.setUserClass(rs.getInt("f_class"));
-			    data.setApprove(rs.getString("f_approve").equalsIgnoreCase("y"));			    
-			    data.setPhone1(aria.encryptHexStr2DecryptStr(rs.getString("f_phone1")));
-				list.add(data);
-  			}		
-			return list;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("getUserList 에러 : " + e.getMessage());
-			return null;
-		}finally{
-			connClose();
-		}
-	}
 	
 	/**
 	 * 	신규 가입 유저 목록수
@@ -363,7 +322,8 @@ public class AccountDAO extends CommonCon {
 		int size = 0;
 		try {
 			conn = dataSource.getConnection();
-			pstmt = conn.prepareStatement("SELECT count(*) as cnt FROM user_info WHERE f_reg_date > SUBDATE(now(), 7) ");
+			pstmt = conn.prepareStatement("SELECT count(*) as cnt FROM user_info " +
+					" WHERE f_reg_date > SUBDATE(now(), 7) ");
 			rs = pstmt.executeQuery();
 			if(rs.next())	{
 				size =  rs.getInt("cnt");
@@ -490,6 +450,194 @@ public class AccountDAO extends CommonCon {
 			connClose();
 		}
 	}
+	
+	/**
+	 *	미승인 유저수구하기
+	 * @return
+	 * 	유저수
+	 */
+	protected int getArvListCount(){
+		int count = 0;
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT count(*) FROM user_info where f_approve='n'");
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getArvListCount 에러 : " +  e.getMessage());
+		}finally{
+			connClose();
+		}
+		return count;
+	}
+	
+	/**
+	 *	휴면유저수구하기
+	 * @return
+	 * 	유저수
+	 */
+	protected int getQuserListCount(){
+		int count = 0;
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT count(*) FROM user_info WHERE" +
+					" f_visit_date < NOW()- interval 3 month");
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getQuserListCount 에러 : " +  e.getMessage());
+		}finally{
+			connClose();
+		}
+		return count;
+	}
+	
+
+	/**
+	 * 유저 목록 가져오기
+	 * @param search
+	 * @param start
+	 * 		시작 번호
+	 * @param end
+	 * 		마지막 번호
+	 * @return
+	 */
+	protected List<UserBean> getUserList(final String search, int start, int end){
+		List<UserBean> list = new ArrayList<UserBean>();
+		UserBean data = null;		
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE (f_id like ? OR f_name like ?) ORDER BY f_index DESC LIMIT ?, ? ");
+			pstmt.setString(1, "%" + search + "%");	
+			pstmt.setString(2, "%" + search + "%");
+			pstmt.setInt(3, start -1);	
+			pstmt.setInt(4, end);			
+			rs = pstmt.executeQuery();
+			Aria aria = Aria.getInstance();	
+			while(rs.next())	{
+				// 인덱스, 아이디, 이름, 경찰서명, 계급, 부서명, 등급
+			    data = new UserBean();	
+			    data.setIndex(rs.getInt("f_index"));
+			    data.setId(rs.getString("f_id"));	  			    
+			    data.setName(aria.encryptHexStr2DecryptStr(rs.getString("f_name")));
+			    data.setPsName(rs.getString("f_psname"));
+			    data.setGrade(rs.getString("f_grade"));
+			    data.setDeptName(rs.getString("f_deptname"));
+			    data.setUserClass(rs.getInt("f_class"));
+			    data.setApprove(rs.getString("f_approve").equalsIgnoreCase("y"));			    
+			    data.setPhone1(aria.encryptHexStr2DecryptStr(rs.getString("f_phone1")));
+				list.add(data);
+  			}		
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getUserList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}
+	
+	
+	/**
+	 * 미승인 유저 목록 가져오기
+	 * @param search
+	 * @param start
+	 * 		시작 번호
+	 * @param end
+	 * 		마지막 번호
+	 * @return
+	 */	
+	protected List<UserBean> getArvList(final String search, int start, int end){
+		List<UserBean> list = new ArrayList<UserBean>();
+		UserBean data = null;		
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE (f_approve='n') AND" +
+					" (f_id like ? OR f_name like ?) ORDER BY f_index DESC LIMIT ?, ?");
+			pstmt.setString(1, "%" + search + "%");	
+			pstmt.setString(2, "%" + search + "%");
+			pstmt.setInt(3, start -1);	
+			pstmt.setInt(4, end);			
+			rs = pstmt.executeQuery();
+			Aria aria = Aria.getInstance();	
+			while(rs.next())	{
+				// 인덱스, 아이디, 이름, 경찰서명, 계급, 부서명, 등급
+			    data = new UserBean();	
+			    data.setIndex(rs.getInt("f_index"));
+			    data.setId(rs.getString("f_id"));	  			    
+			    data.setName(aria.encryptHexStr2DecryptStr(rs.getString("f_name")));
+			    data.setPsName(rs.getString("f_psname"));
+			    data.setGrade(rs.getString("f_grade"));
+			    data.setDeptName(rs.getString("f_deptname"));
+			    data.setUserClass(rs.getInt("f_class"));
+			    data.setRegDate(rs.getString("f_reg_date"));			    
+			    data.setApprove(rs.getString("f_approve").equalsIgnoreCase("y"));			    
+			    data.setPhone1(aria.encryptHexStr2DecryptStr(rs.getString("f_phone1")));
+				list.add(data);
+  			}		
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getArvList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}
+	/**
+	 * 휴면계정 목록 가져오기
+	 * @param search
+	 * @param start
+	 * 		시작 번호
+	 * @param end
+	 * 		마지막 번호
+	 * @return
+	 */	
+	protected List<UserBean> getQuserList(final String search, int start, int end){
+		List<UserBean> list = new ArrayList<UserBean>();
+		UserBean data = null;	
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM user_info WHERE " +
+					" f_visit_date < NOW() - interval 3 month AND (f_id like ? OR f_name like ?) " +
+					" ORDER BY f_index DESC LIMIT ?, ?");
+			pstmt.setString(1, "%" + search + "%");	
+			pstmt.setString(2, "%" + search + "%");
+			pstmt.setInt(3, start -1);	
+			pstmt.setInt(4, end);			
+			rs = pstmt.executeQuery();
+			Aria aria = Aria.getInstance();	
+			while(rs.next())	{
+				// 인덱스, 아이디, 이름, 경찰서명, 계급, 부서명, 등급
+			    data = new UserBean();	
+			    data.setIndex(rs.getInt("f_index"));
+			    data.setId(rs.getString("f_id"));	  			    
+			    data.setName(aria.encryptHexStr2DecryptStr(rs.getString("f_name")));
+			    data.setPsName(rs.getString("f_psname"));
+			    data.setGrade(rs.getString("f_grade"));
+			    data.setDeptName(rs.getString("f_deptname"));
+			    data.setUserClass(rs.getInt("f_class"));
+			    data.setVisitDate(rs.getString("f_visit_date"));			    
+			    data.setPhone1(aria.encryptHexStr2DecryptStr(rs.getString("f_phone1")));
+				list.add(data);
+  			}		
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getQuserList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}
+	
 	
 	/**
 	 * 리소스 반환 반환 순서대로 닫아준다.

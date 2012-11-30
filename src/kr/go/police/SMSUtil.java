@@ -4,6 +4,7 @@ public class SMSUtil {
 
 	/**
 	 * 핵사를 바이트로 변환
+	 * 
 	 * @param hex
 	 * @return
 	 */
@@ -21,6 +22,7 @@ public class SMSUtil {
 
 	/**
 	 * 바이트를 핵사로 변환
+	 * 
 	 * @param ba
 	 * @return
 	 */
@@ -37,9 +39,9 @@ public class SMSUtil {
 		return sb.toString();
 	}
 
-
 	/**
 	 * 바이트에서 스트링으로 변환
+	 * 
 	 * @param byteInput
 	 * @return
 	 */
@@ -60,70 +62,183 @@ public class SMSUtil {
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * 게시판 페이지네이션 만들기
+	 * 
 	 * @param count
-	 * 		게시물 총갯수
+	 *            게시물 총갯수
 	 * @param currentPage
-	 * 		현재 페이지
+	 *            현재 페이지
 	 * @param pageSize
-	 * 		페이지 크기
+	 *            페이지 크기
 	 * @param url
-	 * 		링크 주소
+	 *            링크 주소
 	 * @param params
-	 * 		url 파라미터 
-	 * @return
-	 * 		페이지네이션 html
+	 *            url 파라미터
+	 * @return 페이지네이션 html
 	 */
-	public static String makePagiNation(int count, int currentPage, int pageSize, String url, String params){
+	public static String makePagiNation(int count, int currentPage,
+			int pageSize, String url, String params) {
 		StringBuffer sb = new StringBuffer();
-		String currentClass = "";		// 현재 페이지 강조 클래슨
+		String currentClass = ""; // 현재 페이지 강조 클래슨
 		// 페이지 갯수
-		int pageCount = count / pageSize + (count % pageSize ==0?0:1);
+		int pageCount = count / pageSize + (count % pageSize == 0 ? 0 : 1);
 		// 시작페이지
-		int startPage = (int)(currentPage /10) * 10 + 1;
+		int startPage = (int) (currentPage / 10) * 10 + 1;
 		int pageBlock = 10;
 		int endPage = startPage + pageBlock - 1;
-		
-		if(endPage > pageCount){
+
+		if (endPage > pageCount) {
 			endPage = pageCount;
 		}
-		
+
 		// 파라미터가 있으면
-		if(params != null && params.length() > 0){
-			params = "&" + params; 		
-		}else{
+		if (params != null && params.length() > 0) {
+			params = "&" + params;
+		} else {
 			params = "";
 		}
 		sb.append("<div class=\"page\">");
-		// 현재페이지에서 이전 10개 페이지가 있으면 10개페이지 앞으로		
-		if(startPage > 10){
-			sb.append("<a href=\"" +url +  "?page=" + (startPage - 10) +  params + "\"><img src=\"images/notice/page_prev_btn.gif\" /></a>\r\n");
+		// 현재페이지에서 이전 10개 페이지가 있으면 10개페이지 앞으로
+		if (startPage > 10) {
+			sb.append("<a href=\""
+					+ url
+					+ "?page="
+					+ (startPage - 10)
+					+ params
+					+ "\"><img src=\"images/notice/page_prev_btn.gif\" /></a>\r\n");
 		}
-		
+
 		// 이전페이지
-		if(currentPage > 1){
-			sb.append("<a href=\"" +url +  "?page=" + (currentPage - 1) +  params + "\"><img src=\"images/notice/page_prev_btn.gif\" /></a>\r\n");
+		if (currentPage > 1) {
+			sb.append("<a href=\""
+					+ url
+					+ "?page="
+					+ (currentPage - 1)
+					+ params
+					+ "\"><img src=\"images/notice/page_prev_btn.gif\" /></a>\r\n");
 		}
-		
+
 		// 페이지 목록처리
-		for(int i= startPage; i <= endPage; i++){
-			currentClass = (currentPage == i)?"class=\"current\" ":"";//	현재 페이지이면 강조
-			sb.append("<a  href=\"" +url +  "?page=" +  i + params + "\"><span  " + currentClass + ">" + i + "</spa></a>");
+		for (int i = startPage; i <= endPage; i++) {
+			currentClass = (currentPage == i) ? "class=\"current\" " : "";// 현재
+																			// 페이지이면
+																			// 강조
+			sb.append("<a  href=\"" + url + "?page=" + i + params
+					+ "\"><span  " + currentClass + ">" + i + "</spa></a>");
 		}
-		
+
 		// 다음 페이지가 있으면 다음 페이지를 보여준다.
-		if(currentPage < endPage){
-			sb.append("<a href=\"" +url +  "?page=" + (currentPage + 1) +  params + "\"><img src=\"images/notice/page_next_btn.gif\" /></a>\r\n");
-		}		
-		
+		if (currentPage < endPage) {
+			sb.append("<a href=\""
+					+ url
+					+ "?page="
+					+ (currentPage + 1)
+					+ params
+					+ "\"><img src=\"images/notice/page_next_btn.gif\" /></a>\r\n");
+		}
+
 		// 현재페이지에서 10개페이지가 넘으면 10개뒤로
-		if(endPage < pageCount){
-			sb.append("<a href=\"" +url +  "?page=" +  (startPage + 10) + "\"><img src=\"images/notice/page_next_btn.gif\" /></a>" );
+		if (endPage < pageCount) {
+			sb.append("<a href=\"" + url + "?page=" + (startPage + 10)
+					+ "\"><img src=\"images/notice/page_next_btn.gif\" /></a>");
 		}
 		sb.append("</div>");
-		
+
 		return sb.toString();
 	}
+
+	/**
+	 * 문자열에서 숫자만 필터링
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String getOnlyNumberString(String str) {
+		if (str == null)
+			return str;
+
+		StringBuffer sb = new StringBuffer();
+		int length = str.length();
+		for (int i = 0; i < length; i++) {
+			char curChar = str.charAt(i);
+			if (Character.isDigit(curChar))
+				sb.append(curChar);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * html 제거 하기
+	 * 
+	 * @param htmlString
+	 * @return
+	 */
+	public static String removeHTML(String htmlString) {
+		// Remove HTML tag from java String
+		String noHTMLString = htmlString.replaceAll("\\<.*?\\>", "");
+		// Remove Carriage return from java String
+		noHTMLString = noHTMLString.replaceAll("\r", "<br/>");
+		// Remove New line from java string and replace html break
+		noHTMLString = noHTMLString.replaceAll("\n", " ");
+		noHTMLString = noHTMLString.replaceAll("\'", "&#39;");
+		noHTMLString = noHTMLString.replaceAll("\"", "&quot;");
+		return noHTMLString;
+	}
+
+	/**
+	 * Replace String str에서 rep에 해당하는 String을 tok로 replace
+	 * 
+	 * @param str
+	 *            대체될 문자를 포함한 값
+	 * @param regex
+	 *            대체할 문자
+	 * @param replacement
+	 *            rep가 대체된 문자
+	 * @return rep의 값이 replacement로 바뀐 스트링값을 반환한다.
+	 */
+	public static String getReplaceALL(String str, String regex,
+			String replacement) {
+		String retStr = "";
+		if (str == null || (str != null && str.length() < 1)) {
+			return "";
+		}
+		if (regex == null || (regex != null && regex.length() < 1)) {
+			return str;
+		}
+		if ((str.indexOf(regex) == -1)) {
+			return str;
+		}
+		for (int i = 0, j = 0; (j = str.indexOf(regex, i)) > -1; i = j
+				+ regex.length()) {
+			retStr += (str.substring(i, j) + replacement);
+		}
+		return retStr
+				+ str.substring(str.lastIndexOf(regex) + regex.length(),
+						str.length());
+	}
+
+	/**
+	 * parseHtmlString 로 바꾸어준 특수 문자 값을 다시 원래 문자로 바꾸어 주는 메소드
+	 * 
+	 * @param strText
+	 * @return
+	 */
+	public static String reverseHtmlString(String strText) {
+		if (strText == null) {
+			strText = "";
+		}
+		strText = getReplaceALL(strText, "&lt;", "<");
+		strText = getReplaceALL(strText, "&gt;", ">");
+		strText = getReplaceALL(strText, "&amp;", "&");
+		strText = getReplaceALL(strText, "&#37;", (char) 37 + "");
+		strText = getReplaceALL(strText, "&quot;", (char) 34 + "");
+		strText = getReplaceALL(strText, "&#39;", (char) 39 + "");
+		strText = getReplaceALL(strText, "&#35;", "\n");
+		strText = getReplaceALL(strText, "\n", "<br>");
+		strText = getReplaceALL(strText, " ", "&nbsp;");
+		return strText;
+	}
+
 }

@@ -27,6 +27,22 @@
 				<h3>
 					<img src="images/notice/title_notice.gif" alt="공지사항" />
 				</h3>
+				<%--	검색 처리 --%>
+				<form style="clear: both; width: 100%; padding:3px; vertical-align: middle;" id="search_frm" action="./NoticeListAction.bo" method="get"  >
+					<input value="" name="page" type="hidden" />
+					<select id="limit" name="limit" style="float: left; display: inline-block;">
+						<option ${limit == "10"?"selected":""} value="10">10개</option>
+						<option ${limit == "20"?"selected":""} value="20">20개</option>
+						<option ${limit == "30"?"selected":""} value="30">30개</option>
+						<option ${limit == "40"?"selected":""} value="40">40개</option>
+						<option ${limit == "50"?"selected":""} value="50">50개</option>
+					</select>	
+					<div style="float: right; display: inline-block;">
+						<input title="검색할 작성자 혹은 제목을 입력하세요" style="margin-bottom: 3px;" value="${search}"  class="search" type="text" name="search" id="search" size="20" />
+						<a  href="#"  onclick="return false;" id="search_btn"><img style="margin-bottom:5px;margin-right:5px; right;vertical-align: middle;"  src="./images/base/category_btn.gif" /></a>
+					</div>
+				</form>
+								
 				<!--게시판-->
 				<table id="board_table" width="100%" border="0" cellpadding="0" cellspacing="0">
 					<colgroup>
@@ -60,7 +76,7 @@
 							<td class="tite">
 									${data.hasFile?'<img src="images/notice/icon_disk.gif" />':''}
 									${data.newIcon?'<img src="images/notice/icon_n.gif" />':''}							
-									<a href="./BoardDetailView.bo?index=${data.index}">${data.notice?'[공지]':''}
+									<a href="./NoticeDetailView.bo?index=${data.index}">${data.notice?'[공지]':''}
 									${data.title}</a>
 							</td>
 							<td class="writer">${data.registerName}</td>
@@ -97,12 +113,24 @@ $(function(){
       function () {
         $(this).siblings().andSelf().removeClass("hover");
       }
-    );   
+    ); 
+    
+	//	입력창 에서 엔터 버튼 입력시 폼전송
+    $("#search").tooltip().keydown(function(event){
+	       if(event.keyCode == 13){
+	    	   $("#search_frm").submit();
+	       }
+    });	 
+	
+	// 검색 버튼    
+    $("#search_btn").click(function(){
+    	$("#search_frm").submit();
+    });  	
     
 	// 메뉴 처리
 	$("#top_menu4").attr("data-on", "on");
 	$("#top_menu4 > img").attr("src", "./images/top/menu04_on.gif");
-	$("#notice_view_menu > img").attr("src", "./images/top/menu_sub07_on.gif");
+	$("#notice_view_menu > img").attr("src", "./images/top/menu_admin_sub03_on.gif");
 	$("#notice_view_menu").attr("data-on", "on");
 	$("#top_menu4").trigger("mouseover");
 	$(".gnb_sub4").show();
