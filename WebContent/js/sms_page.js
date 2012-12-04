@@ -694,11 +694,16 @@ $(document).ready(function(){
      * 내 문자 혹은 특수 문자 영역 선택처리
      */
     $("#myMessageBox").click(function(){
+    	/*
     	$(this).attr("src", "./images/lettersend/tab01_on.gif");
     	$("#specailCharBox").attr("src", "./images/lettersend/tab02_off.gif");    	
     	$(".my02").hide();    	
     	$(".my01").show();
+    	*/
     });
+    
+	// 전화번호 하이픈 넣기
+	$(".hyphen").addHyphen();
     
     $("#specailCharBox").click(function(){
     	$(this).attr("src", "./images/lettersend/tab02_on.gif");
@@ -707,7 +712,43 @@ $(document).ready(function(){
     	$(".my02").show();
     });
     
+    // 예약 날짜
+    $("#reserved_btn").click(function(){
+    	$("#reserved_datetime").datetimepicker( "show" );
+    });
     
+    // datetime picker 로컬화처리 및 옵션 설정
+    // datetime가 show할때 툴바 버튼을 겹쳐지므로 툴바 버튼을 숨겨주고
+    // 다시 close할때 복구한다.
+	$("#reserved_datetime").datetimepicker({
+		hideIfNoPrevNextType : true,
+		dateFormat : "yy-mm-dd",
+		monthNames: [ "1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월" ],
+		dayNamesType : ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"  ],
+		dayNamesMin : ["일", "월", "화", "수", "목", "금", "토"  ],		
+		prevText: "이전",
+		nextText: "다음",
+		closeText: "확인",		
+		currentText : "현재",
+		hourText : "시",
+		minuteText : "분",
+		timeText : "시간",
+		beforeShow : function(){
+			$("#toolbar").css("visibility", "hidden");
+			$("#reserved_datetime").val("");
+			//$("#reserved_datetime, #reserved_label").show();
+		},
+		onClose : function(dateText, inst ){
+			$("#toolbar").css("visibility", "visible");
+			if(dateText.length <=0){
+				//$("#reserved_datetime,  #reserved_label").hide();
+				
+			}
+		},
+		onSelect : function(){
+		//	$("#reserved_datetime").val();
+		}
+	});
 	/*
 	 * 특수문자 tab
 	 * 우측 특수문자들 모음 기본 인덱스는 첫번째로 함

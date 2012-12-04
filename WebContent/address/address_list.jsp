@@ -5,14 +5,6 @@
 <%@ page import="kr.go.police.address.*" %>	
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-	// requset 로 부터 주소록을 가져온다.
-	List<AddressBean> list = (List<AddressBean>)request.getAttribute("list");
-	// 그룹 인덱스를 가져온다.
-	String groupIndex = (String)request.getAttribute("groupIndex");
-	// 페이지네이션
-	String pagiNation = (String)request.getAttribute("pagiNation");
-	// 리스트 갯수
-	int listSize = (Integer)request.getAttribute("listSize");	
 	//	리스트 번호
 	int no = (Integer)request.getAttribute("no");		
 %>	
@@ -99,7 +91,7 @@
 					<c:forEach var="data"  items="${list}" >
 						<tr>
 							<td>					
-					   		   <%=no--%>
+					   		   <%=no%>
 					       </td>
 							<td>					
 					   		   <a class="group_td"  data-index="${data.index}"  href="#" onclick="javascript:return false;" >${data.people}</a>

@@ -4,16 +4,9 @@
 <%@ page import="kr.go.police.account.*" %>	
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-	// requset 로 부터 유저 리스트를 가져온다.
-	List<UserBean> list = (List<UserBean>)request.getAttribute("userList");
-	// 페이지네이션
-	String pagiNation = (String)request.getAttribute("pagiNation");
-	// 리스트 갯수
-	int listSize = (Integer)request.getAttribute("listSize");	
 	//	리스트 번호
 	int no = (Integer)request.getAttribute("no");	
 %>	
-<c:set var="list"  value ="<%=list %>" />
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
 <body>
@@ -51,7 +44,7 @@
 					</thead>
 					<tbody>
 					<!--  회원 리스트 -->
-					<c:forEach var="user"  items="${list}"  >
+					<c:forEach var="user"  items="${userList}"  >
 						<tr>
 							<td>					
 					   		   <%=no--%>

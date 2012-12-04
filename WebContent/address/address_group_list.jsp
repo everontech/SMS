@@ -4,16 +4,9 @@
 <%@ page import="kr.go.police.sms.*" %>	
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-	// requset 로 부터 그룹리스트를 가져온다.
-	List<Group> groupList = (List<Group>)request.getAttribute("groups");
-	// 페이지네이션
-	String pagiNation = (String)request.getAttribute("pagiNation");
-	// 리스트 갯수
-	int listSize = (Integer)request.getAttribute("listSize");	
 	//	리스트 번호
 	int no = (Integer)request.getAttribute("no");		
 %>	
-<c:set var="list"  value ="<%=groupList %>" />
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
 <body>
@@ -73,7 +66,7 @@
 				       </tr>
 				       -->
 					<!--  내그룹 리스트 -->
-					<c:forEach var="data"  items="${list}" >
+					<c:forEach var="data"  items="${groups}" >
 						<tr>
 							<td>
 					   		   <%=no--%>
@@ -100,7 +93,7 @@
 						<a  href="#"  id="add_btn">추가</a>
 				</div>		
 				<div style="clear: both;"></div>				
-				<c:if test="${(empty list) == false}">
+				<c:if test="${(empty groups) == false}">
 					${pagiNation}
 				</c:if>	
 								

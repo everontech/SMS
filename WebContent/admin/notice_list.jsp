@@ -6,11 +6,6 @@
 <%@ page import="kr.go.police.board.*" %>	
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <%
-	List<BoardBean> list = (List<BoardBean>)request.getAttribute("list");
-	// 페이지네이션
-	String pagiNation = (String)request.getAttribute("pagiNation");
-	// 리스트 갯수
-	int listSize = (Integer)request.getAttribute("listSize");	
 	//	리스트 번호
 	int no = (Integer)request.getAttribute("no");		
 %>

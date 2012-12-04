@@ -8,9 +8,24 @@
 <link rel="stylesheet" type="text/css" href="./css/sms.css"/>  
 <style>
 #myMessageBox, #specailCharBox{cursor: pointer;}
-#send_result_dialog{ display: none;}
+#send_result_dialog{ display: none; }
+
+
+/* css for timepicker */
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; }
+.ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+
 </style>
 <script type="text/javascript" src="./js/sms_page.js"></script>
+<script type="text/javascript" src="./js/timepicker.js"></script>
 <body>
 	<div id="wrapper">
 		<%-- 상단메뉴  --%>
@@ -70,22 +85,24 @@
 
                    </div>
 						<!--div class="nsent"-->
-						<div class="nsent" id="JsNewNum" style="margin-top: 10px;">
-							<span id="toolbar" class="ui-widget-header ui-corner-all" >
-						    	<a tabindex="996" id="address_book_btn" href="#" onClick="return false;">주소록</a>
-                                <a style="display: none;" tabindex="995" id="addExcel" href="#" onClick="return false;">엑셀</a> 							
-								<a href="#" tabindex="992" onClick="return false;" id="vknPad">숫자패드</a> 
-                            	<a href="#" tabindex="991" onClick="return false;" id="reset">초기화</a>
-                      	   		<a tabindex="994" id="listPlus" href="#" onClick="return false;">입력추가</a>  
+						<div class="nsent" id="JsNewNum" style="margin-top: 10px;text-align: center;">
+							<span id="toolbar" >
+						    	<a id="address_book_btn" href="#" onClick="return false;">주소록</a>
+                                <a style="display: none;"id="addExcel" href="#" onClick="return false;">엑셀</a> 							
+								<a href="#"  onClick="return false;" id="vknPad">숫자패드</a> 
+                            	<a href="#" onClick="return false;" id="reset">초기화</a>
+                      	   		<a href="#"  id="listPlus" onClick="return false;">추가</a>  
+                      	   		<a href="#"  id="reserved_btn" onClick="return false;">예약</a>                       	   		
 							</span>
 						</div>
 						<!--임시 예약 필드 yyyymmddhhmi <input type="text" name="reserve" value=""-->
 						<div id="reservationTime">
 						<!-- 	<strong>예약일시</strong> :<span></span> -->
 						</div>
-                        <div class="to" style="font-size: 16px; font-weight: bold;text-align: center;">
-							내 번호 :<input type="text" name="my_phone_num" id="my_phone_num"
-								value="${sessionScope.phone}" style="width: 181px; margin-left: 5px;" class="inp" />
+                        <div class="to" style="font-size: 12px; font-weight: bold;text-align: left; width: 100%;">
+							내 번호 :<input class="hyphen"  type="text" name="my_phone_num" id="my_phone_num"
+								value="${sessionScope.phone}" style="width: 131px; margin-left: 5px;" class="inp" />
+								<label id="reserved_label">예약 :</label><input type="text" id="reserved_datetime" name="reserved_datetime"  disabled="disabled" class="inp" style="width: 115px; margin-left: 5px;font-size: 12px;"   />								
 						</div>
 						<div class="btn" ">
 							<a id="send_btn" href="#" onClick="return false">

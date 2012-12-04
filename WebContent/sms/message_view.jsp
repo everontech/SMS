@@ -5,13 +5,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 		int groupIndex = 0;
-		// 해당 메세지객체
-		Message data = (Message)request.getAttribute("message");
-		// 그룹 리스트
-		List<Group> groupList = (List<Group>)request.getAttribute("groups");
 %>	
-<c:set var="data"  value ="<%=data %>" />
-<c:set var="groups"  value ="<%=groupList %>" />
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
   <style>
@@ -90,17 +84,17 @@ $(function() {
         	<h3><img src="images/lettersend/title_manage_e.gif" alt="문자함등록" /></h3>
             <div class="phone">   
             	<form id="delete_frm" action="./MyMessageDeleteAction.sm" method="post">
-                		<input value="${data.index}" id="index" name="index" type="hidden" />
-                		<input value="${data.groupIndex}" id="groupIndex" name="groupIndex"  type="hidden" />                		
+                		<input value="${message.index}" id="index" name="index" type="hidden" />
+                		<input value="${message.groupIndex}" id="groupIndex" name="groupIndex"  type="hidden" />                		
                 </form>
                              
             	<form id="frm" action="./MyMessageModifyAction.sm" method="post">
                 	<fieldset>       
-                		<input value="${data.index}" id="index" name="index" type="hidden" />
-                		<input value="${data.groupIndex}" id="groupIndex" name="groupIndex"  type="hidden" />
-                        <p><label>제목</label><input type="text"  value="${data.title}" class="title" id="title" name="title" /></p>
+                		<input value="${message.index}" id="index" name="index" type="hidden" />
+                		<input value="${message.groupIndex}" id="groupIndex" name="groupIndex"  type="hidden" />
+                        <p><label>제목</label><input type="text"  value="${message.title}" class="title" id="title" name="title" /></p>
                         <p style=" padding-top:5px;margin-right:30px; text-align:center; background:#f0f0f0; width:236px; height:20px;">
-                        <label>내용</label></p><textarea name="message" id="message" cols="" rows="" class="txt">${data.message}</textarea>
+                        <label>내용</label></p><textarea name="message" id="message" cols="" rows="" class="txt">${message.message}</textarea>
                 	</fieldset>
                 </form>
                 <ul class="txt_01">

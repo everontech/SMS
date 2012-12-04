@@ -3,20 +3,6 @@
 <%@ page import="java.util.*" %>		
 <%@ page import="kr.go.police.sms.*" %>		
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-	// 선택한 그룹 인덱스
-	String groupIndex = "0";	// 없으면 기본 그룹 인덱스로
- 	if(request.getParameter("groupIndex") != null){
-		groupIndex = (String)request.getParameter("groupIndex");
- 	}
-	// requset 로 부터 내 문자 내역을 가져온다.
-	List<Message> list = (List<Message>)request.getAttribute("messages");
-	// 그룹 목록 
-	List<Message> groupList = (List<Message>)request.getAttribute("groups");
-%>	
-<c:set var="messages"  value ="<%=list %>" />
-<c:set var="groups"  value ="<%=groupList %>" />
-<c:set var="groupIndex"  value ="<%=groupIndex%>" />
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
   <style>
@@ -84,7 +70,7 @@ $(function() {
             <p class="choice_gruop" style="vertical-align: middle;">
 					<select id="group_select">
 						<c:forEach var="group"  items="${groups}" >
-							<option ${groupIndex ==group.index?'selected':''} value="${group.index}">${group.group}</option>
+							<option ${requestScope.groupIndex ==group.index?'selected':''} value="${group.index}">${group.group}</option>
 						</c:forEach>							
 					</select>
             		<a href="./AddMyMessageView.sm" id="add_btn">문자함추가</a>					
@@ -92,7 +78,7 @@ $(function() {
             <p class="top_bg"></p>
             <div class="letterbox_m">
 				<!--  주소록이 없는경우 -->
-				<c:if test="${empty messages}">
+				<c:if test="${empty requestScope.messages}">
 						<h3 style="text-align: center;">문자함이 없습니다.</h3>
 				</c:if>
 				<c:forEach var="msg"  items="${messages}" >

@@ -3,10 +3,6 @@
 <%@ page import="java.util.*" %>	
 <%@ page import="kr.go.police.board.*" %>	
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
-<%
-	BoardBean data = (BoardBean)request.getAttribute("data");
-	List<BoardBean> replyList = (List<BoardBean>)request.getAttribute("replyList");
-%>  
 <%-- Çì´õ  --%>
 <jsp:include page="../modules/header.jsp" />
 <body>

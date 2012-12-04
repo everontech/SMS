@@ -4,16 +4,8 @@
 <%@ page import="kr.go.police.sms.*" %>	
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-	// requset 로 부터 유저 리스트를 가져온다.
-	List<SMSBean> list = (List<SMSBean>)request.getAttribute("sendList");
-	// 페이지네이션
-	String pagiNation = (String)request.getAttribute("pagiNation");
-	// 리스트 갯수
-	int listSize = (Integer)request.getAttribute("listSize");	
-	//	리스트 번호
 	int no = (Integer)request.getAttribute("no");	
 %>
-<c:set var="list"  value ="<%=list %>" />	
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
 <style>
@@ -75,14 +67,14 @@
 					<tbody>
 					
 					<!--  발송내역이 없는경우 -->
-					<c:if test="${empty list}">
+					<c:if test="${empty sendList}">
 						<tr>
 							<td colspan="7"> 발송내역이 없습니다.</td>
 						</tr> 
 					</c:if>
 										
 					<!--  발송내역 리스트  -->
-					<c:forEach var="data"  items="${list}" >
+					<c:forEach var="data"  items="${sendList}" >
 						<tr>
 							<td>					
 					   		   <input  type="checkbox" name="del" value="${data.index}"   />
@@ -115,7 +107,7 @@
 					<a href="#" onclick="return false;" id="del_btn">삭제</a>
 				</form>
 				<div style="clear: both;"></div>				
-				<c:if test="${(empty list) == false}">
+				<c:if test="${(empty sendList) == false}">
 					${pagiNation}
 				</c:if>	
 				<!-- 

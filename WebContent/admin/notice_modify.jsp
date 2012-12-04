@@ -1,10 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
 <%@ page import="kr.go.police.board.*" %>		    
-<%
-	// 게시물 내용 가져오기
-	BoardBean data = (BoardBean)request.getAttribute("data");
-%>  
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
 <body>

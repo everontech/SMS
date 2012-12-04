@@ -8,7 +8,6 @@
 	int count =0;
 	List<Group> groupList = (List<Group>)request.getAttribute("groups");
 %>	
-<c:set var="list"  value ="<%=groupList %>" />
 <c:set var="size"  value ="<%=groupList.size() %>" />
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
@@ -61,7 +60,7 @@
 					</thead>
 					<tbody>
 					<!--  내그룹 리스트 -->
-					<c:forEach var="user"  items="${list}" >
+					<c:forEach var="user"  items="${requestScope.groups}" >
 						<tr>
 							<td>					
 					   		   <%=++count%>

@@ -3,10 +3,6 @@
 <%@ page import="java.util.*" %>	
 <%@ page import="kr.go.police.board.*" %>	
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
-<%
-	BoardBean data = (BoardBean)request.getAttribute("data");
-	List<BoardBean> replyList = (List<BoardBean>)request.getAttribute("replyList");
-%>  
 <%-- 헤더  --%>
 <jsp:include page="../modules/header.jsp" />
 <body>
@@ -45,7 +41,7 @@
 	                          </tr>
 	                      <tr class="re">
 	                               <td><%=session.getAttribute("id")%> |</td>
-	                        <td colspan="2"><form id="frm" action="./BoardReplyAction.bo?parentIndex=${data.index}" method="post"><textarea id="reply_content" name="reply_content" style="width:580px; height:50px; margin:0 0; padding: 0 0;"></textarea></form></td>
+	                        <td colspan="2"><form id="frm" action="./BoardReplyWriteAction.bo?parentIndex=${data.index}" method="post"><textarea id="reply_content" name="reply_content" style="width:580px; height:50px; margin:0 0; padding: 0 0;"></textarea></form></td>
 	                               <td><a href="#" id="reply_btn"><img src="images/notice/btn_re.gif" alt="댓글등록" /></a></td>
 	                          </tr>
 							<!-- 댓글목록 -->
@@ -62,6 +58,7 @@
 	          		<a href="./BoardListAction.bo"><img src="images/notice/list_btn.gif" alt="목록"/></a>
 	          		<% 
 	          			// 내 글일경우 수정 및 삭제처리를 할수 있도록 한다.
+						BoardBean data = (BoardBean)request.getAttribute("data");	          			
 	          			if(data.getRegUserIndex() == Integer.valueOf(session.getAttribute("index").toString()) ){ %>
 	          			<a href="./BoardModifyViewAction.bo?index=${data.index}"><img src="images/notice/modify_btn.gif" alt="수정"/></a>
 						<a href="./BoardDeleteAction.bo?index=${data.index}" id="delete_btn" onClick="return false;"><img src="images/notice/delet_btn.gif" alt="삭제"/></a> 	          			       				

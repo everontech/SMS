@@ -133,7 +133,7 @@ body{background:url(../images/top/top_bg.gif) repeat-x 0 0;}
 scrollbar-3dlight-color: #BEBEBE; scrollbar-arrow-color: #666666; scrollbar-darkshadow-color: #FFFFFF; scrollbar-base-color: #F2EDCE; scrollbar-track-color: #F7F7F7;}
 #contentsWrap #pone_list .bg .list_box ul { margin-bottom:5px;}
 #contentsWrap #pone_list .bg .list_box ul li {  display:inline;}
-#contentsWrap #pone_list .bg .list_box .inp, #my_phone_num { font-size:16px; margin-right:5px; background: #f6f6f6; border:1px solid #CCCCCC; width: 100px; height: 24px;}	
+#contentsWrap #pone_list .bg .list_box .inp, #my_phone_num , #reserved_datetime{ font-size:16px; margin-right:5px; background: #f6f6f6; border:1px solid #CCCCCC; width: 100px; height: 24px;}	
 #contentsWrap #pone_list .bg .list_box ul li span{background: #eeeeef; height: 24px;  border-top:1px solid #CCCCCC; border-bottom:1px solid #CCCCCC; border-left:1px solid #CCCCCC; font-size:11px;  padding:2px; }
 #contentsWrap #pone_list .bg .nsent {font-size: 14px; padding:5px 0 8px 0; width:360px; text-align:right;}
 #contentsWrap #pone_list .bg .nsent span {position: relative;	z-index: 50;}	
