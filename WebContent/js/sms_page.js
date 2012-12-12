@@ -54,8 +54,8 @@ jQuery.phone = {
 			               //$("#sms_sep_icon").attr("src", "./images/lettersend/icon_mms.gif");
 		                	$.phone.smsMode = false;
 			                 that.val( buf.substring(0,80) );
-			                 $(".choice li input").first().attr('checked', '');		                 
-			                 $(".choice li input").last().attr('checked', 'chekced');			                
+			                 $("[name='send_type']").first().removeAttr('checked');		                 
+			                 $("[name='send_type']").last().attr('checked', 'chekced');			                
 	                	}
 	                }else{
 	                	$.phone.smsMode = true;
@@ -70,17 +70,25 @@ jQuery.phone = {
 				if(event.keyCode == 8 || event.keyCode ==46){
 					return false;
 				}
+			}else{
 				
 		        for (var i=0; i< buf.length; i++) { 
 	                l += (buf.charCodeAt(i) > 128) ? 2 : 1; //  한글 처리 
-	                if (l > 80){
+	                if (l > 2000){
 	                	$.phone.smsMode = false;
 		                alert( "더이상 입력할수 없습니다.");
-		                that.val( buf.substring(0,80) );
+		                that.val( buf.substring(0,2000) );
 		                // return false;
 	                }
-		        }
-			}else{
+		        }				
+		        
+		        if(l < 80){	// 80Byte 이하이면
+	                alert( "SMS 모드로 변환 됩니다..");
+                	$.phone.smsMode = true;		   
+	                 $("[name='send_type']").last().removeAttr('checked');		                 
+	                 $("[name='send_type']").first().attr('checked', 'chekced');		                	
+                }
+		        
 				textThat.text( encodedStr + "/2000Bytes" );
 			}
 		}
@@ -173,7 +181,10 @@ jQuery.phone = {
 					call_to_nums : phoneNumbers.join(","),						// 받는 전화번호들(콤마로 연결)
 					message : $("#message").val(),									// 메세지
 					my_phone_num :  $("#my_phone_num").val(),				// 내 전화번호
-					callback : $("#callback").val()										// 내 발송 수신할 번호
+					callback : $("#callback").val(),										// 내 발송 수신할 번호
+					send_type : $("[name='send_type']:checked").val(),			// 전송 타입
+					reserved : $("#reserved_datetime").val().length>0?"true":"false",		// 	예약 여부
+					reserved_datetime : $("#reserved_datetime").val()			// 	예약 날짜
 					//reserve_date : $("#f_reserve_date").val(),
 					//reserve_time : $("#f_reserve_time").val(),
 					//send_state : $("#f_send_state").val(),
@@ -700,6 +711,11 @@ $(document).ready(function(){
     	$(".my02").hide();    	
     	$(".my01").show();
     	*/
+    });
+    
+    // sms mode or mms mode 전환
+    $("[name='send_type']").click(function(event){
+    	$.phone.smsMode =$("[name='send_type']:first").is(this);
     });
     
 	// 전화번호 하이픈 넣기

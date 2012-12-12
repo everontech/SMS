@@ -58,7 +58,7 @@ public class UserListAction implements Action {
 		request.setAttribute("listSize", listSize);						// 총  주소록그룹 갯수
 		request.setAttribute("userList", list);								// 유저 리스트
 		request.setAttribute("pagiNation", pagiNation);				// 페이지네이션
-		forward.setPath("./admin/all_user_list.jsp");
+		forward.setPath("./WEB-INF/admin/all_user_list.jsp");
 		
 		return forward;			
 	}

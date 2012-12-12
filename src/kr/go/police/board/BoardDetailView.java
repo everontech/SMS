@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import kr.go.police.CommandToken;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
@@ -31,10 +32,13 @@ public class BoardDetailView implements Action {
 		// 해당 게시물의 댓글 목록
 		List<BoardBean>replyList =(List<BoardBean>)dao.getReplyList(index);
 		
+		// token 설정
+		String token = CommandToken.set(request);
+		request.setAttribute("token", token);				
 		request.setAttribute("replyList", replyList);
 		request.setAttribute("data", data);
 		// 게시물 보기 페이지로 이동
-		forward.setPath("./board/board_view.jsp"); 
+		forward.setPath("./WEB-INF/board/board_view.jsp"); 
 		return forward;
 	}
 

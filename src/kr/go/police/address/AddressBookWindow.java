@@ -28,7 +28,7 @@ public class AddressBookWindow implements Action {
 		ArrayList<Group> list =
 				(ArrayList<Group>)dao.getGroupList(userIndex);
 		request.setAttribute("groups", list);							// 주소록그룹 리스트
-		forward.setPath("./sms/address_book.jsp");
+		forward.setPath("./WEB-INF/sms/address_book.jsp");
 
 		return forward;
 	}

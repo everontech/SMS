@@ -20,7 +20,7 @@ public class SmsViewAction implements Action {
 		dao.getPslist();
 		*/
 		// 문자발송 메인 화면
-		forward.setPath("./sms/main.jsp");
+		forward.setPath("./WEB-INF/sms/main.jsp");
 		return forward;
 	}
 

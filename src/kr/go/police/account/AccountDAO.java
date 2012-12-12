@@ -77,7 +77,7 @@ public class AccountDAO extends CommonCon {
 		try {
 			conn = dataSource.getConnection();
 			String sql = "INSERT INTO user_info ( f_id, f_password, f_grade, f_name, f_phone1, f_deptname, f_email, " + 
-								" f_approve, f_reg_date, f_psname) VALUES (?, password(?), ?, ?, ?, ?, ?, 'n', now(), ? )";
+								" f_approve, f_reg_date, f_psname, f_visit_date) VALUES (?, password(?), ?, ?, ?, ?, ?, 'n', now(), ?, now() )";
 			
 			Aria aria = Aria.getInstance();	
 			// 이름 ,전화번호, 이메일
@@ -175,7 +175,7 @@ public class AccountDAO extends CommonCon {
 								" f_phone1 = ?," +
 								" f_email = ?, " +
 								" f_class = ?, " +
-								" f_approve = ?" +								
+								" f_approve = ? " +								
 								" WHERE f_index = ?";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -276,7 +276,7 @@ public class AccountDAO extends CommonCon {
 		int result = 0;
 		try{
 			conn = dataSource.getConnection();
-			String sql = "DELTE FROM user_info WHERE f_index = ? ";
+			String sql = "DELETE FROM user_info WHERE f_index = ? ";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, index);
 			// update

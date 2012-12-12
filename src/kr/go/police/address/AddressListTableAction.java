@@ -34,7 +34,7 @@ public class AddressListTableAction implements Action {
 		
 		request.setAttribute("list", list);								// 주소록 리스트
 		request.setAttribute("groupIndex", groupIndexStr);		
-		forward.setPath("./sms/address_table.jsp");
+		forward.setPath("./WEB-INF/sms/address_table.jsp");
 		
 		return forward;
 	}

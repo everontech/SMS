@@ -31,7 +31,7 @@ public class AddressAddAction implements Action {
 		AddressBean data = new AddressBean();
 		data.setGroupIndex(Integer.valueOf(groupIndex));
 		data.setPeople(people.trim());
-		data.setPhone(phone.trim());
+		data.setPhone(phone.trim().replace("-", ""));
 		
 		if(dao.addAddressPeople(userIndex, data)){	
 			response.setContentType("text/html;charset=euc-kr");

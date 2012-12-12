@@ -9,10 +9,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import kr.go.police.SMSUtil;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
@@ -35,9 +37,18 @@ public class SmsSendAction implements Action {
 		// 발송 메세지
 		String message = (String)request.getParameter("message");
 	//	message = new String(message.getBytes("utf-8"), "euc-kr");
-		System.out.println(message);		
+//		System.out.println(message);		
 		// 발송 수신할 전화번호
 		String callback = (String)request.getParameter("callback");		
+		// 전송 모드
+		String flag = (String)request.getParameter("send_type");		
+		// 예약 여부
+		boolean reserved = request.getParameter("reserved").toString().equals("true");		
+		// 예약일
+		String reservedDate =  (String)request.getParameter("reserved_datetime");
+		if(request.getParameter("reserved_datetime") == null){
+			reservedDate = "";
+		}
 		// 유저 정보
 		HttpSession sessoin = request.getSession();
 		// 유저 인덱스
@@ -60,6 +71,9 @@ public class SmsSendAction implements Action {
 		Iterator<String> it = hs.iterator();
 		SMSBean data;
 		int count = 0;
+    	ServletContext context = request.getServletContext();
+    	String logPath = (String)context.getInitParameter("logFilesPath");		
+    	String logMsg;
 		while(it.hasNext()){
 			// 발송 정보 담기
 			data = new SMSBean();
@@ -69,8 +83,18 @@ public class SmsSendAction implements Action {
 			data.setFromPhone(fromPhone);
 			data.setMessage(message);
 			data.setCallback(callback);
+			data.setFlag(flag);			
 			data.setId(id);
+			data.setReserved(reserved);
+			data.setReserveDate(reservedDate);
 			data.setUserIndex(userIndex);
+			// 로그파일에 기록
+			logMsg = "문자 발송\t-SEQ- : " + data.getIndex() +  "\t-USER_ID- : " + data.getId() + 
+					 	"\t-To- : " + data.getToPhone() + 	"\t-From- : " + data.getFromPhone() +
+					 	"\t-Callback- : " + data.getCallback() + "\t-Mode- : "
+					 	+ (data.getFlag().equalsIgnoreCase("s")?"SMS":"MMS");
+			// 로그 기록
+			SMSUtil.writerToLogFile(logPath, logMsg);
 			
 			list.add(data);
 		}

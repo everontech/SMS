@@ -23,7 +23,7 @@ public class MyInfoAction implements Action {
 		UserBean data = dao.getUserDetail(index);
 		// 사용자 정보 담기
 		request.setAttribute("userData", data);
-		forward.setPath("./account/myInfo.jsp");
+		forward.setPath("./WEB-INF/account/myInfo.jsp");
 		return forward;			
 	}
 }

@@ -34,7 +34,7 @@ public class NoticeDetailView implements Action {
 		request.setAttribute("replyList", replyList);
 		request.setAttribute("data", data);
 		// 공지사항 게시물 보기 페이지로 이동
-		forward.setPath("./board/notice_view.jsp"); 
+		forward.setPath("./WEB-INF/board/notice_view.jsp"); 
 		return forward;
 	}
 

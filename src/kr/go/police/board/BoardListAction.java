@@ -75,7 +75,7 @@ public class BoardListAction implements Action {
 		request.setAttribute("limit", limit);							// 한페이지 목록수	
 		request.setAttribute("search", search);						// 검색				
 		request.setAttribute("pagiNation", pagiNation);			// 페이지네이션
-		forward.setPath("./board/board_list.jsp"); 
+		forward.setPath("./WEB-INF/board/board_list.jsp"); 
 		return forward;
 	}
 

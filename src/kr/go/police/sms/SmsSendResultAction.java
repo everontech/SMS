@@ -64,7 +64,7 @@ public class SmsSendResultAction implements Action {
 		request.setAttribute("listSize", listSize);						// 총  주소록그룹 갯수
 		request.setAttribute("sendList", list);							// 발송 내역리스트
 		request.setAttribute("pagiNation", pagiNation);				// 페이지네이션
-		forward.setPath("./sms/send_result_list.jsp");
+		forward.setPath("./WEB-INF/sms/send_result_list.jsp");
 
 		return forward;
 	}

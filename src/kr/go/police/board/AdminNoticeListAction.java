@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import kr.go.police.CommandToken;
 import kr.go.police.SMSUtil;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
@@ -67,14 +68,17 @@ public class AdminNoticeListAction implements Action {
 		// 페이지 네이션 처리
 		String params = "limit=" +limit +  "&search=" + search;
 		String pagiNation = SMSUtil.makePagiNation(listSize, page, limit, "AdminNoticeListAction.bo", params);  
-		
+
+		// token 설정
+		String token = CommandToken.set(request);
+		request.setAttribute("token", token);		
 		request.setAttribute("no", no);								// 리스트 번호		
 		request.setAttribute("listSize", listSize);					// 총  게시물 갯수
 		request.setAttribute("list", list);								// 게시물 리스트
 		request.setAttribute("limit", limit);							// 한페이지 목록수	
 		request.setAttribute("search", search);						// 검색				
 		request.setAttribute("pagiNation", pagiNation);			// 페이지네이션
-		forward.setPath("./admin/notice_list.jsp"); 
+		forward.setPath("./WEB-INF/admin/notice_list.jsp"); 
 		return forward;
 	}
 

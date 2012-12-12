@@ -52,7 +52,7 @@ public class UserNoApprovalListAction implements Action {
 		request.setAttribute("listSize", listSize);						// 총  주소록그룹 갯수
 		request.setAttribute("userList", list);								// 유저 리스트
 		request.setAttribute("pagiNation", pagiNation);				// 페이지네이션
-		forward.setPath("./admin/user_no_approval_list.jsp");	
+		forward.setPath("./WEB-INF/admin/user_no_approval_list.jsp");	
 		
 		return forward;		
 	}

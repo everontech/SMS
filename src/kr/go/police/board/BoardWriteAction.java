@@ -1,12 +1,12 @@
 package kr.go.police.board;
 
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import kr.go.police.CommandToken;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
@@ -18,6 +18,19 @@ public class BoardWriteAction implements Action {
 	@Override
 	public ActionForward execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		
+		// 토큰 검사
+		if (!CommandToken.isValid(request)) {
+			response.setContentType("text/html;charset=euc-kr");
+			PrintWriter out = response.getWriter();
+			out.println("<script>");
+			out.println("alert('비상적인 요청입니다.');");
+			out.println("history.back(-1);");
+			out.println("</script>");	
+			CommandToken.set(request);			
+			return null;
+		}
+		
 		request.setCharacterEncoding("euc-kr");
 		// 사용자 이름, 인덱스 얻기
 		HttpSession session = request.getSession();

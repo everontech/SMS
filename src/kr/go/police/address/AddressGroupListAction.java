@@ -69,7 +69,7 @@ public class AddressGroupListAction implements Action {
 		request.setAttribute("listSize", listSize);					// 총  주소록그룹 갯수
 		request.setAttribute("groups", list);							// 주소록그룹 리스트
 		request.setAttribute("pagiNation", pagiNation);			// 페이지네이션
-		forward.setPath("./address/address_group_list.jsp");
+		forward.setPath("./WEB-INF/address/address_group_list.jsp");
 
 		return forward;
 	}

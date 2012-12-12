@@ -26,7 +26,7 @@ public class NoticeModifyView implements Action {
 		data.setContent(content);
 		request.setAttribute("data", data);
 		// 공지사항 수정 보기 페이지로 이동
-		forward.setPath("./admin/notice_modify.jsp"); 
+		forward.setPath("./WEB-INF/admin/notice_modify.jsp"); 
 		return forward;
 	}
 

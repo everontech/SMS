@@ -65,7 +65,7 @@ body{background:url(../images/top/top_bg.gif) repeat-x 0 0;}
 
 /* admin header */
 .admin_header .gnb .gnb_sub .gnb_sub1{left:34px; display:none;}
-.admin_header .gnb .gnb_sub .gnb_sub2{left:225px; display:none;}
+.admin_header .gnb .gnb_sub .gnb_sub2{left:205px; display:none;}
 .admin_header .gnb .gnb_sub .gnb_sub3{left:432px; display:none;}
 .admin_header .gnb .gnb_sub .gnb_sub4{left:600px; display:none;}
 

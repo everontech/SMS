@@ -2,6 +2,8 @@ package kr.go.police.board;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import kr.go.police.CommandToken;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
@@ -19,12 +21,15 @@ public class BoardModifyView implements Action {
 		int index = Integer.valueOf((String)request.getParameter("index"));
 		// 게시물내용 가져오기
 		BoardBean data = dao. getDetail(index);
+		// token 설정
+		String token = CommandToken.set(request);
+		request.setAttribute("token", token);			
 		request.setAttribute("data", data);
 		String content = data.getContent();
 		content = content.replaceAll("\r\n", "<br/>");
 		data.setContent(content);		
 		// 게시물 보기 페이지로 이동
-		forward.setPath("./board/board_modify.jsp"); 
+		forward.setPath("./WEB-INF/board/board_modify.jsp"); 
 		return forward;
 	}
 

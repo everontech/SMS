@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import kr.go.police.CommandToken;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
@@ -18,6 +19,8 @@ public class BoardModifyAction implements Action {
 	public ActionForward execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		request.setCharacterEncoding("euc-kr");
+		
+		
 		// 사용자 이름, 인덱스 얻기
 		HttpSession session = request.getSession();
 		BoardDAO dao = new BoardDAO();

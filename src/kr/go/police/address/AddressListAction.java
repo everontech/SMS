@@ -85,7 +85,7 @@ public class AddressListAction implements Action {
 		request.setAttribute("search", search);						// 검색				
 		request.setAttribute("groupIndex", groupIndexStr);	// 그룹 인덱스	
 		request.setAttribute("pagiNation", pagiNation);			// 페이지네이션
-		forward.setPath("./address/address_list.jsp");
+		forward.setPath("./WEB-INF/address/address_list.jsp");
 		
 		return forward;
 	}

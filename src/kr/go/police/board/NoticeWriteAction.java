@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.tomcat.util.http.fileupload.FileUploadBase.FileSizeLimitExceededException;
 
+import kr.go.police.CommandToken;
 import kr.go.police.SMSUtil;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
@@ -39,6 +40,7 @@ public class NoticeWriteAction implements Action {
 			// multipartRequest lib
 			MultipartRequest multi =
 					new MultipartRequest(request, uploadPath, size, "euc-kr", new DefaultFileRenamePolicy());
+			
 			// 파일명 가져오기
 			Enumeration files = multi.getFileNames();
 			String filename = (String)files.nextElement();

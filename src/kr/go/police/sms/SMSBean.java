@@ -12,13 +12,17 @@ public class SMSBean {
 	private String fromPhone;  // 보내는 전화번호
 	private String message; // 메시지
 	private boolean sendState; // 전송상태
-	private boolean sendResult; // 전송결과
+	private int requestResult; // 요청전송결과코드값
+	private int responseResult; // 응답전송결과코드값
+	private boolean resreved;		// 예약여부
 	private String reserveDate; // 예약시간
 	private String callback; // 콜백
 	private String deptName; // 부서명
-	private boolean mms; // mms 여부
-	private String regDate;		// 발송등록 시간
-
+	private String flag; // sms or mms
+	private String regDate;			// 발송등록 시간
+	private String deliverTime;	// 이통사 처리 결과 시간
+	private String vender;			// 이통사 정보
+	
 	public long getIndex() {
 		return index;
 	}
@@ -83,12 +87,28 @@ public class SMSBean {
 		this.sendState = sendState;
 	}
 
-	public boolean isSendResult() {
-		return sendResult;
+	public int getRequestResult() {
+		return requestResult;
 	}
 
-	public void setSendResult(boolean sendResult) {
-		this.sendResult = sendResult;
+	public void setRequestResult(int requestResult) {
+		this.requestResult = requestResult;
+	}
+
+	public int getResponseResult() {
+		return responseResult;
+	}
+
+	public void setResponseResult(int responseResult) {
+		this.responseResult = responseResult;
+	}
+
+	public boolean isResreved() {
+		return resreved;
+	}
+
+	public void setReserved(boolean resreved) {
+		this.resreved = resreved;
 	}
 
 	public String getReserveDate() {
@@ -115,12 +135,14 @@ public class SMSBean {
 		this.deptName = deptName;
 	}
 
-	public boolean isMms() {
-		return mms;
+	
+
+	public String getFlag() {
+		return flag;
 	}
 
-	public void setMms(boolean mms) {
-		this.mms = mms;
+	public void setFlag(String flag) {
+		this.flag = flag;
 	}
 
 	public String getRegDate() {
@@ -133,7 +155,21 @@ public class SMSBean {
 	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
-	
-	
+
+	public String getDeliverTime() {
+		return deliverTime;
+	}
+
+	public void setDeliverTime(String deliverTime) {
+		this.deliverTime = deliverTime;
+	}
+
+	public String getVender() {
+		return vender;
+	}
+
+	public void setVender(String vender) {
+		this.vender = vender;
+	}
 
 }

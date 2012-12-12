@@ -35,7 +35,7 @@ public class MyMessageView implements Action {
 		List<Group> groupList = (List<Group>)dao.getMyGroupList(userIndex);
 		request.setAttribute("groups", groupList);		
 		request.setAttribute("message", data);
-		forward.setPath("./sms/message_view.jsp"); 
+		forward.setPath("./WEB-INF/sms/message_view.jsp"); 
 		return forward;
 		
 	}

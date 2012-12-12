@@ -1,6 +1,7 @@
 package kr.go.police.sms;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -12,6 +13,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kr.go.police.CommandToken;
 import kr.go.police.LoginCheck;
 import kr.go.police.action.Action;
 
@@ -53,10 +55,19 @@ public class SmsFrontcontrollerFilter implements Filter {
 			return;
 		}
 		
-		Action action =null;		
-		// 문자 보내기 화면
-		if(command.equals("/SmsSendViewAction.sm")){
-			//System.out.println("do smsSendView filter~");
+		// 토큰 처리
+		if(command.equals("/ListDeleteAction.sm")){
+			// 토큰 검사
+			if (!CommandToken.isValid(request)) {
+				response.setContentType("text/html;charset=euc-kr");
+				PrintWriter out = response.getWriter();
+				out.println("<script>");
+				out.println("alert('비정상적인 요청입니다.');");
+				out.println("history.back(-1);");
+				out.println("</script>");	
+				CommandToken.set(request);			
+				return;
+			}
 		}
 		
 		chain.doFilter(request, response);

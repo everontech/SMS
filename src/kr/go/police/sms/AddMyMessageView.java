@@ -26,7 +26,7 @@ public class AddMyMessageView implements Action {
 		// 내 그룹 목록 가져오기
 		List<Group> groupList = (List<Group>)dao.getMyGroupList(userIndex);
 		request.setAttribute("groups", groupList);		
-		forward.setPath("./sms/add_message.jsp"); 
+		forward.setPath("./WEB-INF/sms/add_message.jsp"); 
 		return forward;
 	}
 

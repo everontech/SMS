@@ -38,7 +38,7 @@ public class AdminModifyUserAction implements Action {
 		int userClass =  Integer.valueOf(request.getParameter("userClass"));
 		// 승인여부
 		String approve = request.getParameter("approve");		
-		
+		System.out.println("approve : " + approve);
 		// 사용자 정보를 담는다.
 		UserBean data = new UserBean();
 		data.setIndex(index);
@@ -61,7 +61,7 @@ public class AdminModifyUserAction implements Action {
 			response.setContentType("text/html;charset=euc-kr");
 			PrintWriter out = response.getWriter();
 			out.println("<script>");
-			out.println("alert('회원가입 실패! 관리자에게 문의하세요');");
+			out.println("alert('승인처리 실패!');");
 			out.println("history.go(-1);");
 			out.println("</script>");	
 			out.close();

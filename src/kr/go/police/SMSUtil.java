@@ -1,5 +1,11 @@
 package kr.go.police;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class SMSUtil {
 
 	/**
@@ -85,7 +91,7 @@ public class SMSUtil {
 		// 페이지 갯수
 		int pageCount = count / pageSize + (count % pageSize == 0 ? 0 : 1);
 		// 시작페이지
-		int startPage = (int) (currentPage / 10) * 10 + 1;
+		int startPage = (int) ((currentPage -1) / 10) * 10 + 1;
 		int pageBlock = 10;
 		int endPage = startPage + pageBlock - 1;
 
@@ -107,7 +113,7 @@ public class SMSUtil {
 					+ "?page="
 					+ (startPage - 10)
 					+ params
-					+ "\"><img src=\"images/notice/page_prev_btn.gif\" /></a>\r\n");
+					+ "\"><img src=\"images/notice/pagefirst_next_btn.gif\" /></a>\r\n");
 		}
 
 		// 이전페이지
@@ -126,11 +132,11 @@ public class SMSUtil {
 																			// 페이지이면
 																			// 강조
 			sb.append("<a  href=\"" + url + "?page=" + i + params
-					+ "\"><span  " + currentClass + ">" + i + "</spa></a>");
+					+ "\"><span  " + currentClass + ">" + i + "</span></a>");
 		}
 
 		// 다음 페이지가 있으면 다음 페이지를 보여준다.
-		if (currentPage < endPage) {
+		if (currentPage < pageCount) {
 			sb.append("<a href=\""
 					+ url
 					+ "?page="
@@ -142,7 +148,7 @@ public class SMSUtil {
 		// 현재페이지에서 10개페이지가 넘으면 10개뒤로
 		if (endPage < pageCount) {
 			sb.append("<a href=\"" + url + "?page=" + (startPage + 10)
-					+ "\"><img src=\"images/notice/page_next_btn.gif\" /></a>");
+					+ "\"><img src=\"images/notice/pageend_next_btn.gif\" /></a>");
 		}
 		sb.append("</div>");
 
@@ -240,5 +246,65 @@ public class SMSUtil {
 		strText = getReplaceALL(strText, " ", "&nbsp;");
 		return strText;
 	}
+	
+	/**
+	 * 로그에 기록 남기기
+	 */
+	synchronized public static void writerToLogFile(String logPath ,String msg){
+		Date date = new Date();										// 현재 시간 얻기
+		String yearDir = checkYeaDir(logPath, date);						// 년도 체크
+		String monthDir = checkMonthDir(logPath ,date, yearDir);		// 월 체크
+		// 로그파일명 생성
+		String dir = logPath + File.separator + yearDir + File.separator + monthDir;
+		SimpleDateFormat sdf = new SimpleDateFormat("MM_dd");	
+		File file = new File(dir +  File.separator + "sms_" + sdf.format(date)+ ".txt" );
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter(file ,true);
+			// 로그 형식에 따라 처리
+			sdf = new SimpleDateFormat("HH:mm:ss");
+			file = new File(dir +  File.separator + sdf.format(new Date())+ ".txt" );			
+			msg = "[" + sdf.format(date) +"] \t" + msg + "\r\n";
+			System.out.println(msg);
+			fw.append(msg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			if(fw != null){
+				try {
+					fw.close();
+				} catch (IOException e) {}						
+			}
+		}
+	}
+
+	/**
+	 *	월 디렉토리를 체크한후 월디렉토리가 없으면 월디렉토리를 생성 
+	 * @param yearDir
+	 * @return
+	 */
+	synchronized private static String checkMonthDir(String logPath, Date date, String yearDir) {
+		SimpleDateFormat sdf;
+		File file;
+		// 월 디렉토리 생성
+		sdf = new SimpleDateFormat("MM");			
+		String monthDir = sdf.format(date);
+		file = new File(logPath + File.separator + yearDir + File.separator + monthDir);
+		if(!file.isDirectory()){
+			file.mkdir();
+		}
+		return monthDir;
+	}
+
+	synchronized private static String checkYeaDir(String logPath, Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");		
+		String yearDir = sdf.format(date);
+		File file = new File(logPath + File.separator + yearDir);
+		if(!file.isDirectory()){
+			file.mkdir();
+		}
+		return yearDir;
+	}	
 
 }

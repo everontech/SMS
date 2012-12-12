@@ -287,10 +287,11 @@ public class SmsDAO extends CommonCon {
 			    data.setFromPhone(rs.getString("f_callfrom"));
 			    data.setMessage(rs.getString("f_message"));
 			    data.setSendState(rs.getInt("f_send_state")  == 0);
-			    data.setSendResult(rs.getInt("f_send_result")  > 0);
+			    data.setRequestResult(rs.getInt("f_request_result_code"));
+			    data.setResponseResult(rs.getInt("f_response_result_code"));			    
 			    data.setRegDate(rs.getString("f_reg_date"));   
 			    data.setCallback(rs.getString("f_callback"));
-			    
+			    data.setFlag(rs.getString("f_flag"));	    
 				list.add(data);
   			}
 			
@@ -585,8 +586,8 @@ public class SmsDAO extends CommonCon {
 			String sql;
 			for(SMSBean data : list){
 				sql = "INSERT INTO sms_send_info ( f_index, f_user_id, f_user_index, f_callto, f_callfrom, f_message, " +
-						"f_send_count, f_send_state, f_reserve_date, f_callback, f_nameto, f_reg_date)" +
-						" VALUES (?, ?, ?, ?, ?, ?, ?, 0, now(), ?,  '', now()) ";
+						"f_send_count, f_send_state, f_reserved, f_reserve_date, f_callback, f_nameto, f_flag, f_reg_date)" +
+						" VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, '',  ?, now()) ";
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setLong(1, data.getIndex());				// 고유 시퀸스 번호				
 				pstmt.setString(2, data.getId());					// 유저 아이디
@@ -594,9 +595,11 @@ public class SmsDAO extends CommonCon {
 				pstmt.setString(4, data.getToPhone());			// 받는 전화번호
 				pstmt.setString(5, data.getFromPhone());		// 보내는 전화번호				
 				pstmt.setString(6, data.getMessage());			// 메세지
-				pstmt.setInt(7, list.size());							// 해당 문자 전송 갯수					
-				pstmt.setString(8, data.getCallback());			// 발송 수신 전화번호
-				
+				pstmt.setInt(7, list.size());							// 해당 문자 전송 갯수	
+				pstmt.setString(8, data.isResreved()?"y":"n");	// 예약여부
+				pstmt.setString(9, data.getReserveDate());	// 예약일				
+				pstmt.setString(10, data.getCallback());			// 발송 수신 전화번호
+				pstmt.setString(11, data.getFlag());				//	전송타입			
 				resultCount +=  pstmt.executeUpdate();
 			}
 			return resultCount;
@@ -638,5 +641,423 @@ public class SmsDAO extends CommonCon {
 		}
 		return result;
 	}
+
+	/**
+	 *	 예약 발송갯수 구하기
+	 * @param search
+	 * 		검색어
+	 * @param type
+	 * 		검색 종류
+	 * @return
+	 */
+	public int getReserveListCount(String search, String type) {
+		int result = 0;
+		try {
+			String sql = "SELECT count(*) FROM sms_send_info WHERE  " +
+					" f_reserved = 'y' AND f_reserve_date > NOW() AND ";
+			conn = dataSource.getConnection();
+			if(type.equalsIgnoreCase("from")){	// 보낸전화번호로 검색
+				sql += "  f_user_id like ? ";
+			}else if(type.equalsIgnoreCase("message")){		// 메세지로 검색
+				sql += " f_message like ? ";
+			}else{			// 받는 전화번호로 검색
+				sql += " f_callto like ? ";
+			}
+			pstmt = conn.prepareStatement(sql +" ORDER BY f_index DESC ");
+			pstmt.setString(1, "%" + search + "%");				
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				result =  rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getReserveListCount 에러 : " + e.getMessage());
+		}finally{
+			connClose();
+		}
+		return result;
+	}
+
+	
+	/**
+	 * 모든 예약 내역 리스트
+	 * @param start
+	 * @param end
+	 * @param search
+	 * 		검색어
+	 * @param type
+	 *		검색 종류
+	 * @return
+	 */
+	public List<SMSBean> getReserveList(int start, int end, String search, String type) {
+		List<SMSBean> list = new ArrayList<SMSBean>();
+		SMSBean data = null;		
+		try {
+			conn = dataSource.getConnection();
+			String sql = "SELECT * FROM sms_send_info WHERE " +
+					" f_reserved = 'y' AND f_reserve_date > now() AND";
+			if(type.equalsIgnoreCase("from")){
+				sql += " f_user_id like ? ";
+			}else if(type.equalsIgnoreCase("message")){
+				sql += " f_message like ? ";				
+			}else{
+				sql += " f_callto like ? ";		
+			}
+			
+			sql += " ORDER BY f_index DESC LIMIT ?, ? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%" + search + "%");							
+			pstmt.setInt(2, start -1);
+			pstmt.setInt(3, end);				
+			rs = pstmt.executeQuery();
+			Aria aria = Aria.getInstance();	
+			while(rs.next())	{
+				// 문자 내역을 담는다.
+			    data = new SMSBean();	
+			    data.setIndex(rs.getLong("f_index"));
+			    data.setId(rs.getString("f_user_id"));
+			    data.setUserIndex(rs.getInt("f_user_index"));
+			    data.setToPhone(rs.getString("f_callto"));			    
+			    data.setFromPhone(rs.getString("f_callfrom"));
+			    data.setMessage(rs.getString("f_message"));
+			    data.setRequestResult(rs.getInt("f_request_result_code"));
+			    data.setResponseResult(rs.getInt("f_response_result_code"));		
+			    data.setFlag(rs.getString("f_flag").equalsIgnoreCase("s")?"SMS":"MMS");
+			    data.setRegDate(rs.getString("f_reg_date"));   
+			    data.setCallback(rs.getString("f_callback"));
+			    
+				list.add(data);
+			}
+			
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getReserveList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}	
+	
+	/**
+	 * 	전송 내역 삭제
+	 * @param index
+	 * 	메세지 인덱스
+	 * @return
+	 */
+	public boolean delSendMessage(long index) {
+		int result = 0;
+		try {
+			conn = dataSource.getConnection();
+			String sql = "DELETE FROM sms_send_info WHERE f_index = ? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, index);						// 메세지 인덱스
+			// update
+			result = pstmt.executeUpdate();
+			return result > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("delSendMessage 에러 : " + e.getMessage());
+			return false;
+		}finally{
+			connClose();
+		}
+	}	
+	
+
+	/**
+	 *	모든 전송 결과 내역 리스트
+	 * @param start
+	 * @param end
+	 * @param search
+	 * 		검색어
+	 * @param type
+	 * 		검색종류
+	 * @return
+	 */
+	public List<SMSBean> getSendList(int start, int end, String search, String type) {
+		List<SMSBean> list = new ArrayList<SMSBean>();
+		SMSBean data = null;		
+		try {
+			conn = dataSource.getConnection();
+			String sql = "SELECT * FROM sms_send_info WHERE  f_send_state = 1 AND ";
+			conn = dataSource.getConnection();
+			if(type.equalsIgnoreCase("from")){	// 보낸전화번호로 검색
+				sql += "  f_user_id like ? ";
+			}else if(type.equalsIgnoreCase("message")){		// 메세지로 검색
+				sql += " f_message like ? ";
+			}else{			// 받는 전화번호로 검색
+				sql += " f_callto like ? ";
+			}			
+			sql += " ORDER BY f_index DESC LIMIT ?, ? ";
+			
+			pstmt = conn.prepareStatement(sql);		
+			pstmt.setString(1, "%" + search + "%");	
+			pstmt.setInt(2, start -1);
+			pstmt.setInt(3, end);				
+			rs = pstmt.executeQuery();
+			Aria aria = Aria.getInstance();	
+			while(rs.next())	{
+				// 문자 내역을 담는다.
+			    data = new SMSBean();	
+			    data.setIndex(rs.getLong("f_index"));
+			    data.setId(rs.getString("f_user_id"));
+			    data.setUserIndex(rs.getInt("f_user_index"));
+			    data.setToPhone(rs.getString("f_callto"));			    
+			    data.setFromPhone(rs.getString("f_callfrom"));
+			    data.setMessage(rs.getString("f_message"));
+			    data.setRequestResult(rs.getInt("f_request_result_code"));
+			    data.setResponseResult(rs.getInt("f_response_result_code"));		
+			    data.setFlag(rs.getString("f_flag").equalsIgnoreCase("s")?"SMS":"MMS");
+			    data.setRegDate(rs.getString("f_reg_date"));   
+			    data.setCallback(rs.getString("f_callback"));
+				list.add(data);
+			}
+			
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getSendList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}	
+
+	/**
+	 * 유저발송갯수 구하기
+	 * @param search
+	 * 		검색어
+	 * @param type
+	 * 		검색종류
+	 * @return
+	 */
+	public int getSendListCount(String search, String type) {
+		int result = 0;
+		try {
+			conn = dataSource.getConnection();
+			String sql = "SELECT count(*) FROM sms_send_info WHERE  f_send_state = 1 AND ";
+			conn = dataSource.getConnection();
+			if(type.equalsIgnoreCase("from")){	// 보낸전화번호로 검색
+				sql += "  f_user_id like ? ";
+			}else if(type.equalsIgnoreCase("message")){		// 메세지로 검색
+				sql += " f_message like ? ";
+			}else{			// 받는 전화번호로 검색
+				sql += " f_callto like ? ";
+			}
+			pstmt = conn.prepareStatement(sql +" ORDER BY f_index DESC ");			
+			pstmt.setString(1, "%" + search + "%");
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				result =  rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getSendListCount 에러 : " + e.getMessage());
+		}finally{
+			connClose();
+		}
+		return result;
+	}
+	
+	/**
+	 * 특정 유저 예약 내역 갯수 
+	 * @param userIndex
+	 * 		검색할 유저 인덱스
+	 * @param search 
+	 * 		검색어
+	 * @return
+	 */
+	public int getUserReserveCount(int userIndex, String search, String type) {
+		int result = 0;
+		try {
+			conn = dataSource.getConnection();
+			String sql = "SELECT count(*) FROM sms_send_info " +
+					" WHERE  f_user_index = ? AND" +
+					" f_reserved = 'y' AND f_reserve_date > now() AND ";
+			conn = dataSource.getConnection();
+			if(type.equalsIgnoreCase("from")){	// 메세지로 검색
+				sql += "  f_message like ? ";
+			}else if(type.equalsIgnoreCase("message")){		// 받는 전화번호로 검색
+				sql += " f_callto like ? ";
+			}
+			
+			pstmt = conn.prepareStatement(sql +" ORDER BY f_index DESC ");		
+			pstmt.setInt(1, userIndex);	
+			pstmt.setString(2, "%" + search + "%");				
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				result =  rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getUserReserveCount 에러 : " + e.getMessage());
+		}finally{
+			connClose();
+		}
+		return result;
+	}	
+	
+
+
+	/**
+	 * 선택 유저 예약 내역 리스트
+	 * @param userIndex
+	 * @param start
+	 * @param end
+	 * @param search
+	 * @param type
+	 * @return
+	 */
+	public List<SMSBean> getUserReserveList(int userIndex, int start, int end, String search, String type) {
+		List<SMSBean> list = new ArrayList<SMSBean>();
+		SMSBean data = null;		
+		try {
+			conn = dataSource.getConnection();
+			String sql = "SELECT * FROM sms_send_info " +
+					" WHERE  f_user_index = ? AND" +
+					" f_reserved = 'y' AND f_reserve_date > now() AND ";
+			conn = dataSource.getConnection();
+			if(type.equalsIgnoreCase("from")){	// 메세지로 검색
+				sql += "  f_message like ? ";
+			}else if(type.equalsIgnoreCase("message")){		// 받는 전화번호로 검색
+				sql += " f_callto like ? ";
+			}
+			sql += " ORDER BY f_index DESC LIMIT ?, ? ";
+			pstmt = conn.prepareStatement(sql);		
+			pstmt.setInt(1, userIndex);
+			pstmt.setString(2, "%" + search + "%");				
+			pstmt.setInt(3, start -1);
+			pstmt.setInt(4, end);				
+			rs = pstmt.executeQuery();
+			Aria aria = Aria.getInstance();	
+			while(rs.next())	{
+				// 문자 내역을 담는다.
+			    data = new SMSBean();	
+			    data.setIndex(rs.getLong("f_index"));
+			    data.setId(rs.getString("f_user_id"));
+			    data.setUserIndex(rs.getInt("f_user_index"));
+			    data.setToPhone(rs.getString("f_callto"));			    
+			    data.setFromPhone(rs.getString("f_callfrom"));
+			    data.setMessage(rs.getString("f_message"));
+			    data.setRequestResult(rs.getInt("f_request_result_code"));
+			    data.setResponseResult(rs.getInt("f_response_result_code"));			
+			    data.setFlag(rs.getString("f_flag").equalsIgnoreCase("s")?"SMS":"MMS");			    
+			    data.setRegDate(rs.getString("f_reg_date"));   
+			    data.setReserveDate(rs.getString("f_reserve_date"));		    
+			    data.setCallback(rs.getString("f_callback"));
+			    
+				list.add(data);
+  			}
+			
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getReserveResultList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}	
+	
+	
+	/**
+	 * 선택 유저 발송 내역 갯수 
+	 * @param userIndex
+	 * 		검색할 유저 인덱스
+	 * @param search 
+	 * 		검색어
+	 * @return
+	 */
+	public int getUserSentCount(int userIndex, String search, String type) {
+		int result = 0;
+		try {
+			conn = dataSource.getConnection();
+			String sql = "SELECT count(*) FROM sms_send_info " +
+					" WHERE  f_user_index = ? AND" +
+					" f_send_state = 1 AND ";
+			conn = dataSource.getConnection();
+			if(type.equalsIgnoreCase("message")){	// 메세지로 검색
+				sql += "  f_message like ? ";
+			}else if(type.equalsIgnoreCase("to")){		// 받는 전화번호로 검색
+				sql += " f_callto like ? ";
+			}
+			
+			pstmt = conn.prepareStatement(sql +" ORDER BY f_index DESC ");		
+			pstmt.setInt(1, userIndex);	
+			pstmt.setString(2, "%" + search + "%");				
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				result =  rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getUserReserveCount 에러 : " + e.getMessage());
+		}finally{
+			connClose();
+		}
+		return result;
+	}	
+	
+
+
+	/**
+	 * 선택 유저 발송 내역 리스트
+	 * @param userIndex
+	 * @param start
+	 * @param end
+	 * @param search
+	 * @param type
+	 * @return
+	 */
+	public List<SMSBean> getUserSentList(int userIndex, int start, int end, String search, String type) {
+		List<SMSBean> list = new ArrayList<SMSBean>();
+		SMSBean data = null;		
+		try {
+			conn = dataSource.getConnection();
+			String sql = "SELECT * FROM sms_send_info " +
+					" WHERE  f_user_index = ? AND" +
+					"  f_send_state = 1 AND ";
+			conn = dataSource.getConnection();
+			if(type.equalsIgnoreCase("message")){	// 메세지로 검색
+				sql += "  f_message like ? ";
+			}else if(type.equalsIgnoreCase("to")){		// 받는 전화번호로 검색
+				sql += " f_callto like ? ";
+			}
+			sql += " ORDER BY f_index DESC LIMIT ?, ? ";
+			pstmt = conn.prepareStatement(sql);		
+			pstmt.setInt(1, userIndex);
+			pstmt.setString(2, "%" + search + "%");				
+			pstmt.setInt(3, start -1);
+			pstmt.setInt(4, end);				
+			rs = pstmt.executeQuery();
+			Aria aria = Aria.getInstance();	
+			while(rs.next())	{
+				// 문자 내역을 담는다.
+			    data = new SMSBean();	
+			    data.setIndex(rs.getLong("f_index"));
+			    data.setId(rs.getString("f_user_id"));
+			    data.setUserIndex(rs.getInt("f_user_index"));
+			    data.setToPhone(rs.getString("f_callto"));			    
+			    data.setFromPhone(rs.getString("f_callfrom"));
+			    data.setMessage(rs.getString("f_message"));
+			    data.setRequestResult(rs.getInt("f_request_result_code"));
+			    data.setResponseResult(rs.getInt("f_response_result_code"));			
+			    data.setFlag(rs.getString("f_flag").equalsIgnoreCase("s")?"SMS":"MMS");			    
+			    data.setRegDate(rs.getString("f_reg_date"));   
+			    data.setCallback(rs.getString("f_callback"));
+			    
+				list.add(data);
+  			}
+			
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("getReserveResultList 에러 : " + e.getMessage());
+			return null;
+		}finally{
+			connClose();
+		}
+	}		
 	
 }

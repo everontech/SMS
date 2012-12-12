@@ -73,6 +73,8 @@ public class LoginAction implements Action {
 		HttpSession session = request.getSession();
 		session.setAttribute("name",  data.getName());
 		session.setAttribute("id", data.getId());
+		String ip = getClientIP(request);		
+		session.setAttribute("clientIp", ip);		
 		// 관리자 인지 확인
 		if(data.getId().equals("admin")){
 			session.setAttribute("admin", true);
@@ -82,6 +84,20 @@ public class LoginAction implements Action {
 		session.setAttribute("phone",  data.getPhone1());		
 		session.setAttribute("sendLimit", data.getMonthSendLimit() - data.getMonthSend());
 		session.setAttribute("logined", true);		
+		// 리스너에 로그기록을 하기 위해 구분
+		session.setAttribute("loginListener",  "loginListener");				
+	}
+
+	private String getClientIP(HttpServletRequest request) {
+		// 서버 아이피가 나오지 안도록 처리
+		String ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+		if(ip == null || ip.length() == 0 || ip.toLowerCase().equals("unknown")) {
+		        ip = request.getHeader("REMOTE_ADDR");
+		}
+		if(ip == null || ip.length() == 0 || ip.toLowerCase().equals("unknown")) {
+		        ip = request.getRemoteAddr();
+		}
+		return ip;
 	}
 
 }

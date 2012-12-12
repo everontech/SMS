@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import kr.go.police.CommandToken;
 import kr.go.police.action.Action;
 import kr.go.police.action.ActionForward;
 
@@ -19,6 +20,7 @@ public class BoardReplyWriteAction implements Action {
 	public ActionForward execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		request.setCharacterEncoding("euc-kr");
+		
 		BoardDAO dao = new BoardDAO();
 		//  인덱스로 해당 게시물을 뽑아온다.
 		String index = (String)request.getParameter("parentIndex");

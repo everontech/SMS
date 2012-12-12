@@ -309,7 +309,7 @@ public class AddressDAO extends CommonCon {
 		try {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement("SELECT * FROM address_book_group WHERE" +
-					" f_user_index = ? ORDER BY f_size DESC LIMIT ?, ? ");
+					" f_user_index = ? ORDER BY f_index ASC, f_size DESC LIMIT ?, ? ");
 			pstmt.setInt(1, userIndex);	
 			pstmt.setInt(2, start -1);	
 			pstmt.setInt(3, end);				

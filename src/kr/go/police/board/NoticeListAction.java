@@ -74,7 +74,7 @@ public class NoticeListAction implements Action {
 		request.setAttribute("limit", limit);							// 한페이지 목록수	
 		request.setAttribute("search", search);						// 검색				
 		request.setAttribute("pagiNation", pagiNation);			// 페이지네이션
-		forward.setPath("./board/notice_list.jsp"); 
+		forward.setPath("./WEB-INF/board/notice_list.jsp"); 
 		return forward;
 	}
 

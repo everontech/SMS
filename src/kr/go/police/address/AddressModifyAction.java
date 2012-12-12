@@ -26,7 +26,7 @@ public class AddressModifyAction implements Action {
 		String peopleName = (String)request.getParameter("peopleName");	// 이름
 		String phoneNum = (String)request.getParameter("phoneNum");		// 전화번호
 		// 수정처리
-		if(dao.modifyAddress(Integer.valueOf(index), peopleName, phoneNum) ){
+		if(dao.modifyAddress(Integer.valueOf(index), peopleName, phoneNum.replace("-", "")) ){
 			response.setContentType("text/html;charset=euc-kr");
 			PrintWriter out = response.getWriter();
 			out.println("<script>");

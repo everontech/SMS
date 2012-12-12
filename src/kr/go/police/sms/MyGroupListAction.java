@@ -26,7 +26,7 @@ public class MyGroupListAction implements Action {
 		List<Group> groupList = (List<Group>)dao.getMyGroupList(userIndex);
 		
 		request.setAttribute("groups", groupList);		
-		forward.setPath("./sms/my_group_list.jsp"); 
+		forward.setPath("./WEB-INF/sms/my_group_list.jsp"); 
 		return forward;
 	}
 

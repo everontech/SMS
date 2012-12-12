@@ -6,9 +6,14 @@
     <param-value>강원청SMS</param-value>
   </context-param>
   <context-param>
+    <description>로그파일 기본 경로</description>  
+    <param-name>logFilesPath</param-name>
+    <param-value>C:\SMS_log</param-value>
+  </context-param>
+  <context-param>
     <description>command 매핑 설정 파일 기본 경로</description>
     <param-name>propertiesPath</param-name>
-    <param-value>C:\workspace2\SMS\WebContent\properties\</param-value>
+    <param-value>C:\workspace2\SMS\WebContent\WEB-INF\properties\</param-value>
   </context-param>
   <servlet>
     <description>계정, 로그인처리</description>
